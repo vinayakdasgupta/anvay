@@ -51,10 +51,10 @@ pip install Flask gensim pyLDAvis nltk
 # Getting Started
 
 ### 1. Setup
-Clone the repository and navigate to the project directory. Create the necessary folders for file uploads, results, and stopwords:
+Clone the repository and navigate to the project directory. check that the necessary folders for file uploads, results, and stopwords are there:
 
 ```bash
-mkdir uploads results stopwords
+git clone https://github.com/vinayakdasgupta/anvay/
 ```
 
 ### 2. NLTK Resources
@@ -70,7 +70,7 @@ nltk.download('punkt')
 Start the Flask application:
 
 ```bash
-python app.py
+python anvay.py
 ```
 The application will run at [http://127.0.0.1:5000/](http://127.0.0.1:5000/).
 
