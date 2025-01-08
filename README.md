@@ -126,8 +126,8 @@ Edit the noun and verb root/suffix files in the `stopwords/` folder:
 
 ## Future Enhancements
 - Integrate a more robust POS tagger for Bengali.
-- Support additional file formats (e.g., .docx, .pdf).
 - Improve the stemming process with a hybrid approach (rule-based + statistical methods).
+- Imrpove the memory-handling
 
 ## License
 This application is open-source and available under the MIT License. Feel free to modify and distribute.
