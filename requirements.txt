@@ -3,10 +3,11 @@ gensim>=4.0.0
 nltk>=3.5
 matplotlib>=3.3.0
 pyLDAvis>=3.3.0
-bokeh>=2.4.0
+bokeh==2.4.3
 Werkzeug>=2.0.0
 scikit-learn>=0.24.0
 numpy>=1.20.0
 seaborn>=0.11.0
 networkx>=2.5
 pandas>=1.2.0
+
