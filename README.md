@@ -75,7 +75,7 @@ The following Python libraries are required:
 Install the dependencies using:
 
 ```bash
-pip install Flask gensim PyLDAvis nltk
+pip install -r requirements.txt
 ```
 
 ## Getting Started
