@@ -1,45 +1,63 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, request, render_template, send_file, send_from_directory, jsonify
+
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(), logging.FileHandler("app.log", encoding="utf-8")]
+)
+
+from flask import Flask, request, render_template, send_from_directory
 import os
 import re
 import gensim
 import gensim.corpora as corpora
 from gensim.models import CoherenceModel
-import pyLDAvis
-import pyLDAvis.gensim
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from nltk.data import find
-import csv
-import string
+from werkzeug.utils import secure_filename
 from collections import Counter
-
-def download_nltk_resources():
-    try:
-        find('corpora/stopwords')
-        find('tokenizers/punkt')
-    except LookupError:
-        nltk.download('stopwords')
-        nltk.download('punkt')
-
-# Call this function before starting the app
-download_nltk_resources()
+import string
+import csv
+from viz import *
+from csvSave import *
+import pyLDAvis
+import pyLDAvis.gensim_models
 
 # Flask application
 app = Flask(__name__)
+app.secret_key = 'abc123'  # Needed for using sessions
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB
 
-# Function to load lists from text files
-def load_list_from_file(file_path):
-    if not os.path.exists(file_path):
-        return []
-    with open(file_path, 'r', encoding='utf-8') as f:
-        return [line.strip() for line in f.readlines() if line.strip()]
+# Get the base directory of the Flask application
+base_dir = os.path.abspath(os.path.dirname(__file__))
 
-# Folder locations for file handling
-UPLOAD_FOLDER = 'uploads'
-RESULT_FOLDER = 'results'
-STOPWORDS_FOLDER = 'stopwords'
+font_path = os.path.join(base_dir, 'static', 'fonts', 'NotoSansBengali.ttf')
+
+#load fonts into Matplotlib
+if os.path.exists(font_path):
+    font_manager.fontManager.addfont(font_path)
+    bengali_font = font_manager.FontProperties(fname=font_path)
+    print("Font added successfully!")
+else:
+    print("Font file not found at the specified path.")
+from matplotlib import rcParams
+rcParams['font.family'] = bengali_font.get_name()
+
+def allowed_file(filename):
+    """
+    Check if the file has an allowed extension.
+    Returns True if the file has an allowed extension, else False.
+    """
+    # List of allowed file extensions
+    ALLOWED_EXTENSIONS = {'txt'}
+    
+    # Check if the file has an extension and if it is in the allowed list
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['RESULT_FOLDER'] = RESULT_FOLDER
 app.config['STOPWORDS_FOLDER'] = STOPWORDS_FOLDER
@@ -132,6 +150,14 @@ def load_stopwords(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         return set(line.strip() for line in f.readlines())
 
+# Keep only Bengali words    
+def filter_non_bengali_words(tokens):
+    """
+    Retain only Bengali words in the token list.
+    """
+    bengali_pattern = re.compile(r'[\u0980-\u09FF]+')  # Matches Bengali characters
+    return [token for token in tokens if bengali_pattern.match(token)]
+
 # Function to remove most frequent words based on percentage
 def remove_most_frequent_words(all_tokens, percent_most_common):
     flat_tokens = [token for tokens in all_tokens for token in tokens]
@@ -156,6 +182,7 @@ def process_txt_files(file_paths, num_topics, iterations, chunk_size, ngram, alp
             text = f.read()
             text = remove_punctuation(text)
         tokens = word_tokenize(text)
+        tokens = filter_non_bengali_words(tokens)  
         tokens = [token for token in tokens if len(token) > 1]
         tokens = [word for word in tokens if word not in stop_words]
         if use_stemming:
@@ -163,6 +190,12 @@ def process_txt_files(file_paths, num_topics, iterations, chunk_size, ngram, alp
         all_tokens.append(tokens)
     if percent_most_common > 0:
         all_tokens = remove_most_frequent_words(all_tokens, percent_most_common)
+        return all_tokens
+ 
+def apply_ngrams(all_tokens, ngram):
+    """
+    Applies n-gram modeling (bigram or trigram) to tokenized texts.
+    """
     if ngram == 'bigram':
         bigram_mod = gensim.models.Phrases(all_tokens, min_count=2, threshold=50)
         tokens_ngrams = [bigram_mod[tokens] for tokens in all_tokens]
@@ -172,33 +205,71 @@ def process_txt_files(file_paths, num_topics, iterations, chunk_size, ngram, alp
         tokens_ngrams = [trigram_mod[bigram_mod[tokens]] for tokens in all_tokens]
     else:
         tokens_ngrams = all_tokens
-    id2word = corpora.Dictionary(tokens_ngrams)
+    return tokens_ngrams
+
+def build_lda_model(all_tokens, num_topics, chunk_size, iterations, update_every, alpha, per_word_topics, no_below, no_above, use_multicore):
+    """
+    Builds an LDA model from the tokenized texts.
+    """
+    id2word = corpora.Dictionary(all_tokens)
     id2word.filter_extremes(no_below=no_below, no_above=no_above)
-    corpus = [id2word.doc2bow(tokens) for tokens in tokens_ngrams]
-    lda_model = gensim.models.LdaMulticore(corpus=corpus, id2word=id2word, num_topics=num_topics, random_state=100,
-                                           chunksize=chunk_size, passes=iterations, alpha=alpha, per_word_topics=per_word_topics,
-                                           workers=os.cpu_count() - 1 if use_multicore else None)
-    vis = pyLDAvis.gensim.prepare(lda_model, corpus, id2word)
-    vis_path = os.path.join(RESULT_FOLDER, 'lda_visualization.html')
-    pyLDAvis.save_html(vis, vis_path)
-    topics = lda_model.show_topics(num_topics=num_topics, formatted=False)
-    topics_data = [{"Topic": i, "Words": [word[0] for word in topic]} for i, topic in topics]
-    txt_path = os.path.join(RESULT_FOLDER, 'topics.txt')
-    with open(txt_path, 'w', encoding='utf-8') as f:
-        for topic in topics_data:
-            f.write(f"Topic {topic['Topic']}:\n")
-            f.write(", ".join(topic['Words']) + "\n\n")
-    csv_path = os.path.join(RESULT_FOLDER, 'topics.csv')
-    with open(csv_path, 'w', encoding='utf-8', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['Topic', 'Words'])
-        for topic in topics_data:
-            writer.writerow([topic['Topic'], ", ".join(topic['Words'])])
-    return vis_path, txt_path, csv_path, lda_model, corpus, id2word, all_tokens
+    corpus = [id2word.doc2bow(tokens) for tokens in all_tokens]
 
+    logging.debug("Checking for empty documents in the corpus...")
+    for i, bow in enumerate(corpus):
+        if len(bow) == 0:
+            logging.debug(f"Document {i} has no tokens in the corpus. Tokens: {all_tokens[i]}")
+    logging.debug("Finished checking for empty documents.")
+   
 
-@app.route('/')
-def upload_file():
+    if use_multicore:
+        # Use LdaMulticore for parallel processing (no update_every parameter)
+        lda_model = gensim.models.LdaMulticore(
+            corpus=corpus,
+            id2word=id2word,
+            num_topics=num_topics,
+            random_state=100,
+            chunksize=chunk_size,
+            passes=iterations,
+            alpha=alpha,
+            per_word_topics=per_word_topics,
+            workers=os.cpu_count() - 1
+        )
+    else:
+        # Use LdaModel with update_every parameter
+        lda_model = gensim.models.LdaModel(
+            corpus=corpus,
+            id2word=id2word,
+            num_topics=num_topics,
+            random_state=100,
+            chunksize=chunk_size,
+            passes=iterations,
+            update_every=update_every,  # Use update_every here
+            alpha=alpha,
+            per_word_topics=per_word_topics,
+        )
+
+    # Debugging: Check topic distributions for each document
+    for i, bow in enumerate(corpus):
+        topic_distribution = lda_model.get_document_topics(bow, minimum_probability=0.0)
+        total_weight = sum(weight for _, weight in topic_distribution)
+        logging.debug(f"Document {i} topic distribution: {topic_distribution}, Total weight: {total_weight}")
+        if total_weight < 0.01:  # Example threshold for negligible distribution
+            logging.debug(f"Document {i} has negligible topic distribution. Tokens: {all_tokens[i]}")
+
+    return lda_model, corpus, id2word, all_tokens
+
+@app.route('/', methods=['GET', 'POST'])
+def upload_files():
+    if request.method == 'POST':
+        files = request.files.getlist("files")
+        if not files:
+            return "No files uploaded.", 400
+        for file in files:
+            if file and allowed_file(file.filename):
+                file_path = os.path.join(UPLOAD_FOLDER, secure_filename(file.filename))
+                file.save(file_path)
+        return "Files uploaded successfully.", 200
     return render_template('upload.html')
 
 @app.route('/process', methods=['POST'])
@@ -214,22 +285,18 @@ def process_files():
     num_topics = int(request.form.get('num_topics', 10))
     iterations = int(request.form.get('iterations', 40))
     chunk_size = int(request.form.get('chunk_size', 200))
+    update_every = int(request.form.get('update_every', 1))
     ngram = request.form.get('ngram', 'unigram')
     alpha = request.form.get('alpha', 'asymmetric')
     per_word_topics = request.form.get('per_word_topics', 'false').lower() == 'true'
     no_below = int(request.form.get('no_below', 1))
     no_above = float(request.form.get('no_above', 0.9))
 
-    # Check if stemming is enabled
     use_stemming = request.form.get('use_stemming', 'false').lower() == 'true'
-
-    # Check if multicore processing is enabled
     use_multicore = request.form.get('use_multicore', 'false').lower() == 'true'
-
-    # Get percentage of most common words to remove
     percent_most_common = float(request.form.get('percent_most_common', 0))
 
-    # Handle custom stopword file upload
+    # Handle custom stopwords file upload
     custom_stopwords_file = request.files.get('custom_stopwords')
     if custom_stopwords_file and custom_stopwords_file.filename.endswith('.txt'):
         custom_stopwords_path = os.path.join(STOPWORDS_FOLDER, custom_stopwords_file.filename)
@@ -237,10 +304,7 @@ def process_files():
         custom_stopwords = load_stopwords(custom_stopwords_path)
         stop_words.update(custom_stopwords)
 
-    # Check if stopwords removal is enabled
-    remove_stopwords = 'remove_stopwords' in request.form
-
-    # Save uploaded files and process them
+    # Save uploaded files
     file_paths = []
     for file in files:
         if not file.filename.endswith('.txt'):
@@ -250,41 +314,94 @@ def process_files():
         file.save(file_path)
         file_paths.append(file_path)
 
-    # Process files and generate LDA visualization
-    vis_path, txt_path, csv_path, lda_model, corpus, id2word, all_tokens = process_txt_files(
-        file_paths, num_topics, iterations, chunk_size, ngram, alpha, per_word_topics, no_below, no_above, use_stemming, use_multicore, percent_most_common
+    # Process text files to generate tokens
+    all_tokens = []
+    for file_path in file_paths:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            text = f.read()
+            text = remove_punctuation(text)
+        tokens = word_tokenize(text)
+        tokens = [token for token in tokens if len(token) > 1]
+        tokens = [word for word in tokens if word not in stop_words]
+        if use_stemming:
+            tokens = stem_tokens([tokens])[0]
+        all_tokens.append(tokens)
+
+    print(f"Tokens after preprocessing for document: {tokens}")
+
+    # Remove most frequent words
+    if percent_most_common > 0:
+        all_tokens = remove_most_frequent_words(all_tokens, percent_most_common)
+
+    # Apply n-grams
+    all_tokens = apply_ngrams(all_tokens, ngram)
+
+    # Build LDA model
+    lda_model, corpus, id2word, _ = build_lda_model(
+        all_tokens,
+        num_topics,
+        chunk_size,
+        iterations,
+        update_every,
+        alpha,
+        per_word_topics,
+        no_below,
+        no_above,
+        use_multicore
     )
 
-    # Remove stopwords if the checkbox was checked
-    if remove_stopwords:
-        all_tokens = [[token for token in tokens if token not in stop_words] for tokens in all_tokens]
+    coherence_model = CoherenceModel(model=lda_model, corpus=corpus, dictionary=id2word, texts=all_tokens, coherence='c_v')
+    coherence_score = coherence_model.get_coherence()
 
-    # Calculate coherence score
-    cm = CoherenceModel(model=lda_model, corpus=corpus, dictionary=id2word, texts=all_tokens, coherence='c_v')
-    coherence_score = cm.get_coherence()
+# Generate visualizations
+    visualizations = {}
+    try:
+        pyldavis_path = os.path.join(RESULT_FOLDER, "pyldavis.html")
+        pyldavis_output = pyLDAvis.gensim_models.prepare(lda_model, corpus, id2word)
+        pyLDAvis.save_html(pyldavis_output, pyldavis_path)
+        visualizations["pyldavis"] = ("PyLDAvis", "pyldavis.html")
 
-    # Pass the results and coherence score to the result template
-    return render_template('result.html', vis_path=vis_path, txt_path=txt_path, csv_path=csv_path, coherence_score=coherence_score)
+        bokeh_paths = create_bokeh_visualizations(lda_model, corpus, id2word)
+        visualizations["scatter"] = ("Scatter Plot", bokeh_paths.get("scatter"))
+        visualizations["bars"] = ("Bar Chart", bokeh_paths.get("bars"))
+
+        heatmap_path = create_heatmap(lda_model)
+        visualizations["heatmap"] = ("Heatmap", heatmap_path)
+
+        evolution_path = create_topic_evolution(lda_model, corpus)
+        visualizations["evolution"] = ("Topic Evolution", evolution_path)
+
+        chord_path = create_chord_diagram(lda_model)
+        visualizations["chord"] = ("Chord Diagram", chord_path)
+
+        clustering_path = create_hierarchical_clustering(lda_model)
+        visualizations["clustering"] = ("Hierarchical Clustering", clustering_path)
+
+        distribution_path = create_topic_distribution_per_document(lda_model, corpus)
+        visualizations["distribution"] = ("Topic Distribution", distribution_path)
+
+        coherence_chart_path = create_coherence_bar_chart(lda_model, all_tokens, id2word, output_dir=RESULT_FOLDER)
+        visualizations["coherence_chart"] = ("Topic Coherence Bar Chart", coherence_chart_path)
 
 
-@app.route('/results/lda_visualization.html')
-def serve_visualization():
-    return send_from_directory('results', 'lda_visualization.html')
 
-@app.route('/download/<file_type>', methods=['GET'])
-def download_topics(file_type):
-    file_map = {
-        'txt': 'topics.txt',
-        'csv': 'topics.csv'
-    }
-    if file_type not in file_map:
-        return "Invalid file type", 400
+                # Save topics to text and CSV
+        txt_path, csv_path = save_topics_to_files(lda_model, num_topics)
+        visualizations["topics_txt"] = ("Topics Text File", os.path.basename(txt_path))
+        visualizations["topics_csv"] = ("Topics CSV File", os.path.basename(csv_path))
 
-    file_path = os.path.join(RESULT_FOLDER, file_map[file_type])
-    if not os.path.exists(file_path):
-        return "File not found", 404
 
-    return send_file(file_path, as_attachment=True)
+
+        
+    except Exception as e:
+        logging.error(f"Error generating visualizations: {e}")
+        return "Error generating visualizations.", 500
+
+    return render_template('result.html', visualizations=visualizations)
+
+@app.route('/results/<path:filename>')
+def download_file(filename):
+    return send_from_directory(RESULT_FOLDER, filename)
 
 if __name__ == '__main__':
     app.run(debug=True)
