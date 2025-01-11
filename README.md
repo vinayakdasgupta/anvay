@@ -103,7 +103,7 @@ nltk.download('punkt')
 Start the Flask application:
 
 ```bash
-python app.py
+python anvay.py
 ```
 
 The application will run at `http://127.0.0.1:5000/`.
