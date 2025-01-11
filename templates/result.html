@@ -3,63 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LDA Topic Modeling Results</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom Styles -->
+    <title>Visualization Results</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropdownButton = document.getElementById('dropdownButton');
+            const dropdownContent = document.getElementById('dropdownContent');
+
+            dropdownButton.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent closing the dropdown when clicking the button
+                dropdownContent.style.display =
+                    dropdownContent.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', () => {
+                dropdownContent.style.display = 'none';
+            });
+        });
+    </script>
     <style>
         body {
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
-            background-image: url(static/images/clouds.svg);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            line-height: 1.6;
+            background-image: url(static/images/pixel.svg);
             background-size: 10%;
+            text-align: center;
         }
-        .card {
-            margin-top: 50px;
+
+        .header {
+            background-color: #e85470;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
         }
-        iframe {
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #e85470;
+            text-decoration: none;
+            border-radius: 5px;
             border: none;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .back-button:hover {
+            background-color: #d25979;
+        }
+
+        .header h1 {
+            margin: 0 auto;
+            font-size: 2.5em;
+        }
+
+        .dropdown {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+
+        .dropdown button {
+            background-color: #ffffff;
+            color: #e85470;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown button:hover {
+            background-color: #f9f9f9;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 1;
+            margin-top: 10px;
+            width: 200px;
+        }
+
+        .dropdown-content a {
+            color: #e85470;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f9f9f9;
+        }
+
+        .visualizations {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px;
+        }
+
+        .card {
+            width: 840px;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            resize: both;
+        }
+
+        .card.pyldavis {
+            width: 1740px;
+            height: 880px;
+            overflow: hidden; /* Disable scrolling for the card */
+        }
+
+        .iframe-pyldavis {
             width: 100%;
-            height: 80vh;
+            height: 100%;
+            border: none;
+            overflow: hidden; /* Disable scrolling for the iframe */
         }
-        .btn-custom {
-            background-color: #007bff;
-            color: white;
+
+        .iframe {
+            width: 100%;
+            height: 50vh;
+            border: none;
         }
-        .btn-custom:hover {
-            background-color: #0056b3;
+
+        .responsive-img {
+            width: 100%;
+            height: auto;
+        }
+
+        .footer {
+            background-color: #e85470; /* Use the header background color */
             color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+            color: #d25979; /* Hover effect similar to the back button */
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card shadow-lg">
-            <div class="card-header text-center bg-primary text-white">
-                <h3><b>anvay:</b>LDA Topic Modeling for Bengali Results</h3>
-                <p class="mb-0">Interactive visualization of the topics identified in your documents.</p>
-            </div>
-            <div class="card-body">
-                <div class="text-center mb-4">
-                    <p class="lead">Explore the LDA visualization below to analyze your results.</p>
-                    <p>Coherence Score: {{ coherence_score }}</p>
-                </div>
-                <!-- Visualization Display -->
-                <div class="border rounded p-3 mb-3 bg-light">
-                    <iframe src="{{ vis_path }}" title="LDA Visualization"></iframe>
-                <!-- Download Buttons -->
-                <div class="text-center">
-                    <div class="d-flex justify-content-center gap-3">
-                        <a href="{{ url_for('download_topics', file_type='txt') }}" class="btn btn-info btn-lg">Download TXT</a>
-                        <a href="{{ url_for('download_topics', file_type='csv') }}" class="btn btn-warning btn-lg">Download CSV</a>
-                        <a href="/" class="btn btn-custom btn-lg">Upload More Files</a>
-                        <a href="{{ vis_path }}" class="btn btn-success btn-lg" download>Download Visualization</a>
-                    </div>
-                </div>
+    <!-- Back button to go to the upload page -->
+    
+    <div class="header">
+        <a href="/" class="back-button">&larr; Back to Upload Page</a>
+        <h1>Visualization Results</h1>
+        <div class="dropdown">
+            <button id="dropdownButton">Download Options</button>
+            <div id="dropdownContent" class="dropdown-content">
+                {% if visualizations['topics_txt'] %}
+                    <a href="{{ url_for('download_file', filename=visualizations['topics_txt'][1]) }}" download>{{ visualizations['topics_txt'][0] }}</a>
+                {% endif %}
+                {% if visualizations['topics_csv'] %}
+                    <a href="{{ url_for('download_file', filename=visualizations['topics_csv'][1]) }}" download>{{ visualizations['topics_csv'][0] }}</a>
+                {% endif %}
             </div>
         </div>
     </div>
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <div class="visualizations">
+        {% for key, path in visualizations.items() %}
+            <div class="card {% if 'pyldavis' in key.lower() %}pyldavis{% endif %}">
+                <h3>{{ key | capitalize }}</h3>
+                {% if path[1].endswith('.html') %}
+                    <iframe src="{{ url_for('download_file', filename=path[1]) }}" class="{% if 'pyldavis' in key.lower() %}iframe-pyldavis{% else %}iframe{% endif %}"></iframe>
+                {% elif path[1].endswith('.png') %}
+                    <img src="{{ url_for('download_file', filename=path[1]) }}" alt="{{ key }}" class="responsive-img">
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
 </body>
+<footer class="footer">
+    <p>&copy; 2025 Anvay: Bengali LDA Topic Modeling Dashboard. All rights reserved.</p>
+</footer>
 </html>
