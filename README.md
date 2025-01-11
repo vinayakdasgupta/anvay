@@ -171,6 +171,7 @@ Edit the noun and verb root/suffix files in the `stopwords/` folder:
 - Integrate a more robust POS tagger for Bengali.
 - Improve the stemming process with a hybrid approach (rule-based + statistical methods).
 - Improve memory handling.
+- Create interactive JS visualizations for static images.
 
 ## Known Issues
 
