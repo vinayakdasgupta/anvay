@@ -191,18 +191,21 @@
                 {% endif %}
             </div>
         </div>
+        </div>
     </div>
 
     <div class="visualizations">
         {% for key, path in visualizations.items() %}
-            <div class="card {% if 'pyldavis' in key.lower() %}pyldavis{% endif %}">
-                <h3>{{ key | capitalize }}</h3>
-                {% if path[1].endswith('.html') %}
-                    <iframe src="{{ url_for('download_file', filename=path[1]) }}" class="{% if 'pyldavis' in key.lower() %}iframe-pyldavis{% else %}iframe{% endif %}"></iframe>
-                {% elif path[1].endswith('.png') %}
-                    <img src="{{ url_for('download_file', filename=path[1]) }}" alt="{{ key }}" class="responsive-img">
-                {% endif %}
-            </div>
+            {% if key not in ['topics_txt', 'topics_csv'] %}
+                <div class="card {% if 'pyldavis' in key.lower() %}pyldavis{% endif %}">
+                    <h3>{{ key | capitalize }}</h3>
+                    {% if path[1].endswith('.html') %}
+                        <iframe src="{{ url_for('download_file', filename=path[1]) }}" class="{% if 'pyldavis' in key.lower() %}iframe-pyldavis{% else %}iframe{% endif %}"></iframe>
+                    {% elif path[1].endswith('.png') %}
+                        <img src="{{ url_for('download_file', filename=path[1]) }}" alt="{{ key }}" class="responsive-img">
+                    {% endif %}
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 </body>
