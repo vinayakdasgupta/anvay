@@ -129,15 +129,50 @@ def get_word_pos(word, verb_suffixes):
 def remove_suffix(word, suffix):
     return word[:-len(suffix)] if word.endswith(suffix) else word
 
-def bengali_stemmer(word, noun_roots, verb_roots, noun_suffixes, verb_suffixes):
-    wpos = get_word_pos(word, verb_suffixes)
-    roots = noun_roots if wpos == "NOUN" else verb_roots
-    suffixes = noun_suffixes if wpos == "NOUN" else verb_suffixes
-    if word in roots: return word
-    for suffix in suffixes:
-        root = remove_suffix(word, suffix)
-        if root in roots: return root
-    return word
+
+#def bengali_stemmer(word, noun_roots, verb_roots, noun_suffixes, verb_suffixes):
+#    wpos = get_word_pos(word, verb_suffixes)
+#    roots = noun_roots if wpos == "NOUN" else verb_roots
+#    suffixes = noun_suffixes if wpos == "NOUN" else verb_suffixes
+#    if word in roots: return word
+#    for suffix in suffixes:
+#        root = remove_suffix(word, suffix)
+#        if root in roots: return root
+#    return word
+
+
+
+
+# ------------------------------------------------------------------------------
+# Bengali Dictionary-Based Stemmer
+#
+# This function uses lemma mappings from the BNLP Project:
+# https://github.com/bedanta79/bnlp
+#
+# We gratefully acknowledge the authors of BNLP for making their resources
+# publicly available. The stemmer below is a lightweight dictionary-based
+# lookup that replaces an earlier rule-based stemmer in Anvay.
+#
+# Citation (as recommended by BNLP):
+# [Insert their citation block here verbatim]
+# ------------------------------------------------------------------------------
+
+import os
+import json
+# Load lemma dictionary once, from /data/
+
+DICT_PATH = os.path.join(os.path.dirname(__file__), "data", "bengali_lemma_dict.json")
+with open(DICT_PATH, encoding='utf-8') as f:
+    lemma_dict = json.load(f)
+
+
+def bengali_stemmer(word, noun_roots=None, verb_roots=None, noun_suffixes=None, verb_suffixes=None):
+    """
+    Dictionary-based stemmer: returns lemma from precompiled mapping.
+    Arguments are preserved for backward compatibility.
+    """
+    return lemma_dict.get(word, word)
+
 
 def stem_tokens(tokens_list, noun_roots, verb_roots, noun_suffixes, verb_suffixes):
     return [[bengali_stemmer(token, noun_roots, verb_roots, noun_suffixes, verb_suffixes) for token in tokens]
