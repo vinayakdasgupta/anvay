@@ -1,0 +1,725 @@
+/* anvay.css – Core styles for the Anvay dashboard */
+
+/* === Root Theme Variables === */
+/* === Root Theme Variables === */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #5c5c5c;
+  --accent: #0D85D8;
+  --accent-secondary: #ffcc00;
+  --accent-outline: rgba(13, 133, 216, 0.35);
+  --card-bg: #ffffff;
+  --border-color: rgba(0, 0, 0, 0.03);
+  --font-family: 'Roboto', sans-serif;
+  --icon-color: #888;
+  --logo-grey: #7a7a7a;
+  --sticky-bg: #ffffff;
+}
+
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #f1f1f1;
+  --card-bg: #1e1e1e;
+  --border-color: rgba(255, 255, 255, 0.03);
+  --icon-color: #aaa;
+  --accent-secondary: #ffcc00;
+  --accent-outline: rgba(13, 133, 216, 0.45);
+  --logo-grey: #7a7a7a;
+  --sticky-bg: #121212;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.7;
+}
+
+/* === Accent Secondary Utility === */
+.text-accent-secondary {
+  color: var(--accent-secondary);
+}
+
+.badge-accent-secondary {
+  background-color: var(--accent-secondary);
+  color: #000;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* === Advanced Options Toggle (upload.html) === */
+ .advanced-arrow {
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--icon-color);
+}
+
+.advanced-arrow:hover {
+  color: var(--accent-secondary);
+}
+
+.accent-hover {
+  transition: color 0.3s ease;
+}
+
+.accent-hover:hover {
+  color: var(--accent-secondary);
+}
+
+.advanced-toggle {
+  text-decoration: none; /* disable default underline */
+}
+
+.toggle-label {
+  display: inline-block;
+  font-size: 1.5rem;
+  color: var(--accent);
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.advanced-toggle:hover .toggle-label {
+  color: var(--accent-secondary);
+  border-bottom: 2px solid var(--accent-secondary);
+}
+
+/* === Analyze Button Yellow Hover === */
+.btn-accent {
+  background-color: var(--accent);
+  color: white !important;
+  font-weight: 500;
+  border: 2px solid transparent;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+
+.btn-accent:hover {
+  background-color: #0b6eb4;
+  color: white !important;
+  box-shadow: 0 0 0 3px var(--accent-outline); /* Soft blue glow */
+  border-color: var(--accent); /* Matches base color */
+}
+
+/* === Navigation === */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-color);
+  padding: 1rem 2rem;
+  border-bottom: 4px solid var(--accent-secondary);
+}
+
+/* === Logo Styling with Hover === */
+.nav-logo a {
+text-decoration: none;
+color: #7a7a7a;
+display: flex;
+align-items: baseline;
+font-family: 'IBM Plex Mono', monospace;
+font-weight: 700;
+font-style: italic;
+font-size: 1.5rem;
+gap: 0.5rem;
+line-height: 1;
+transition: color 0.3s ease;
+}
+
+.nav-logo span {
+background-color: var(--accent);
+width: 10px;
+height: 10px;
+border-radius: 50%;
+margin-top: 0.25rem;
+flex-shrink: 0;
+transition: background-color 0.3s ease;
+}
+
+.nav-logo a:hover {
+color: var(--accent-secondary);
+}
+
+.nav-logo a:hover span {
+background-color: var(--accent-secondary);
+}
+
+/* === Advanced Toggle Arrow Fix === */
+.advanced-toggle {
+text-decoration: none;
+}
+
+.toggle-label {
+display: inline-block;
+font-size: 1.5rem;
+color: var(--accent);
+border-bottom: 2px solid transparent;
+transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.advanced-toggle:hover .toggle-label {
+color: var(--accent-secondary);
+border-bottom: 2px solid var(--accent-secondary);
+}
+
+.nav-links a,
+.nav-links button {
+  margin-left: 20px;
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: 500;
+  background: none;
+  cursor: pointer;
+}
+
+.nav-links a:hover,
+.nav-links button:hover {
+  color: var(--accent);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.nav-links a:hover {
+  border-color: var(--accent);
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  padding: 0.4rem;
+  cursor: pointer;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.toggle-btn:hover svg {
+  stroke: #0b6eb4;
+}
+
+
+
+
+/* === Forms and Sections === */
+.form-section {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 1000px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+h2, h3 {
+  color: var(--accent);
+}
+
+.btn-accent {
+  background-color: var(--accent);
+  color: white;
+  font-weight: 500;
+}
+
+.btn-accent:hover {
+  background-color: #0b6eb4;
+}
+
+.form-text {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem 2rem;
+  background-color: var(--bg-color);
+  border-top: 1px solid var(--border-color);
+  font-size: 0.9rem;
+}
+
+.alert-dismissible .btn-close {
+  filter: invert(0.5);
+}
+
+/* === Dark mode slider === */
+[data-theme="dark"] input[type="range"] {
+  background-color: #444;
+  background-image: linear-gradient(to right, var(--accent) 0%, var(--accent) 0%, #444 0%, #444 100%);
+}
+
+/* === Responsive form control margins === */
+.form-section .row > [class^="col-"] {
+  margin-bottom: 1.5rem;
+}
+
+/* === Accent Text Link === */
+.text-accent {
+  color: var(--accent);
+  text-decoration: none;
+}
+.text-accent:hover {
+  text-decoration: underline;
+  color: #0b6eb4;
+}
+
+/* === Tabs Styling === */
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tabs button {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 0.75rem 1.25rem;
+  font-weight: 500;
+  color: var(--text-color);
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.tabs button:hover {
+  border-color: var(--accent-outline);
+  color: var(--accent);
+}
+
+.tabs button.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Only target tab-content elements that are direct children of the tabs container */
+.tabs + .tab-content {
+  display: none;
+  margin-top: 2rem;
+}
+
+.tabs + .tab-content.active {
+  display: block;
+}
+
+
+
+.card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border-color);
+  min-height: 500px;
+}
+.card .card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--logo-grey);
+  margin-bottom: 0.5rem;
+}
+.card .d-flex.justify-content-between {
+  margin-bottom: 0.5rem;
+  align-items: center;
+}
+
+.chart-frame {
+  height: 100%;
+}
+
+/* === Report Styling === */
+.report-section {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 1000px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.report-section h4 {
+  color: var(--logo-grey);
+  font-weight: 500;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+
+.report-section h6 {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.report-section table {
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+.report-section .table-sm > :not(caption) > * > * {
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.report-section .table-sm thead th {
+  background-color: transparent;
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.report-section .list-group-item {
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+.collapsible-card {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+
+.collapsible-toggle {
+  width: 100%;
+  background: var(--card-bg);
+  color: var(--text-color);
+  font-weight: 500;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+  font-size: 1rem;
+}
+
+.collapsible-toggle::after {
+  content: "+";
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: var(--icon-color);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.collapsible-card.active .collapsible-toggle::after {
+  content: "\2212"; /* minus sign */
+  transform: translateY(-50%);
+}
+
+.collapsible-content {
+  display: none;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.collapsible-card.active .collapsible-content {
+  display: block;
+}
+
+.upload-heading {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--logo-grey);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.25px;
+}
+
+.upload-subheading {
+  font-size: 0.95rem;
+  color: #666;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.footer-links a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.doc-section-title {
+  color: var(--logo-grey);
+  font-weight: 500;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.card.question-reveal {
+  background-color: var(--card-bg);
+  color: var(--logo-grey);
+  transition: background-color 0.4s ease, color 0.4s ease;
+  cursor: pointer;
+}
+
+.card.question-reveal {
+  height: 200px;
+  padding: 1rem;
+  background-color: var(--card-bg);
+  color: var(--logo-grey);
+  transition: background-color 0.4s ease, color 0.4s ease;
+  cursor: pointer;
+}
+
+.card.question-reveal .card-body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.card.question-reveal .card-title {
+  margin-bottom: 0.5rem;
+}
+
+.card.question-reveal .card-question,
+.card.question-reveal .card-answer {
+  color: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.card.question-reveal .card-answer {
+  display: none;
+}
+
+.card.question-reveal:hover .card-question {
+  display: none;
+}
+
+.card.question-reveal:hover .card-answer {
+  display: block;
+}
+
+.card.question-reveal:hover {
+  background-color: var(--accent);
+  color: white;
+}
+
+.card.question-reveal:hover .card-title {
+  color: white;
+}
+
+.form-section .tab-content {
+  font-size: 1.05rem;
+}
+.form-section h4.doc-section-title {
+  font-size: 1.35rem;
+}
+.form-section .card-title {
+  font-size: 2rem;
+}
+.form-section .card .small {
+  font-size: 1.35rem;
+}
+
+ /* --- LDA Game Styles --- */
+
+.topic-word {
+color: var(--accent);
+font-weight: 500;
+}
+
+.stopword {
+color: #999;
+font-style: italic;
+opacity: 0.7;
+}
+
+#sentence span {
+font-size: 0.95rem;
+}
+
+#languageToggle {
+color: #333;
+border-color: #333;
+}
+
+#languageToggle:hover {
+background-color: #ffcc00;
+border-color: #ffcc00;
+color: #fff;
+}
+
+.usage-pane {
+display: none;
+opacity: 0;
+transition: opacity 0.4s ease;
+}
+
+.usage-pane.active {
+display: block;
+opacity: 1;
+}
+
+#usage .nav-pills .nav-link {
+color: var(--text-color);
+font-weight: 500;
+border-radius: 0;
+}
+
+#usage .nav-pills .nav-link.active {
+background-color: var(--accent);
+color: white;
+}
+
+pre {
+white-space: pre-wrap;
+word-break: break-word;
+}
+
+.card pre {
+font-family: 'Roboto', sans-serif !important;
+font-size: 0.875rem;
+white-space: pre-wrap;
+word-break: break-word;
+line-height: 1.4;
+}
+
+#corpusToggle:hover {
+background-color: #ffcc00;
+border-color: #ffcc00;
+color: white;
+}
+
+.corpus-note {
+font-size: 1.1rem;
+line-height: 1.5;
+font-family: 'Roboto', sans-serif;
+}
+
+#glossarySearch {
+max-width: 400px;
+font-size: 0.95rem;
+}
+
+.fixed-height-section {
+max-height: 400px;
+overflow-y: auto;
+position: relative;
+padding-right: 1rem;
+}
+
+.scroll-section {
+max-height: 400px;
+overflow-y: auto;
+padding-right: 1rem;
+}
+
+/* Make this part sticky INSIDE scroll-section if needed */
+.sticky-header {
+position: sticky;
+top: 0;
+background-color: var(--bg-color);
+z-index: 10;
+padding: 0.5rem 0;
+border-bottom: 1px solid #ddd;
+}
+
+
+
+
+/* Prevent wide tables from overflowing */
+.scrollable-table {
+overflow-x: auto;
+max-width: 100%;
+padding-bottom: 1rem;
+}
+
+/* Optional: make table cells wrap nicely */
+.scrollable-table table {
+table-layout: fixed;
+word-wrap: break-word;
+}
+
+/* === Docs-specific Tab Styling === */
+.form-section .tabs {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.form-section .tabs button {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 0.75rem 1.25rem;
+  font-weight: 500;
+  color: var(--text-color);
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.form-section .tabs button:hover {
+  border-color: var(--accent-outline);
+  color: var(--accent);
+}
+
+.form-section .tabs button.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Only target tab-content elements that are direct children of form-section */
+.form-section > .tab-content {
+  display: none;
+  margin-top: 2rem;
+}
+
+.form-section > .tab-content.active {
+  display: block;
+}
+
+#visualizations,
+#report {
+  display: none;
+  margin-top: 2rem;
+}
+
+#visualizations.active,
+#report.active {
+  display: block;
+}
+
+.upload-heading { /*this handles all page titles, badly names*/
+  font-family: 'Anton SC', sans-serif;
+  font-weight: 400;
+  font-size: 1.8rem;
+  letter-spacing: 0.5px;
+
+} 

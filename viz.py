@@ -1,248 +1,261 @@
-# -*- coding: utf-8 -*-
+# viz.py (updated with Plotly and HTML embedding for Flask integration)
+
 import os
-from bokeh.plotting import figure, output_file, save
-from bokeh.models import ColumnDataSource, HoverTool
-from bokeh.layouts import column
-from bokeh.models.graphs import from_networkx
-from sklearn.decomposition import PCA
-from sklearn.cluster import AgglomerativeClustering
 import numpy as np
-import seaborn as sns
-import networkx as nx
 import pandas as pd
-import matplotlib.pyplot as plt
-import pyLDAvis
-import pyLDAvis.gensim_models
-from matplotlib import rcParams
-from matplotlib import font_manager
-from gensim.models import CoherenceModel
+import networkx as nx
+import plotly.express as px
+import plotly.graph_objects as go
+import plotly.io as pio
+from sklearn.decomposition import PCA
+from scipy.cluster.hierarchy import linkage, dendrogram
+from sklearn.cluster import AgglomerativeClustering
+from collections import Counter
+import re
+from utils import (
+    custom_bengali_tokenize,
+    split_sentences_bengali
+)
 
+# Utility to export HTML divs (no full HTML)
+def plot_to_div(fig):
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
 
-# Get the base directory of the Flask application
-base_dir = os.path.abspath(os.path.dirname(__file__))
-
-font_path = os.path.join(base_dir, 'static', 'fonts', 'NotoSansBengali.ttf')
-
-#load fonts into Matplotlib
-if os.path.exists(font_path):
-    font_manager.fontManager.addfont(font_path)
-    bengali_font = font_manager.FontProperties(fname=font_path)
-    print("Font added successfully!")
-else:
-    print("Font file not found at the specified path.")
-from matplotlib import rcParams
-rcParams['font.family'] = bengali_font.get_name()
-
-def create_bokeh_visualizations(lda_model, corpus, id2word, output_dir="results"):
-    """
-    Generate custom LDA visualizations using Bokeh.
-    """
-    os.makedirs(output_dir, exist_ok=True)
-
-    # 1. Generate a scatter plot for topics using PCA
-    topic_term_matrix = lda_model.get_topics()  # Shape: (num_topics, num_words)
+def create_interactive_scatter(lda_model):
+    topic_term_matrix = lda_model.get_topics()
     pca = PCA(n_components=2)
-    topic_coords = pca.fit_transform(topic_term_matrix)  # Reduce to 2D
+    coords = pca.fit_transform(topic_term_matrix)
 
-    scatter_source = ColumnDataSource(data={
-        "x": topic_coords[:, 0],
-        "y": topic_coords[:, 1],
-        "topic": [f"Topic {i}" for i in range(lda_model.num_topics)],
-        "keywords": ["\n".join([word for word, _ in lda_model.show_topic(i, topn=10)]) for i in range(lda_model.num_topics)],
+    fig = px.scatter(
+        x=coords[:, 0],
+        y=coords[:, 1],
+        text=[f"Topic {i}" for i in range(len(coords))],
+        hover_name=[f"Topic {i}" for i in range(len(coords))],
+        labels={'x': 'PCA 1', 'y': 'PCA 2'}
+    )
+    fig.update_traces(marker=dict(size=12, color='indianred'), textposition='top center')
+    fig.update_layout(margin=dict(l=20, r=20, t=60, b=20))
+    return plot_to_div(fig)
+
+def create_interactive_bar_charts(lda_model):
+    data = []
+    for topic_id in range(lda_model.num_topics):
+        topic_words = lda_model.show_topic(topic_id, topn=10)
+        for word, weight in topic_words:
+            data.append({"Topic": f"Topic {topic_id}", "Word": word, "Weight": weight})
+
+    df = pd.DataFrame(data)
+    fig = px.bar(df, x='Weight', y='Word', color='Topic', orientation='h', height=600)
+    fig.update_layout(yaxis={'categoryorder': 'total ascending'})
+    return plot_to_div(fig)
+
+def create_interactive_heatmap(lda_model):
+    data = []
+    for topic_id in range(lda_model.num_topics):
+        for word, weight in lda_model.show_topic(topic_id, topn=10):
+            data.append({"Topic": f"Topic {topic_id}", "Word": word, "Weight": weight})
+
+    df = pd.DataFrame(data)
+    pivot_df = df.pivot(index="Word", columns="Topic", values="Weight").fillna(0)
+    fig = px.imshow(pivot_df, labels=dict(x="Topic", y="Word", color="Weight"))
+    return plot_to_div(fig)
+
+def create_interactive_topic_evolution(lda_model, corpus):
+    topic_matrix = np.zeros((len(corpus), lda_model.num_topics))
+    for i, doc in enumerate(corpus):
+        for topic_id, weight in lda_model.get_document_topics(doc):
+            topic_matrix[i, topic_id] = weight
+
+    df = pd.DataFrame(topic_matrix, columns=[f"Topic {i}" for i in range(lda_model.num_topics)])
+    df["Time"] = range(len(df))
+    fig = px.line(df, x="Time", y=df.columns[:-1])
+    return plot_to_div(fig)
+
+def create_interactive_topic_distribution(lda_model, corpus):
+    data = []
+    for doc_id, doc in enumerate(corpus):
+        for topic_id, weight in lda_model.get_document_topics(doc):
+            data.append({"Document": f"Doc {doc_id}", "Topic": f"Topic {topic_id}", "Weight": weight})
+
+    df = pd.DataFrame(data)
+    fig = px.bar(df, x="Document", y="Weight", color="Topic", height=600)
+    return plot_to_div(fig)
+
+def create_interactive_clustering(lda_model):
+    topic_term_matrix = lda_model.get_topics()
+    Z = linkage(topic_term_matrix, method='ward')
+    dendro = dendrogram(Z, no_plot=True)
+
+    labels = [f"Topic {i}" for i in dendro['leaves']]
+    icoord = np.array(dendro['icoord'])
+    dcoord = np.array(dendro['dcoord'])
+
+    fig = go.Figure()
+    for i in range(len(icoord)):
+        x = icoord[i]
+        y = dcoord[i]
+        fig.add_trace(go.Scatter(x=x, y=y, mode='lines', line=dict(color='black')))
+
+    fig.update_layout(
+        xaxis=dict(tickvals=[5 + 10 * i for i in range(len(labels))], ticktext=labels),
+        yaxis_title='Distance',
+        plot_bgcolor='white', paper_bgcolor='white', font=dict(color='black'),
+        margin=dict(l=20, r=20, t=60, b=20)
+    )
+    return plot_to_div(fig)
+
+def create_topic_prevalence_pie(lda_model, corpus):
+    topic_totals = [0.0] * lda_model.num_topics
+    for doc in corpus:
+        for topic_id, weight in lda_model.get_document_topics(doc):
+            topic_totals[topic_id] += weight
+
+    df = pd.DataFrame({
+        "Topic": [f"Topic {i}" for i in range(lda_model.num_topics)],
+        "Weight": topic_totals
     })
 
-    scatter_plot = figure(title="Topic Scatter Plot", tools="pan,box_zoom,reset,hover,save",
-                          x_axis_label="PCA Component 1", y_axis_label="PCA Component 2", width=800, height=400)
-    scatter_plot.circle("x", "y", size=10, source=scatter_source, color="navy", alpha=0.6)
-    hover = scatter_plot.select_one(HoverTool)
-    hover.tooltips = [("Topic", "@topic"), ("Top Words", "@keywords")]
+    fig = px.pie(df, names="Topic", values="Weight")
+    return plot_to_div(fig)
 
-    # Save the scatter plot
-    scatter_path = os.path.join(output_dir, "topic_scatter.html")
-    output_file(scatter_path)
-    save(scatter_plot)
-
-    # 2. Generate bar charts for topic-term distributions
-    bar_plots = []
-
-    for topic_idx in range(lda_model.num_topics):
-        topic_words = lda_model.show_topic(topic_idx, topn=10)
-        words = [word for word, _ in topic_words]
-        weights = [weight for _, weight in topic_words]
-
-        bar_source = ColumnDataSource(data={"words": words, "weights": weights})
-
-        # Create horizontal bar plot (hbar) instead of vertical bar plot (vbar)
-        bar_plot = figure(y_range=words, title=f"Topic {topic_idx} - Top Words", tools="pan,box_zoom,reset,save",
-                      width=800, height=400)
-        bar_plot.hbar(y="words", height=0.4, right="weights", source=bar_source, color="teal", alpha=0.7)
-    
-        # Customize axes labels
-        bar_plot.xaxis.axis_label = "Weight"
-        bar_plot.yaxis.axis_label = "Words"
-
-        bar_plots.append(bar_plot)
-
-    # Save bar charts as a single file
-    bar_chart_path = os.path.join(output_dir, "topic_bars.html")
-    output_file(bar_chart_path)
-    save(column(*bar_plots))
-
-    return {
-        "scatter": "topic_scatter.html",
-        "bars": "topic_bars.html",
-    }
-
-# Generate heatmap visualization
-def create_heatmap(lda_model, output_dir="results"):
-    
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Prepare data for the heatmap
-    data = []
-    for topic_idx in range(lda_model.num_topics):
-        topic_words = lda_model.show_topic(topic_idx, topn=10)
-        for word, weight in topic_words:
-            data.append({"Topic": f"Topic {topic_idx + 1}", "Word": word, "Weight": weight})
-
-    df = pd.DataFrame(data)
-
-    # Pivot the DataFrame correctly for the heatmap
-    heatmap_data = df.pivot(index="Word", columns="Topic", values="Weight")
-    
-    # Generate the heatmap
-    plt.figure(figsize=(8, 5))
-    sns.heatmap(heatmap_data, cmap="YlGnBu", annot=True, fmt=".2f", cbar_kws={'label': 'Weight'})
-    plt.title("Topic-Word Heatmap")
-    plt.ylabel("Words")
-    plt.xlabel("Topics")
-
-    # Save the heatmap
-    heatmap_path = os.path.join(output_dir, "heatmap.png")
-    plt.savefig(heatmap_path, dpi=300, bbox_inches='tight')
-    plt.close()
-    return "heatmap.png"
-
-# Generate topic evolution over time
-def create_topic_evolution(lda_model, corpus, output_dir="results"):
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Compute topic distributions over documents
-    topic_distributions = [lda_model.get_document_topics(doc) for doc in corpus]
-    
-    # Aggregate over time (assume one file represents one time period)
-    topic_trends = np.zeros((len(topic_distributions), lda_model.num_topics))
-    for idx, doc_topics in enumerate(topic_distributions):
-        for topic_id, weight in doc_topics:
-            topic_trends[idx, topic_id] = weight
-
-    # Plot topic evolution
-    plt.figure(figsize=(8, 5))
-    for topic_idx in range(lda_model.num_topics):
-        plt.plot(topic_trends[:, topic_idx], label=f"Topic {topic_idx}")
-    plt.title("Topic Evolution Over Time")
-    plt.xlabel("Time")
-    plt.ylabel("Topic Proportion")
-    plt.legend(loc="upper right")
-    evolution_path = os.path.join(output_dir, "topic_evolution.png")
-    plt.savefig(evolution_path)
-    plt.close()
-    return "topic_evolution.png"
-
-# Generate chord diagram (using Bokeh)
-def create_chord_diagram(lda_model, output_dir="results"):
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Extract pairwise similarities between topics
-    topic_term_matrix = lda_model.get_topics()
-    similarity_matrix = np.dot(topic_term_matrix, topic_term_matrix.T)
-
-    # Create graph for Bokeh visualization
+def create_topic_word_network(lda_model, topn=10):
     G = nx.Graph()
-    for i in range(len(similarity_matrix)):
-        G.add_node(f"Topic {i}")
-    for i in range(len(similarity_matrix)):
-        for j in range(i + 1, len(similarity_matrix)):
-            G.add_edge(f"Topic {i}", f"Topic {j}", weight=similarity_matrix[i, j])
+    for topic_id in range(lda_model.num_topics):
+        topic_label = f"Topic {topic_id}"
+        G.add_node(topic_label, type='topic')
+        for word, weight in lda_model.show_topic(topic_id, topn=topn):
+            G.add_node(word, type='word')
+            G.add_edge(topic_label, word, weight=weight)
 
-    plot = figure(title="Chord Diagram", width=550, height=500)
-    network = from_networkx(G, nx.spring_layout, scale=2, center=(0, 0))
-    plot.renderers.append(network)
-    chord_path = os.path.join(output_dir, "chord_diagram.html")
-    output_file(chord_path)
-    save(plot)
-    return "chord_diagram.html"
+    pos = nx.spring_layout(G, k=0.5, iterations=50, seed=42)
+    edge_x, edge_y = [], []
+    for edge in G.edges():
+        x0, y0 = pos[edge[0]]
+        x1, y1 = pos[edge[1]]
+        edge_x += [x0, x1, None]
+        edge_y += [y0, y1, None]
 
-# Generate hierarchical clustering of topics
-def create_hierarchical_clustering(lda_model, output_dir="results"):
-    os.makedirs(output_dir, exist_ok=True)
+    edge_trace = go.Scatter(x=edge_x, y=edge_y, line=dict(width=0.5, color='#888'), hoverinfo='none', mode='lines')
 
-    # Extract topic-word distributions
-    topic_term_matrix = lda_model.get_topics()
+    node_x, node_y, node_text, node_color = [], [], [], []
+    for node in G.nodes():
+        x, y = pos[node]
+        node_x.append(x)
+        node_y.append(y)
+        node_text.append(node)
+        node_color.append('#0D85D8' if G.nodes[node]['type'] == 'topic' else '#888888')
 
-    # Perform hierarchical clustering
-    clustering = AgglomerativeClustering(n_clusters=None, distance_threshold=0)
-    clustering.fit(topic_term_matrix)
+    node_trace = go.Scatter(
+        x=node_x, y=node_y, mode='markers+text', hoverinfo='text',
+        marker=dict(size=12, color=node_color), text=node_text, textposition="bottom center")
 
-    # Plot dendrogram
-    from scipy.cluster.hierarchy import dendrogram
-    from scipy.cluster.hierarchy import linkage
+    fig = go.Figure(data=[edge_trace, node_trace], layout=go.Layout(
+        showlegend=False, hovermode='closest',
+        margin=dict(b=20, l=5, r=5, t=40), paper_bgcolor='white', plot_bgcolor='white'))
 
-    linkage_matrix = linkage(topic_term_matrix, method='ward')
-    plt.figure(figsize=(8, 5))
-    dendrogram(linkage_matrix, labels=[f"Topic {i}" for i in range(lda_model.num_topics)])
-    plt.title("Hierarchical Clustering of Topics")
-    plt.xlabel("Topic")
-    plt.ylabel("Distance")
-    clustering_path = os.path.join(output_dir, "hierarchical_clustering.png")
-    plt.savefig(clustering_path)
-    plt.close()
-    return "hierarchical_clustering.png"
+    return plot_to_div(fig)
 
-# Generate topic distribution per document
-def create_topic_distribution_per_document(lda_model, corpus, output_dir="results"):
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Compute topic distributions
-    topic_distributions = [lda_model.get_document_topics(doc) for doc in corpus]
-    data = []
-    for doc_id, doc_topics in enumerate(topic_distributions):
-        for topic_id, weight in doc_topics:
-            data.append({"Document": doc_id, "Topic": topic_id, "Weight": weight})
-
-    df = pd.DataFrame(data)
-    plt.figure(figsize=(8, 5))
-    sns.barplot(data=df, x="Document", y="Weight", hue="Topic", dodge=True)
-    plt.title("Topic Distribution Per Document")
-    distribution_path = os.path.join(output_dir, "topic_distribution.png")
-    plt.savefig(distribution_path)
-    plt.close()
-    return "topic_distribution.png"
-
-
-
-
-def create_coherence_bar_chart(lda_model, corpus, id2word, output_dir="results"):
+def prepare_topic_doc_drilldown(lda_model, corpus, doc_names=None, raw_texts=None, min_weight=0.2):
     """
-    Generate a bar chart for topic coherence scores.
+    Returns up to 5 unique paragraphs per topic.
+    Each entry includes real doc label, paragraph text, and topic weight.
     """
-    os.makedirs(output_dir, exist_ok=True)
+    from collections import defaultdict
 
-    # Compute coherence scores
-    coherence_model = CoherenceModel(model=lda_model, texts=corpus, dictionary=id2word, coherence='c_v')
-    coherence_scores = coherence_model.get_coherence_per_topic()
+    topic_to_paragraphs = defaultdict(list)
+    seen = defaultdict(set)
 
-    if not coherence_scores:
-        raise ValueError("Coherence scores are empty. Ensure valid topics are generated.")
+    for doc_id, bow in enumerate(corpus):
+        topic_dist = lda_model.get_document_topics(bow)
+        for topic_id, weight in topic_dist:
+            if weight < min_weight:
+                continue
 
-    # Plot the coherence scores
-    plt.figure(figsize=(8, 5))
-    plt.bar(range(len(coherence_scores)), coherence_scores, color="skyblue", alpha=0.7)
-    plt.xlabel("Topics")
-    plt.ylabel("Coherence Score")
-    plt.title("Topic Coherence Scores")
-    coherence_path = os.path.join(output_dir, "coherence_bar_chart.png")
-    plt.savefig(coherence_path)
-    plt.close()
-    return "coherence_bar_chart.png"
+            paragraph_text = raw_texts[doc_id].strip()
+            paragraph_id = f"{doc_names[doc_id]}" if doc_names else f"Doc {doc_id}"
 
+            # Avoid repeating same paragraph under same topic
+            key = (paragraph_id, paragraph_text)
+            if key in seen[topic_id]:
+                continue
+            seen[topic_id].add(key)
+
+            topic_to_paragraphs[f"Topic {topic_id}"].append({
+                "doc": paragraph_id,
+                "weight": round(weight, 4),
+                "text": paragraph_text
+            })
+
+    # Sort each topic group and keep top 5 unique paragraphs
+    for topic_id in topic_to_paragraphs:
+        topic_to_paragraphs[topic_id] = sorted(
+            topic_to_paragraphs[topic_id],
+            key=lambda x: -x["weight"]
+        )[:5]
+
+    return dict(topic_to_paragraphs)
+
+
+
+
+
+
+
+
+
+def create_corpus_top_tokens_bar(top_tokens):
+    df = pd.DataFrame(top_tokens, columns=["Token", "Frequency"])
+    fig = px.bar(df, x="Token", y="Frequency", title="Top 10 Frequent Tokens in Corpus")
+    fig.update_layout(margin=dict(l=20, r=20, t=40, b=20))
+    return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
+
+
+
+
+
+
+
+def get_representative_sentences_custom(lda_model, corpus, raw_texts, dictionary, doc_names=None, num_topics=10, topn=10):
+    topic_sentences = {}
+    seen_docs = set()
+
+    for topic_id in range(num_topics):
+        max_score = 0
+        best_doc_index = -1
+
+        # Find highest-weight doc for topic not already used
+        for i, bow in enumerate(corpus):
+            if i in seen_docs:
+                continue
+            topic_dist = dict(lda_model.get_document_topics(bow))
+            score = topic_dist.get(topic_id, 0)
+            if score > max_score:
+                max_score = score
+                best_doc_index = i
+
+        if best_doc_index != -1:
+            seen_docs.add(best_doc_index)
+            raw_text = raw_texts[best_doc_index]
+            sentences = split_sentences_bengali(raw_text)
+            top_words = [dictionary[w_id] for w_id, _ in lda_model.get_topic_terms(topic_id, topn=topn)]
+
+
+            best_sent = sentences[0] if sentences else ""
+            best_overlap = -1
+            for sent in sentences:
+                tokens = custom_bengali_tokenize(sent)
+                overlap = len(set(tokens) & set(top_words))
+                if overlap > best_overlap:
+                    best_overlap = overlap
+                    best_sent = sent
+                    
+
+            topic_sentences[topic_id] = {
+                "doc": doc_names[best_doc_index] if doc_names else f"Doc {best_doc_index}",
+                "weight": round(max_score, 4),
+                "text": best_sent,
+                "low_confidence": best_overlap == 0  
+
+            }
+
+    return topic_sentences

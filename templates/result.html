@@ -1,215 +1,518 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualization Results</title>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const dropdownButton = document.getElementById('dropdownButton');
-            const dropdownContent = document.getElementById('dropdownContent');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>anvay Results Dashboard</title>
+  <link rel="icon" type="image/png" href="/static/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/anvay.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton+SC&display=swap" rel="stylesheet">
 
-            dropdownButton.addEventListener('click', (event) => {
-                event.stopPropagation(); // Prevent closing the dropdown when clicking the button
-                dropdownContent.style.display =
-                    dropdownContent.style.display === 'block' ? 'none' : 'block';
-            });
 
-            // Close dropdown when clicking outside
-            document.addEventListener('click', () => {
-                dropdownContent.style.display = 'none';
-            });
-        });
-    </script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            line-height: 1.6;
-            background-image: url(static/images/pixel.svg);
-            background-size: 10%;
-            text-align: center;
-        }
 
-        .header {
-            background-color: #e85470;
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-        }
+  
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute("data-theme") === "light" ? "dark" : "light";
+      html.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+    }
 
-        .back-button {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            color: white;
-            background-color: #e85470;
-            text-decoration: none;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-            position: absolute;
-            top: 20px;
-            left: 20px;
-        }
+    function toggleTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      document.getElementById(tabId + "-btn").classList.add("active");
+    }
 
-        .back-button:hover {
-            background-color: #d25979;
-        }
-
-        .header h1 {
-            margin: 0 auto;
-            font-size: 2.5em;
-        }
-
-        .dropdown {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-        }
-
-        .dropdown button {
-            background-color: #ffffff;
-            color: #e85470;
-            font-size: 16px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .dropdown button:hover {
-            background-color: #f9f9f9;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: white;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            z-index: 1;
-            margin-top: 10px;
-            width: 200px;
-        }
-
-        .dropdown-content a {
-            color: #e85470;
-            padding: 10px 15px;
-            text-decoration: none;
-            display: block;
-            font-size: 14px;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #f9f9f9;
-        }
-
-        .visualizations {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin: 20px;
-        }
-
-        .card {
-            width: 840px;
-            padding: 20px;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            resize: both;
-        }
-
-        .card.pyldavis {
-            width: 1740px;
-            height: 880px;
-            overflow: hidden; /* Disable scrolling for the card */
-        }
-
-        .iframe-pyldavis {
-            width: 100%;
-            height: 100%;
-            border: none;
-            overflow: hidden; /* Disable scrolling for the iframe */
-        }
-
-        .iframe {
-            width: 100%;
-            height: 50vh;
-            border: none;
-        }
-
-        .responsive-img {
-            width: 100%;
-            height: auto;
-        }
-
-        .footer {
-            background-color: #e85470; /* Use the header background color */
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 14px;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-
-        .footer a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-            color: #d25979; /* Hover effect similar to the back button */
-        }
-    </style>
+    window.onload = () => {
+      const saved = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", saved);
+      toggleTab('visualizations');
+    };
+  </script>
 </head>
-<body>
-    <!-- Back button to go to the upload page -->
-    
-    <div class="header">
-        <a href="/" class="back-button">&larr; Back to Upload Page</a>
-        <h1>Visualization Results</h1>
-        <div class="dropdown">
-            <button id="dropdownButton">Download Options</button>
-            <div id="dropdownContent" class="dropdown-content">
-                {% if visualizations['topics_txt'] %}
-                    <a href="{{ url_for('download_file', filename=visualizations['topics_txt'][1]) }}" download>{{ visualizations['topics_txt'][0] }}</a>
-                {% endif %}
-                {% if visualizations['topics_csv'] %}
-                    <a href="{{ url_for('download_file', filename=visualizations['topics_csv'][1]) }}" download>{{ visualizations['topics_csv'][0] }}</a>
-                {% endif %}
-            </div>
-        </div>
-        </div>
-    </div>
 
-    <div class="visualizations">
-        {% for key, path in visualizations.items() %}
-            {% if key not in ['topics_txt', 'topics_csv'] %}
-                <div class="card {% if 'pyldavis' in key.lower() %}pyldavis{% endif %}">
-                    <h3>{{ key | capitalize }}</h3>
-                    {% if path[1].endswith('.html') %}
-                        <iframe src="{{ url_for('download_file', filename=path[1]) }}" class="{% if 'pyldavis' in key.lower() %}iframe-pyldavis{% else %}iframe{% endif %}"></iframe>
-                    {% elif path[1].endswith('.png') %}
-                        <img src="{{ url_for('download_file', filename=path[1]) }}" alt="{{ key }}" class="responsive-img">
-                    {% endif %}
-                </div>
-            {% endif %}
-        {% endfor %}
+<body>
+
+  <nav>
+    <div class="nav-logo">
+      <a href="/"><span></span> anvay</a>
     </div>
+    <div class="nav-links">
+      <a href="/">Upload</a>
+      <a href="/about">About</a>
+      <a href="/docs">Documentation</a>
+      <a href="/contact">Contact</a>
+      <button class="toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
+        <span id="themeToggleIconWrapper"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button id="visualizations-btn" onclick="toggleTab('visualizations')">Visualizations</button>
+    <button id="report-btn" onclick="toggleTab('report')">Report</button>
+  </div>
+
+
+<!-- VISUALIZATIONS -->
+<div class="tab-content active" id="visualizations">
+  <div class="container-fluid mt-4">
+    <div class="row g-4">
+
+      {% set viz_cards = [
+        ('Scatter Plot', 'bokeh', 'scatter.html'),
+        ('Bar Chart', 'bokeh', 'bars.html'),
+        ('Distribution', 'seaborn', 'distribution.html'),
+        ('Topic Evolution', 'seaborn', 'evolution.html'),
+        ('Topic Word Graph', 'plotly', 'word_network.html'),
+        ('Heatmap', 'seaborn', 'heatmap.html'),
+        ('Prevalence Pie', 'plotly', 'prevalence_pie.html'),
+        ('Clustering', 'seaborn', 'clustering.html')
+      ] %}
+
+      {% for title, folder, file in viz_cards %}
+      {% set orientation = 'vertical' if file == 'heatmap.html' else 'horizontal' %}  
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 d-flex flex-column" data-orientation="{{ orientation }}">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="card-title mb-0">{{ title }}</h5>
+            <button class="btn btn-sm btn-outline-secondary"
+        onclick="maximizeCard(this)"
+        data-folder="{{ folder }}"
+        data-file="{{ file }}"
+        data-orientation="{{ orientation }}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="left"
+        title="Expand View">
+  ⛶
+</button>
+
+          </div>
+          <div class="lightbox-body flex-grow-1 d-flex align-items-center justify-content-center">
+            <div class="chart-frame w-100 h-100">
+              <!-- Debug: /results/{{ folder }}/{{ file }} -->
+              <iframe src="{{ url_for('view_result_file', folder=folder, filename=file) }}"
+                      class="w-100 h-100"
+                      loading="lazy"
+                      frameborder="0">
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</div>
+
+
+<div id="report" class="tab-content">
+  <div class="container-fluid mt-4">
+    <div class="row">
+      <div class="col-12">
+  
+  <!-- Training Overview -->
+<div class="report-section">
+  <h4 class="mb-3">Training Overview</h4>
+  <p>This section summarises the characteristics of the dataset and the parameters used to train the topic model. It includes basic counts such as the number of documents, tokens, vocabulary size, and average document length. These numbers help contextualise the scale of the model and offer a quick snapshot of how text was processed before topic generation.</p>
+  
+  <div class="collapsible-card">
+    <button class="collapsible-toggle">Corpus Statistics</button>
+    <div class="collapsible-content">
+      <table class="table table-sm">
+        <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+        <tbody>
+          {% for key, value in overview_stats.items() %}
+          <tr>
+            <td>{{ key }}</td>
+            <td>{{ value }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="collapsible-card">
+    <button class="collapsible-toggle">Token Filtering</button>
+    <div class="collapsible-content">
+      <ul class="small text-muted">
+        {% for line in training_log.token_filtering %}
+        <li>{{ line }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="collapsible-card">
+    <button class="collapsible-toggle">Training Configuration</button>
+    <div class="collapsible-content">
+      <ul class="small text-muted">
+        {% for line in training_log.config %}
+        <li>{{ line }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="collapsible-card">
+    <button class="collapsible-toggle">Perplexity Estimates</button>
+    <div class="collapsible-content">
+      <ul class="small text-muted">
+        {% for line in training_log.perplexity %}
+        <li>{{ line }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="collapsible-card">
+    <button class="collapsible-toggle">Final Model Info</button>
+    <div class="collapsible-content">
+      <ul class="small text-muted">
+        {% for line in training_log.final %}
+        <li>{{ line }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Top Words per Topic -->
+<div id="topic-word-list" class="report-section">
+  <div class="d-flex justify-content-between align-items-center mb-3 sticky-header">
+    <h4 class="mb-0">Top Words per Topic</h4>
+    <div>
+      <a class="btn btn-sm btn-outline-secondary me-2" href="{{ url_for('download_file', filename='topic_words.csv') }}">Download CSV</a>
+      <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('download_file', filename='topic_words.txt') }}">Download TXT</a>
+    </div>
+  </div>
+
+  <p class="text-muted small">
+    The top 10 keywords associated with each topic, based on their weight in the model. These words help interpret the themes captured by the topic model.
+  </p>
+
+  <div class="scroll-section table-responsive">
+    <table class="table table-sm table-bordered small">
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th>Top Words</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for topic_id, words in topic_words.items() %}
+        <tr>
+          <td><strong>Topic {{ topic_id }}</strong></td>
+          <td>{{ words|join(', ') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- Topic Weights per Document -->
+<div id="document-topic-weights" class="report-section">
+  <div class="d-flex justify-content-between align-items-center mb-3 sticky-header">
+    <h4 class="mb-0">Topic Weights per Document</h4>
+    <div>
+      <a class="btn btn-sm btn-outline-secondary me-2" href="{{ url_for('download_file', filename='doc_topic_weights.csv') }}">Download CSV</a>
+      <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('download_file', filename='doc_topic_weights.txt') }}">Download TXT</a>
+    </div>
+  </div>
+
+  <p class="text-muted small">
+    Proportion of each topic present in each document. Shown for the first N documents. Scroll horizontally if the number of topics is large.
+  </p>
+
+  <div class="scroll-section table-responsive">
+    <table class="table table-sm table-bordered small">
+      <thead>
+        <tr>
+          <th>Document</th>
+          {% for i in range(num_topics) %}
+            <th>Topic {{ i }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for doc_name, weights in doc_topic_matrix.items() %}
+        <tr>
+          <td>{{ doc_name }}</td>
+          {% for weight in weights %}
+            <td>{{ '%.2f'|format(weight) }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+  
+  <!-- Top Terms -->
+  <div class="report-section">
+    <h4 class="mb-3">Top Terms in the Corpus</h4>
+    <p>This list shows the most frequently occurring words across all documents in the corpus. It provides insight into the overall vocabulary and dominant linguistic patterns in the dataset. While these terms are not tied to specific topics, they often reflect recurring motifs, stylistic choices, or frequently discussed themes in the dataset.</p>
+    <table class="table table-sm">
+      <thead>
+        <tr><th>Token</th><th>Percentage</th></tr>
+      </thead>
+      <tbody>
+        {% for item in top_token_text %}
+        <tr>
+          <td>{{ item.token }}</td>
+          <td>{{ item.percent }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Topic Prevalence -->
+  <div class="report-section">
+    <h4 class="mb-3">Topic Prevalence</h4>
+    <p>Topic prevalence indicates how strongly each topic appears across the entire corpus. It is calculated by summing the topic's weight across all documents. Although topic weights do not have a fixed scale, a higher value generally means that the topic appears more consistently and with greater intensity in the dataset. This is useful for understanding which topics dominate the corpus overall — but note that very high values can sometimes reflect overfitting or topic redundancy.
+    </p>
+    <table class="table table-sm">
+      <thead>
+        <tr><th>Topic</th><th>Weight</th></tr>
+      </thead>
+      <tbody>
+        {% for topic, docs in topic_doc_data.items() %}
+        {% set total = docs | sum(attribute='weight') %}
+        <tr>
+          <td>{{ topic }}</td>
+          <td>{{ "%.2f"|format(total) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+<!-- Representative Sentence for Each Topic -->
+<div class="report-section">
+  <h4 class="mb-3">Representative Sentence for Each Topic</h4>
+  {% for topic_id, rep in representative_sents.items() %}
+    <div class="collapsible-card">
+      <button class="collapsible-toggle">
+        <strong>Topic {{ topic_id + 1 }} — {{ topic_labels[topic_id] }}</strong><br>
+        {{ rep.doc }}
+        {% if rep.low_confidence %}
+          <small class="text-warning">⚠ Low Confidence</small>
+        {% endif %}
+      </button>
+      <div class="collapsible-content">
+        <p class="mt-2">
+          {{ rep.text }}
+          <small class="text-muted">(Weight: {{ rep.weight }})</small>
+        </p>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+{% include '_footer.html' %}
+
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Tooltip Initialization -->
+<script>
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+    new bootstrap.Tooltip(el);
+  });
+</script>
+
+
+
+<script>
+  function maximizeCard(button) {
+    const modal = document.getElementById('cardLightbox');
+    
+    // Check if modal exists in DOM
+    if (!modal) {
+      console.error('Modal element not found in DOM!');
+      return;  // Stop further execution if modal is missing
+    }
+  
+    const content = document.getElementById('lightboxContent');
+  
+    // TEST ONLY: inject simple test content, no iframe
+    content.innerHTML = '<p class="text-success">Loaded successfully.</p>';
+  
+    // Let Bootstrap handle modal display
+    const instance = bootstrap.Modal.getOrCreateInstance(modal);
+    instance.show();
+  }
+  </script>
+  
+ <script>
+  function maximizeCard(button) {
+    const folder = button.getAttribute('data-folder');
+    const file = button.getAttribute('data-file');
+    const orientation = button.getAttribute('data-orientation');
+    
+    const modal = document.getElementById('cardLightbox');
+    const content = document.getElementById('lightboxContent');
+    
+    // Clear previous content
+    content.innerHTML = '';
+    
+    // Create new iframe
+    const iframe = document.createElement('iframe');
+    iframe.src = `/results/${folder}/${file}`;
+    iframe.className = 'w-100 h-100';
+    iframe.frameBorder = '0';
+    
+    // Add iframe to modal
+    content.appendChild(iframe);
+    
+    // Show modal
+    const instance = bootstrap.Modal.getOrCreateInstance(modal);
+    instance.show();
+  }
+</script>
+    
+  
+  
+  
+
+<script>
+
+  const sunIcon = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <circle cx="12" cy="12" r="5" stroke-width="1.5"/>
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 1v2m0 18v2m11-11h-2M3 12H1m17.07 4.93l-1.42-1.42M6.34 6.34L4.93 4.93m12.14 0l-1.41 1.41M6.34 17.66l-1.41 1.41"/>
+  </svg>
+  `;
+  
+  const moonIcon = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+  </svg>
+  `;
+  
+  function toggleTheme() {
+    const html = document.documentElement;
+    const next = html.getAttribute("data-theme") === "light" ? "dark" : "light";
+    html.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+    document.getElementById("themeToggleIconWrapper").innerHTML = next === "dark" ? sunIcon : moonIcon;
+  }
+  
+  window.addEventListener('DOMContentLoaded', () => {
+    const current = localStorage.getItem('theme') || 'light';
+    document.getElementById("themeToggleIconWrapper").innerHTML = current === 'dark' ? sunIcon : moonIcon;
+  });
+  
+  </script>
+
+<script>
+// Accordion functionality for report sections
+document.addEventListener("DOMContentLoaded", function() {
+  // Get all collapsible cards
+  const collapsibleCards = document.querySelectorAll('.collapsible-card');
+  
+  // Initialize first card as open if desired
+  if (collapsibleCards.length > 0) {
+    collapsibleCards[0].classList.add('active');
+    collapsibleCards[0].querySelector('.collapsible-content').style.display = 'block';
+  }
+
+  // Add click handlers to all collapsible toggles
+  collapsibleCards.forEach(card => {
+    const toggle = card.querySelector('.collapsible-toggle');
+    
+    toggle.addEventListener('click', function() {
+      // Close all other cards if this is being opened
+      if (!card.classList.contains('active')) {
+        collapsibleCards.forEach(otherCard => {
+          if (otherCard !== card) {
+            otherCard.classList.remove('active');
+            otherCard.querySelector('.collapsible-content').style.display = 'none';
+          }
+        });
+      }
+      
+      // Toggle this card
+      card.classList.toggle('active');
+      const content = card.querySelector('.collapsible-content');
+      
+      if (card.classList.contains('active')) {
+        content.style.display = 'block';
+      } else {
+        content.style.display = 'none';
+      }
+    });
+  });
+
+  // Smooth scroll for anchor links within the report tab
+  document.querySelectorAll('#report a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      const targetId = this.getAttribute('href');
+      const targetElement = document.querySelector(targetId);
+      
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+});
+</script>
+
+
+<div class="modal fade" id="cardLightbox" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+    <div class="modal-content bg-light text-dark">
+      <div class="modal-header">
+        <h5 class="modal-title">Expanded View</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0 d-flex align-items-center justify-content-center" style="height: 100vh;">
+        <div id="lightboxContent" class="w-100 h-100 d-flex align-items-center justify-content-center"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 </body>
-<footer class="footer">
-    <p>&copy; 2025 Anvay: Bengali LDA Topic Modeling Dashboard. All rights reserved.</p>
-</footer>
 </html>

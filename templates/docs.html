@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+
+<html data-theme="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Documentation – anvay</title>
+<link href="/static/logo.png" rel="icon" type="image/png"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+<link href="{{ url_for('static', filename='css/anvay.css') }}" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Anton+SC&display=swap" rel="stylesheet">
+
+
+
+
+</head>
+<body>
+<nav>
+<div class="nav-logo">
+<a href="/"><span></span> anvay</a>
+</div>
+<div class="nav-links">
+<a href="/">Upload</a>
+<a href="/about">About</a>
+<a href="/docs">Documentation</a>
+<a href="/contact">Contact</a>
+<button aria-label="Toggle Theme" class="toggle-btn" onclick="toggleTheme()">
+<span id="themeToggleIconWrapper"></span>
+</button>
+</div>
+</nav>
+<div class="form-section">
+<h2 class="upload-heading">Documentation</h2>
+<p class="upload-subheading">Learn how to use anvay for topic modelling, visualisation, and interpretive analysis.</p>
+<!-- Replace your tab system and all tab-content structure with this -->
+<!-- Tab Buttons -->
+<div class="tabs">
+<button id="intro-btn" onclick="toggleTab('intro')">Introduction</button>
+<button id="topic-btn" onclick="toggleTab('topic')">Topic Modelling</button>
+<button id="usage-btn" onclick="toggleTab('usage')">Using anvay</button>
+<button id="help-btn" onclick="toggleTab('help')">Help & Errors</button>
+<button id="glossary-btn" onclick="toggleTab('glossary')">Glossary</button>
+</div>
+<!-- Tab Content -->
+<!-- INTRO -->
+<div class="tab-content active" id="intro">
+<h4 class="doc-section-title">Introduction</h4>
+<p>
+<em>anvay</em> is a web-based platform for topic modelling and interpretive analysis of Bengali-language texts. Built for scholars, students, and digital humanists, it provides an end-to-end workflow that enables users to upload a corpus, generate interpretable topic models, and explore their thematic structure through a suite of interactive visualisations and reports.
+    </p>
+<p>At its core, <em>anvay</em> uses Latent Dirichlet Allocation (LDA) to uncover latent themes in textual corpora. It complements this algorithmic analysis with tools that foreground interpretability and readability, especially for morphologically rich and low-resource languages like Bengali.</p>
+    <h5 class="mt-5 mb-3 fw-semibold">Contents</h5>
+    <p>Each of the following sections corresponds to a tab in the documentation. Together, they walk the user through the entire modelling process, from theory to interpretation:</p>
+    <ul>
+    <li><a class="text-accent" href="#" onclick="event.preventDefault(); toggleTab('intro')"><strong>Introduction:</strong></a> What is <em>anvay</em>?</li>
+    <li><a class="text-accent" href="#" onclick="event.preventDefault(); toggleTab('topic')"><strong>Topic Modelling:</strong></a> Introduces the logic behind topic models and their assumptions.</li>
+    <li><a class="text-accent" href="#" onclick="event.preventDefault(); toggleTab('usage')"><strong>Using anvay:</strong></a> A walkthrough of the upload interface and core configuration options.</li>
+    <li><a class="text-accent" href="#" onclick="event.preventDefault(); toggleTab('help')"><strong>Help & Errors:</strong></a> Some commonly faced issues.</li>
+    <li><a class="text-accent" href="#" onclick="event.preventDefault(); toggleTab('glossary')"><strong>Glossary:</strong></a> Definitions of technical terms and further reading recommendations.</li>
+    </ul>
+<h5 class="mt-4 mb-2 fw-semibold">Key Features</h5>
+<ul>
+<li>Customisable topic modelling with fine-grained parameter control</li>
+<li>Language-specific preprocessing for Bengali, including stemming and stopword filtering</li>
+<li>Multiple interactive visualisations: scatterplots, heatmaps, pie charts, word networks</li>
+<li>Structured report with topic summaries, top terms, document drilldowns, and quality flags</li>
+<li>Support for uploading user-defined stopword lists</li>
+<li>Lightweight, browser-based interface with no data retention or third-party processing</li>
+</ul>
+<h5 class="mt-4 mb-2 fw-semibold">Why anvay?</h5>
+<p>
+      Most topic modelling tools are not built for Indian languages, and fewer still are designed with interpretability in mind. <em>anvay</em> is unique in combining a rigorous LDA pipeline with meaningful post-processing tailored to Bengali: relevance-weighted top words, flagging of low-confidence topics, representative paragraph extraction, and topic-document linking. It is designed for exploration as much as explanation, and aims to bridge computational methods with close reading.
+    </p>
+    <h5 class="mt-5 mb-3 fw-semibold">How the Workflow Unfolds</h5>
+<p>
+  <em>anvay</em> offers an end-to-end workflow that guides you from raw text to interpretive insight:
+</p>
+
+<div class="d-flex flex-wrap align-items-center justify-content-between bg-light rounded p-3 text-center" style="gap: 0.5rem;">
+  <div class="flex-fill">
+    <i class="bi bi-upload" style="font-size: 1.3rem;"></i><br>
+    <strong>Upload</strong><br>
+    <small class="text-muted">Drop in .txt files</small>
+  </div>
+  <div class="text-muted">→</div>
+  <div class="flex-fill">
+    <i class="bi bi-sliders" style="font-size: 1.3rem;"></i><br>
+    <strong>Configure</strong><br>
+    <small class="text-muted">Select parameters</small>
+  </div>
+  <div class="text-muted">→</div>
+  <div class="flex-fill">
+    <i class="bi bi-cpu" style="font-size: 1.3rem;"></i><br>
+    <strong>Train</strong><br>
+    <small class="text-muted">Model discovers topics</small>
+  </div>
+  <div class="text-muted">→</div>
+  <div class="flex-fill">
+    <i class="bi bi-bar-chart-line" style="font-size: 1.3rem;"></i><br>
+    <strong>Visualise</strong><br>
+    <small class="text-muted">Explore topic maps</small>
+  </div>
+  <div class="text-muted">→</div>
+  <div class="flex-fill">
+    <i class="bi bi-chat-left-text" style="font-size: 1.3rem;"></i><br>
+    <strong>Interpret</strong><br>
+    <small class="text-muted">Name and refine</small>
+  </div>
+  <div class="text-muted">→</div>
+  <div class="flex-fill">
+    <i class="bi bi-download" style="font-size: 1.3rem;"></i><br>
+    <strong>Download</strong><br>
+    <small class="text-muted">Export results</small>
+  </div>
+</div>
+
+    <h5 class="mt-4 mb-2 fw-semibold">Note:Issues with processing Bengali</h5>
+    <p>
+      Processing Bengali for topic modelling involves a set of distinct constraints that users should keep in mind when interpreting results. Unlike English, Bengali exhibits rich inflectional morphology, frequent compound word forms, and variable spelling patterns — especially in informal or older texts. The script also includes characters like zero-width joiners that complicate tokenisation, and there is no universally accepted stemming algorithm. These structural properties affect how words are grouped into topics.
+    </p>
+    <p>
+      Beyond the language itself, the <strong>type of corpus</strong> matters. A news corpus typically uses formulaic language, leading to clearer, more stable topic clusters — but often with repeated framing phrases that may require custom stopwording. Literary texts, by contrast, are stylistically diverse and thematically layered. Characters shift voice, metaphors mask meaning, and topical boundaries blur. In such cases, even well-trained models may produce diffuse or overlapping topics.
+    </p>
+    <p>
+      <em>anvay</em> offers tools to handle some of these challenges — including Bengali-specific preprocessing, configurable token filters, and detailed diagnostics. But no tool can fully resolve the ambiguity of language. Users are encouraged to view topic models not as definitive maps, but as exploratory guides: shaped by data, framed by parameters, and ultimately interpreted through human reading.
+    </p>
+
+
+<div class="row g-3">
+
+  <div class="col-md-4">
+    <div class="border rounded p-3 h-100 bg-light-subtle">
+      <div class="mb-2"><i class="bi bi-type" style="font-size: 1.3rem;"></i></div>
+      <strong>Linguistic Structure</strong>
+      <p class="small text-muted mt-2">
+        Bengali includes inflection, compound words, and zero-width joiners — all of which make tokenisation and stemming less reliable than in English.
+      </p>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="border rounded p-3 h-100 bg-light-subtle">
+      <div class="mb-2"><i class="bi bi-diagram-3" style="font-size: 1.3rem;"></i></div>
+      <strong>Corpus Type Matters</strong>
+      <p class="small text-muted mt-2">
+        News texts yield clearer clusters due to formulaic structure. Literary texts are more fluid, with shifting voices and metaphors that blur topical boundaries.
+      </p>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="border rounded p-3 h-100 bg-light-subtle">
+      <div class="mb-2"><i class="bi bi-tools" style="font-size: 1.3rem;"></i></div>
+      <strong>anvay’s Approach</strong>
+      <p class="small text-muted mt-2">
+        The platform applies Bengali-specific preprocessing and topic diagnostics. But interpretation remains essential — topic models show patterns, not meanings.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+</div>
+
+
+<!--TOPIC-->
+<div class="tab-content" id="topic">
+<h4 class="doc-section-title">Topic Modelling</h4>
+<p>
+      Topic modelling is a statistical method used to identify recurring themes in large text collections.
+      Rather than categorising documents manually, topic models detect patterns of word co-occurrence and infer abstract themes based on them.
+    </p>
+<p>
+      The most widely used algorithm is <strong>Latent Dirichlet Allocation (LDA)</strong>, which makes two key assumptions:
+    </p>
+<div class="row g-4 mt-4">
+<div class="col-md-4">
+<div class="card question-reveal h-100 shadow-sm">
+<div class="card-body">
+<h5 class="card-title">Documents as Topic Mixtures</h5>
+<p class="card-question small">Can a single document contain multiple topics?</p>
+<p class="card-answer small">
+              Yes — LDA models each document as a blend of topics in different proportions. For example, one story might be 60% about migration and 40% about domestic life.
+            </p>
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="card question-reveal h-100 shadow-sm">
+<div class="card-body">
+<h5 class="card-title">Topics as Word Distributions</h5>
+<p class="card-question small">How does the model define a topic without labels?</p>
+<p class="card-answer small">
+              A topic is simply a group of words that tend to appear together. For example, a topic on farming might include “পল্লী”, “ধান”, “জমি”, “চাষ”, “কৃষক”.
+            </p>
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="card question-reveal h-100 shadow-sm">
+<div class="card-body">
+<h5 class="card-title">Interpretation Follows Modelling</h5>
+<p class="card-question small">Does the model know what the words mean?</p>
+<p class="card-answer small">
+              No — the model detects statistical patterns, not meaning. It’s the researcher who interprets the topics after modelling is complete.
+            </p>
+</div>
+</div>
+</div>
+</div>
+<div class="alert alert-secondary mt-4" role="alert">
+      Hover over each card above to test your assumptions. Topic models don’t classify — they offer structure. You do the interpreting.
+    </div>
+<hr class="my-5"/>
+<h5 class="fw-semibold mb-3">What Topic Modelling Is Useful For</h5>
+<ul>
+<li>Exploring dominant themes in large, unlabelled corpora</li>
+<li>Identifying discursive shifts over time or across genres</li>
+<li>Clustering documents before manual annotation or review</li>
+<li>Forming hypotheses for deeper interpretive analysis</li>
+</ul>
+<details class="mt-4">
+<summary class="text-accent fw-semibold">Click to expand: Why Topic Modelling Requires Caution</summary>
+<div class="mt-3">
+<p class="small text-muted">
+          Topic models operate on co-occurrence, not semantics. In noisy or morphologically complex corpora, models may group suffixes, filler, or OCR artefacts as if they were meaningful. Always combine quantitative exploration with qualitative judgement.
+        </p>
+</div>
+</details>
+<hr class="my-5"/>
+
+<h5 class="fw-semibold mb-3">How Do Machines Imagine Topics?</h5>
+<p>
+  <em>anvay</em> uses a topic modelling algorithm called <strong>Latent Dirichlet Allocation</strong>, or LDA. It's one of the most widely used methods for discovering thematic structure in large text corpora — and it’s implemented here using the <code>gensim</code> Python library.
+</p>
+
+<p>
+  LDA is a probabilistic model that assumes every document is a mixture of latent “topics,” and each topic is a distribution over words. It doesn’t “understand” your texts — it notices patterns. If certain words tend to appear together across documents, the model assumes they belong to the same thematic cluster.
+</p>
+
+<p>
+  Technically, every word in the corpus — even common ones like “the” or “but” — is assigned a topic distribution. But most pipelines (including ours) filter out high-frequency, low-meaning words before modelling. The topics you interpret are built from the more distinctive words that remain.
+</p>
+
+<p>
+  In other words, LDA doesn’t give you meaning. It gives you <em>structure</em>. It shows you where clusters of co-occurrence exist — and leaves it to you, the reader, to decide which ones matter.
+</p>
+
+<p>
+  To help you understand how this works in practice, we’ve included a sentence-building activity below. Select words from a shared pool, construct a sentence, and analyse which topics those words are most likely to belong to. You’ll notice that topic assignment depends on word co-occurrence — not grammar, logic, or truth. Try switching between English and Bengali to see how distributional assumptions play out across different languages.
+</p>
+
+<div class="my-4">
+<div class="d-flex justify-content-between align-items-center mb-3">
+<div>
+<button class="btn btn-sm btn-accent me-2" onclick="resetSentence()">Reset</button>
+<button class="btn btn-sm btn-outline-primary me-2" onclick="insertRandomSentence()">Random Sentence</button>
+</div>
+<button class="btn btn-sm btn-outline-dark" id="languageToggle" onclick="toggleLanguage()">Switch to Bengali</button>
+</div>
+<div class="d-flex flex-wrap gap-2 mb-3" id="word-pool"></div>
+<p><strong>Your Sentence:</strong></p>
+<div class="border p-3 rounded bg-light-subtle mb-3" id="sentence" style="min-height: 50px;"></div>
+<button class="btn btn-accent" onclick="analyseSentence()">Analyse Topics</button>
+</div>
+<div class="mt-4" id="lda-output" style="display:none">
+<h5 class="fw-semibold mb-3">Inferred Topic Distribution</h5>
+<ul class="list-group mb-3" id="topic-output"></ul>
+<h6 class="fw-semibold">Word Breakdown:</h6>
+<ul class="list-group" id="word-output"></ul>
+</div>
+<script>
+      let language = "en";
+  
+      const topicWords = {
+        Food: {
+          en: ["rice", "fish", "curry", "spice", "eat", "cooking"],
+          bn: ["ভাত", "মাছ", "রান্না", "খাই", "খায়", "রান্না করে"]
+        },
+        Travel: {
+          en: ["train", "station", "ticket", "journey", "travel", "goes"],
+          bn: ["ট্রেন", "স্টেশন", "টিকিট", "যাত্রা", "যায়", "যাত্রা করি"]
+        },
+        Politics: {
+          en: ["vote", "law", "minister", "election", "debate", "says"],
+          bn: ["ভোট", "আইন", "মন্ত্রী", "নির্বাচন", "বিতর্ক", "বলেন"]
+        }
+      };
+  
+      const stopwords = {
+        en: ["the", "and", "in", "on", "with", "a", "of", "is", "was", "are", "am", "to", "from", "that", "by"],
+        bn: ["এবং", "ভিতরে", "ওপর", "সহ", "একটি", "এর", "হয়", "ছিল", "আছে", "থেকে", "যে", "কে", "এই"]
+      };
+  
+      const pronouns = {
+        en: ["I", "you", "he", "she", "they", "we"],
+        bn: ["আমি", "তুমি", "সে", "তারা", "আমরা"]
+      };
+  
+      const neutralWords = {
+        en: ["walk", "read", "blue", "chair", "light"],
+        bn: ["হাঁটি", "পড়ি", "নীল", "চেয়ার", "আলো"]
+      };
+  
+      const randomSentences = {
+        en: [
+          ["I", "eat", "fish", "with", "rice"],
+          ["they", "travel", "by", "train", "to", "the", "station"],
+          ["the", "minister", "was", "in", "the", "election", "debate"],
+          ["we", "walk", "with", "a", "bag"],
+          ["he", "read", "the", "law"]
+        ],
+        bn: [
+          ["আমি", "ভাত", "খাই"],
+          ["সে", "মাছ", "রান্না", "করে"],
+          ["আমরা", "ভাত", "এবং", "মাছ", "খাই"],
+          ["তারা", "স্টেশন", "থেকে", "আসে"],
+          ["আমি", "ভোট", "দিই"]
+        ]
+      };
+  
+      const wordPool = document.getElementById("word-pool");
+      const sentenceBox = document.getElementById("sentence");
+      const topicOut = document.getElementById("topic-output");
+      const wordOut = document.getElementById("word-output");
+      const outputSection = document.getElementById("lda-output");
+  
+      function getWordType(word) {
+        if (stopwords[language].includes(word)) return "stopword";
+        for (const topic in topicWords) {
+          if (topicWords[topic][language].includes(word)) return "topic";
+        }
+        return "neutral";
+      }
+  
+      function getWordTopic(word) {
+        for (const topic in topicWords) {
+          if (topicWords[topic][language].includes(word)) return topic;
+        }
+        return null;
+      }
+  
+      function renderWordPool() {
+  wordPool.innerHTML = "";
+  const fullList = [
+    ...stopwords[language],
+    ...pronouns[language],
+    ...Object.values(topicWords).map(t => t[language]).flat(),
+    ...neutralWords[language]
+  ];
+
+  fullList.forEach(word => {
+    const btn = document.createElement("button");
+    btn.textContent = word;
+    btn.className = "btn btn-sm word-btn"; // no class yet for type
+    btn.onclick = () => addWordToSentence(word, btn);
+    wordPool.appendChild(btn);
+  });
+}
+
+  
+        if (window.bootstrap && bootstrap.Tooltip) {
+          document.querySelectorAll('[title]').forEach(el => {
+            new bootstrap.Tooltip(el);
+          });
+        }
+      
+  
+      function addWordToSentence(word, btn = null) {
+  const span = document.createElement("span");
+  span.textContent = word + " ";
+
+  const type = getWordType(word);
+  const topic = getWordTopic(word);
+
+  // Assign class
+  if (type === "stopword") {
+    span.className = "mx-1 stopword";
+    span.setAttribute("title", "Stopword – ignored by the model");
+  } else if (topic) {
+    span.className = "mx-1 topic-word";
+    span.setAttribute("title", `Contributes to the ${topic} topic`);
+  } else {
+    span.className = "mx-1";
+    span.setAttribute("title", "Not linked to any topic");
+  }
+
+  sentenceBox.appendChild(span);
+
+  // Enable tooltip only now
+  if (window.bootstrap && bootstrap.Tooltip) {
+    new bootstrap.Tooltip(span);
+  }
+
+  if (btn) btn.disabled = true;
+}
+
+  
+      function resetSentence() {
+        sentenceBox.innerHTML = "";
+        topicOut.innerHTML = "";
+        wordOut.innerHTML = "";
+        outputSection.style.display = "none";
+        document.querySelectorAll(".word-btn").forEach(b => b.disabled = false);
+      }
+  
+      function insertRandomSentence() {
+        resetSentence();
+        const sentence = randomSentences[language][Math.floor(Math.random() * randomSentences[language].length)];
+        sentence.forEach(word => {
+          const btn = Array.from(document.querySelectorAll("#word-pool button")).find(b => b.textContent === word);
+          addWordToSentence(word, btn);
+        });
+        analyseSentence();
+      }
+  
+      function analyseSentence() {
+        const words = Array.from(sentenceBox.children).map(el => el.textContent.trim());
+        const counts = { Food: 0, Travel: 0, Politics: 0 };
+  
+        topicOut.innerHTML = "";
+        wordOut.innerHTML = "";
+  
+        words.forEach(word => {
+          const type = getWordType(word);
+          const topic = getWordTopic(word);
+  
+          const item = document.createElement("li");
+          item.className = "list-group-item";
+  
+          if (type === "stopword") {
+            item.innerHTML = `<strong>${word}</strong>: Stopword – ignored`;
+          } else if (topic) {
+            counts[topic]++;
+            item.innerHTML = `<strong>${word}</strong>: contributes to <span class="text-accent">${topic}</span>`;
+          } else {
+            item.innerHTML = `<strong>${word}</strong>: not linked to any topic`;
+          }
+  
+          wordOut.appendChild(item);
+        });
+  
+        const total = Object.values(counts).reduce((a, b) => a + b, 0);
+        for (const topic in counts) {
+          const li = document.createElement("li");
+          const percent = total ? ((counts[topic] / total) * 100).toFixed(1) : 0;
+          li.className = "list-group-item";
+          li.textContent = `${topic}: ${percent}% (${counts[topic]} word${counts[topic] !== 1 ? "s" : ""})`;
+          topicOut.appendChild(li);
+        }
+  
+        outputSection.style.display = "block";
+      }
+  
+      function toggleLanguage() {
+        language = language === "en" ? "bn" : "en";
+        const toggleBtn = document.getElementById("languageToggle");
+        toggleBtn.textContent = language === "en" ? "Switch to Bengali" : "Switch to English";
+        resetSentence();
+        renderWordPool();
+      }
+  
+      // Render on page load
+      window.addEventListener("DOMContentLoaded", () => {
+        renderWordPool();
+      });
+    </script>
+<div class="mt-5">
+<h5 class="fw-semibold">Reading Topics: Interpretation and Probability</h5>
+<p>
+      Topic modelling doesn’t assign hard categories. Every word in every document is given a probability of belonging to each topic. Even a seemingly irrelevant word like “the” or “but” is mathematically linked to every topic — just with very low weight. Conversely, strongly associated words like “minister” or “train” might belong to multiple topics with varying strengths.
+    </p>
+<p>
+      This means that “topics” are not neat buckets, but soft groupings — blurry constellations of co-occurrence. What feels like a coherent theme is, in fact, a pattern we detect and make sense of as readers. The model shows us structure, but not meaning. We impose that meaning by recognising which words rise to the top, and how they resonate with our sense of language, genre, or context.
+    </p>
+<p>
+      In literary texts, this becomes even more complex. Characters shift registers, metaphors disguise literal meaning, and themes bleed across documents. Topic models can surface patterns, but not always meanings. They require interpretation — and that interpretive labour is an essential part of working with LDA, especially in the humanities.
+    </p>
+
+    <h5 class="fw-semibold mb-3">Further Reading and Examples</h5>
+    <p class="mb-3">The following projects and papers demonstrate thoughtful and innovative uses of topic modelling, particularly within the humanities and social sciences:</p>
+    <ul>
+    <li><strong>Mining the Dispatch</strong> – A digital history project by Robert K. Nelson that applies topic modelling to a Civil War-era newspaper archive. <a class="text-accent" href="http://dsl.richmond.edu/dispatch/pages/intro" target="_blank">View project</a></li>
+    <li><strong>Topic Modeling the Bible</strong> by Ted Underwood – A compelling blog post exploring how topic modelling can surface rhetorical patterns in religious texts. <a class="text-accent" href="https://tedunderwood.com/2012/04/01/topic-modeling-the-bible/" target="_blank">Read article</a></li>
+    <li><strong>Macroanalysis</strong> by Matthew L. Jockers – A foundational book that combines topic modelling with literary history across 3,500+ novels. <em>University of Illinois Press, 2013.</em></li>
+    <li><strong>Distant Horizons</strong> by Ted Underwood – Expands on methodological debates in cultural analytics, including the role of topic modelling in literary interpretation. <em>University of Chicago Press, 2019.</em></li>
+    <li><strong>“Probabilistic Topic Models”</strong> by David M. Blei – A technical but essential primer on the mathematical foundations of topic modelling. <em>Communications of the ACM, 2012.</em></li>
+    </ul>
+</div>
+</div>
+<div class="tab-content" id="usage">
+<div class="container-fluid">
+<div class="row">
+<!-- Sidebar Navigation -->
+<div class="col-md-3">
+<ul class="nav flex-column nav-pills" id="usageNav">
+<li class="nav-item"><button class="nav-link active" data-target="#usage-corpus">Corpus Preparation</button></li>
+<li class="nav-item"><button class="nav-link" data-target="#usage-upload">Uploading Files</button></li>
+<li class="nav-item"><button class="nav-link" data-target="#usage-stopwords">Stopwords</button></li>
+<li class="nav-item"><button class="nav-link" data-target="#usage-params">Parameters</button></li>
+<li class="nav-item"><button class="nav-link" data-target="#usage-viz">Visualisations</button></li>
+<li class="nav-item"><button class="nav-link" data-target="#usage-report">Report</button></li>
+<li class="nav-item"><button class="nav-link" data-target="#usage-walk">Walkthrough</button></li>
+</ul>
+
+
+
+</div>
+
+<!-- Content Area -->
+<div class="col-md-9 ps-md-5">
+<!-- 1. Corpus Preparation -->
+<div class="usage-pane active" id="usage-corpus">
+<h5 class="doc-section-title">Corpus Preparation</h5>
+<p>The quality of your topic model depends on the quality of your input. While <em>anvay</em> attempts to handle malformed characters, OCR noise, and common formatting issues, the most meaningful results come from a clean, well-prepared corpus. Below are guidelines — and examples — to help you curate your files effectively.</p>
+<div class="d-flex justify-content-end mb-3">
+<button class="btn btn-sm btn-outline-dark" id="corpusToggle" onclick="toggleCorpusExample()">Switch to Bengali</button>
+</div>
+<div class="row" id="corpus-example-en">
+<div class="col-md-6">
+<div class="card bg-light border">
+<div class="card-body">
+<h6 class="fw-bold text-danger">Problematic Input (English)</h6>
+<pre class="small">--- PAGE 1 ---\n\n\t\tThe Honourable Minister (b. 1924 - d. 1991)\n\n*** OCR Scanned ***\n\nChapter 4: The Changing Tide\n\n@#$%^&amp;\n\n\t\tIt was raining, and the people gathered...</pre>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="card bg-light border">
+<div class="card-body">
+<h6 class="fw-bold text-success">Preferred Input (English)</h6>
+<pre class="small">It was raining. The minister arrived quietly. People gathered near the tent. No slogans were shouted.</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="row d-none" id="corpus-example-bn">
+<div class="col-md-6">
+<div class="card bg-light border">
+<div class="card-body">
+<h6 class="fw-bold text-danger">সমস্যাযুক্ত ইনপুট (Bengali)</h6>
+<pre class="small">--- পৃষ্ঠা ১ ---\n\n*** স্ক্যানকৃত ***\n\n@#$%^&amp;\n\nমন্ত্রী বললেন\n\nনির্বাচনের আগে জনতা জমায়েত হল...</pre>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="card bg-light border">
+<div class="card-body">
+<h6 class="fw-bold text-success">প্রথম পছন্দের ইনপুট (Bengali)</h6>
+<pre class="small">মন্ত্রী বললেন। জনতা জড়ো হল। বৃষ্টির মধ্যে নীরবে সকলেই দাঁড়িয়ে রইল।</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="alert alert-secondary mt-4 corpus-note">
+<p class="mb-1"><strong>Tip:</strong> Copying from PDFs may introduce invisible characters. *anvay* tries to clean these, but always check your files. Open them in a text editor and verify they are saved in <code>UTF-8</code>.</p>
+<p class="mb-0"><strong>Best practice:</strong> Use clean plain-text files, one file per document. Avoid headers, footers, and formatting.</p>
+</div>
+</div>
+<!-- 2. Uploading Files -->
+<div class="usage-pane" id="usage-upload">
+  <h5 class="doc-section-title">Uploading Files</h5>
+
+  <p>
+    On the upload screen, drag and drop your <code>.txt</code> files or use the file picker. Each file you upload is treated as a separate document in the topic model. The more files you include, the more stable and interpretable your results — but there are practical limits to ensure performance and readability.
+  </p>
+
+  <div class="alert alert-secondary corpus-note mt-4">
+    <ul class="mb-0">
+      <li><strong>Maximum files:</strong> 800</li>
+      <li><strong>Total upload size:</strong> 10MB</li>
+      <li><strong>File format:</strong> Plain text (<code>.txt</code>) only</li>
+      <li><strong>Encoding:</strong> UTF-8 (mandatory)</li>
+    </ul>
+  </div>
+
+  <h6 class="mt-4 fw-semibold">How File Uploads Work</h6>
+  <p>
+    Each file represents one document. The model learns themes across the corpus by analysing word patterns across these documents. If your files are too short (under ~300 tokens), topics may feel weak or generic. If they are too long or unevenly distributed, dominant documents may skew topic prevalence.
+  </p>
+  <p>
+    Use consistent file formatting and avoid uploading empty, duplicate, or placeholder files. <strong>File names are displayed in the Report tab</strong>, so name them meaningfully to track interpretations.
+  </p>
+
+  <h6 class="mt-4 fw-semibold">What Not to Upload</h6>
+  <ul>
+    <li><strong>PDFs, Word docs, or ZIP files</strong> — only plain <code>.txt</code> files are accepted</li>
+    <li><strong>Files with non-UTF-8 encodings</strong> — these may break preprocessing or display gibberish</li>
+    <li><strong>System files (like <code>.DS_Store</code>)</strong> — these will be ignored or discarded</li>
+  </ul>
+
+  <h6 class="mt-4 fw-semibold">Tips for Best Results</h6>
+  <ul>
+    <li>Use UTF-8 encoding (check in your text editor or use <em>Save As → Encoding</em>)</li>
+    <li>Avoid OCR scans or pasted content from PDFs unless cleaned (see Corpus Preparation section)</li>
+    <li>If a document contains less than 100 tokens after filtering, it may be skipped automatically</li>
+    <li>Use short, descriptive filenames (e.g. <code>tagore_ghare_baire.txt</code>) to help interpretation later</li>
+  </ul>
+
+  <div class="bg-light p-3 small rounded mt-4">
+    <strong>Note:</strong> If your upload fails or stalls, check the file count and total size. Errors are often caused by large corpora, improper encoding, or unsupported file types.
+  </div>
+</div>
+<div class="usage-pane" id="usage-stopwords">
+  <h5 class="doc-section-title">Stopwords</h5>
+
+  <p>
+    Stopwords are high-frequency words — such as pronouns, particles, or auxiliary verbs — that tend to dilute topic modelling results. Removing them sharpens topic coherence by reducing statistical noise, especially in morphologically rich languages like Bengali.
+  </p>
+
+  <h6 class="mt-4 fw-semibold">How <em>anvay</em> Handles Stopwords</h6>
+  <p><em>anvay</em> offers two mechanisms for stopword removal:</p>
+  <ol>
+    <li>
+      <strong>Use the built-in Bengali stopword list</strong><br>
+      Enable this by checking the <code>Remove NLTK Stopwords</code> box. This includes standard pronouns (e.g. <code>আমি</code>, <code>তুমি</code>), auxiliary verbs (e.g. <code>হয়</code>, <code>ছিল</code>), and function words.
+    </li>
+    <li class="mt-3">
+      <strong>Upload your own stopword file</strong><br>
+      In <code>Advanced Options</code>, upload a plain-text <code>.txt</code> file with <strong>one word per line</strong>. This lets you filter out:
+      <ul class="small mb-0">
+        <li>Proper names (e.g. speakers, authors)</li>
+        <li>OCR artefacts (e.g. <code>***</code>, <code>পৃষ্ঠা</code>)</li>
+        <li>Dataset-specific filler (e.g. <code>বলল</code>, <code>জিজ্ঞেস করল</code>)</li>
+      </ul>
+    </li>
+  </ol>
+
+  <p class="mt-3">If both options are selected, the lists are automatically merged before modelling begins.</p>
+
+  <h6 class="mt-5 fw-semibold">Why This Matters</h6>
+  <div class="alert alert-warning small">
+    Bengali texts often repeat verbs like <code>বলল</code>, <code>করেছে</code>, or <code>জানাল</code> that add noise but little thematic value. Removing these can dramatically improve topic interpretability, especially in dialogue-heavy or scanned texts.
+  </div>
+
+  <h6 class="mt-5 fw-semibold">Before and After (Example)</h6>
+  <p><strong>Topic before custom stopwords:</strong></p>
+  <div class="bg-light border p-2 small mb-3">বলল, মানুষ, কথা, আছে, জানতে, বলল, জানাল, হয়েছে, কথা, কথা</div>
+
+  <p><strong>Topic after:</strong></p>
+  <div class="bg-light border p-2 small">মানুষ, জানতে, হয়েছে, জীবন, সমস্যা, সমাজ, পরিবর্তন</div>
+
+  <h6 class="mt-4 fw-semibold">Example Stopword File Format</h6>
+  <p>Use plain text with one term per line. Here's a sample:</p>
+  <pre class="small border bg-light p-2">
+রামু
+বলল
+এই
+কিন্তু
+আছে
+পৃষ্ঠা
+***</pre>
+
+  <h6 class="mt-4 fw-semibold">Suggestions for Building Your List</h6>
+  <ul>
+    <li><strong>Dialogue-heavy texts:</strong> Add verbs like <code>বলল</code>, <code>জিজ্ঞেস করল</code>, and common speaker names</li>
+    <li><strong>OCR-based corpora:</strong> Remove noise like <code>***</code>, <code>@#$%</code>, <code>পৃষ্ঠা</code>, or line breaks</li>
+    <li><strong>Formulaic language:</strong> Filter phrases used repeatedly in news intros or summaries</li>
+    <li><strong>Analytical texts:</strong> Consider removing structural words like <code>উপসংহার</code>, <code>সূচনা</code>, etc. if they appear too frequently</li>
+  </ul>
+
+  <div class="bg-light p-3 small rounded mt-4">
+    <strong>Reminder:</strong> Stopword removal happens <strong>before</strong> modelling. Any word in your list is excluded from the model’s vocabulary entirely — it won’t appear in any topic or visualisation.
+  </div>
+</div>
+
+
+<div id="usage-params" class="usage-pane">
+  <h5 class="doc-section-title">Parameters</h5>
+
+  <p>
+    The parameters you choose during upload affect how the model processes your texts and extracts topics. Some are intuitive, others more technical. Begin with recommended ranges — then adjust gradually based on the interpretability of your output.
+  </p>
+
+  <h6 class="mt-4 fw-semibold" style="color: #0D85D8;">Basic Parameters</h6>
+
+  <p><strong><code>Number of Topics</code></strong>  
+    <br>This controls how many thematic clusters the model will attempt to identify. It’s not a fixed setting — and depends heavily on your corpus:
+  </p>
+  <ul class="small">
+    <li><strong>Small, focused corpora (e.g., 30–50 short documents):</strong> try <code>5–10</code> topics</li>
+    <li><strong>Medium corpora (100–200 documents with some variation):</strong> try <code>10–20</code></li>
+    <li><strong>Large, diverse corpora (e.g., 500+ documents or full-length essays):</strong> you can try <code>30–50+</code>, but interpret with care</li>
+  </ul>
+  
+  <div class="alert alert-warning small mt-2">
+    More topics isn’t always better. Too many can produce overlapping, incoherent, or redundant results — especially if your documents are short or formulaic.
+  </div>
+  
+  <p class="small mt-2">
+    <strong>Tip:</strong> If topics feel repetitive or unclear, reduce the number. If topics feel too broad, increase gradually. The goal is not coverage — it’s clarity.
+  </p>
+  
+
+  <p><strong><code>Stemming</code></strong>  
+    <br>Reduces inflected Bengali words to root forms (e.g., <code>খাচ্ছে</code>, <code>খেয়েছে</code> → <code>খা</code>). Recommended for news or analytical prose. For highly literary or poetic texts, consider disabling it to preserve stylistic variation.
+  </p>
+  <div class="alert alert-warning small mt-3">
+    <strong>Why This Matters for Bengali:</strong> Morphological complexity often splits related forms. Stemming helps merge them into clearer thematic signals.
+  </div>
+
+  <h6 class="mt-5 fw-semibold" style="color: #0D85D8;">Advanced Options</h6>
+
+  <p><strong><code>Remove Common Words</code></strong>  
+    <br>Automatically discards the top <em>N</em> most frequent words. These often include generic Bengali verbs or connectors (<code>জানে</code>, <code>বলল</code>, <code>কথা</code>).
+  </p>
+  <ul class="small">
+    <li><strong>Typical range:</strong> <code>5–15</code></li>
+    <li>Start with <code>10</code> for mid-size corpora (e.g., 100–300 files)</li>
+  </ul>
+
+  <p><strong><code>Remove Rare Words</code></strong>  
+    <br>This setting filters out words that appear in very few documents — they may be typos, one-off names, or noise. These words rarely help with topic clarity because they don’t connect across documents.
+  </p>
+  <ul class="small">
+    <li><code>no_below</code>: Minimum number of documents a word must appear in</li>
+    <li><strong>Recommended:</strong> <code>3–10</code></li>
+    <li><strong>Short documents:</strong> try lower values like <code>2</code></li>
+    <li><strong>Longer or cleaner documents:</strong> use <code>5–10</code> to reduce rare clutter</li>
+  </ul>
+  
+  <p><strong><code>Remove Common Words</code></strong>  
+    <br>This setting removes extremely frequent words — terms that appear in nearly every document. These are often uninformative (e.g. <code>মানুষ</code>, <code>বলল</code>, <code>এই</code>) and can blur topic boundaries.
+  </p>
+  <ul class="small">
+    <li><code>no_above</code>: Maximum proportion of documents a word can appear in</li>
+    <li><strong>Recommended:</strong> <code>0.5–0.7</code> (i.e., remove words that appear in 50–70% of documents)</li>
+    <li>For smaller or more repetitive corpora, lean toward <code>0.5</code></li>
+  </ul>
+  
+
+  <p><strong><code>Alpha</code> and <code>Eta</code></strong>  
+    <br>These govern sparsity:
+  </p>
+  <ul class="small">
+    <li><strong>Alpha:</strong> Lower values → fewer topics per document (sharper focus)</li>
+    <li><strong>Eta:</strong> Lower values → fewer words per topic (sharper boundaries)</li>
+  </ul>
+  <div class="alert alert-warning small mt-3">
+    <strong>Example:</strong> In the 172-file news corpus, <code>alpha = 0.5</code> and <code>eta = 0.5</code> produced clean, interpretable topics. But outcomes depend on corpus structure — experiment to find what works best for your data.
+  </div>
+  <ul class="small">
+    <li><strong>For focused corpora (news, essays):</strong> try <code>0.3–0.5</code> for both</li>
+    <li><strong>For thematic blending (fiction, interviews):</strong> try <code>0.6–0.8</code></li>
+    <li><strong>Leave as default</strong> unless you're comfortable fine-tuning</li>
+  </ul>
+
+  <p>
+    <strong>Alpha</strong> and <strong>Eta</strong> are not just technical settings — they’re assumptions the model makes about your corpus.
+  </p>
+  <p>
+    <strong>Alpha (α)</strong> reflects how many topics a document is <em>expected</em> to contain. A low alpha assumes documents are focused on one or two themes; a high alpha assumes they blend many.
+  </p>
+  <p>
+    <strong>Eta (η)</strong> reflects how many words each topic is <em>expected</em> to use prominently. A low eta assumes each topic is defined by a few signature words; a high eta assumes topics are more diffuse and general.
+  </p>
+  <p>
+    These assumptions don’t fix the outcome — they shape the model’s expectations during training. The closer they align with the nature of your corpus, the more interpretable your topics are likely to be.
+  </p>
+  
+
+  <p><strong><code>Chunk Size</code></strong>  
+    <br>Controls how many documents are processed at once during training. This affects speed and memory use — not model quality.
+  </p>
+  <ul class="small">
+    <li><strong>Default:</strong> <code>100–200</code></li>
+    <li>Raise only for large datasets (>500 docs)</li>
+  </ul>
+
+  <p><strong><code>Multicore Training</code></strong>  
+    <br>If enabled, Anvay will use multiple CPU cores (if available) to speed up model training.
+  </p>
+
+  <dt data-term="per-word topics"><code>Per-word Topics</code></dt>
+  <dd>
+    Stores which topic each individual word in the corpus is most strongly associated with, based on its topic probability.  
+    This enables <strong>token-level visualisations</strong> — for example:
+    <ul class="mb-2">
+      <li>In a <em>heatmap</em>, each word can be colour-coded by its dominant topic</li>
+      <li>In <em>document previews</em>, it allows highlighting which words signal which topics in a sentence</li>
+    </ul>
+    Without this setting, topics are only assigned to entire documents — not individual words.  
+    Enabling <code>per-word topics</code> is useful for interpretive close reading, quality diagnostics, and visual clarity, though it slightly increases memory usage.
+  </dd>
+  
+
+  <div class="bg-light p-3 small rounded mt-4">
+    <strong>Tip:</strong> If you're unsure where to begin, use the walkthrough settings — or Anvay’s defaults. The best way to improve your results is not to change everything at once. Tweak <em>one</em> parameter, rerun, then interpret.
+  </div>
+</div>
+
+
+<!-- Visualizations -->
+  
+  <div id="usage-viz" class="usage-pane">
+    <h5 class="doc-section-title">4. Visualisations</h5>
+    <p>
+      Each visualisation in <em>anvay</em> helps you explore your topic model from a different angle: identifying overlap, strength, evolution, and prevalence. The charts below use mock data to explain how each works and what you can learn from it.
+    </p>
+    <div class="alert alert-info small mt-3">
+      💡 <strong>Pro Tip:</strong> Hover over any chart to explore tooltips and interactive details.
+    </div>
+    <p class="mt-3">
+      No single chart can capture the complexity of a topic model. Each visualisation in <em>anvay</em> reveals a different facet — from how topics relate to each other, to how they spread across documents and time.
+    </p>
+    
+    
+  
+    <!-- 1. Topic Similarity Scatterplot -->
+    <h6 class="mt-4">1. Topic Similarity Scatterplot</h6>
+    <iframe src="{{ url_for('static', filename='results/plotly/example_scatter.html') }}" width="600" height="600"></iframe>
+    <p class="small text-muted">
+      <strong>Closer dots = more similar topics.</strong> This chart plots topics based on their word distributions. Topics that are close together share many high-weight words. Use this to identify overlapping themes or cluster boundaries.
+    </p>
+    
+    
+  
+    <!-- 2. Topic × Word Heatmap -->
+    <h6 class="mt-5">2. Topic × Word Heatmap</h6>
+    <iframe src="{{ url_for('static', filename='results/plotly/example_heatmap.html') }}" width="600" height="600"></iframe>
+    <p class="small text-muted">
+      <strong>Brighter cells = stronger topic–word link.</strong> Each cell shows how strongly a word is associated with a topic. Use this to explore overlap and word distribution depth.
+    </p>
+    
+    <!-- 3. Topic Prevalence Pie Chart -->
+    <h6 class="mt-5">3. Topic Prevalence Pie Chart</h6>
+    <iframe src="{{ url_for('static', filename='results/plotly/example_pie_numbered.html') }}" width="600" height="600"></iframe>
+    <p class="small text-muted">
+      <strong>Bigger slices = more dominant topics.</strong> This chart shows how much each topic contributes to the corpus overall.
+    </p>
+    
+  
+    <!-- 4. Top Word Frequency -->
+    <h6 class="mt-5">4. Top Word Frequency</h6>
+    <iframe src="{{ url_for('static', filename='results/plotly/example_top_word_frequency.html') }}" width="600" height="600"></iframe>
+    <p class="small text-muted">
+      <strong>High bars = frequent words in your corpus.</strong> Use this to inspect lexical dominance and identify potential noise.
+    </p>
+    
+  
+    <!-- 5. Topic-Word Network Graph -->
+    <h6 class="mt-5">5. Topic–Word Network Graph</h6>
+    <iframe src="{{ url_for('static', filename='results/plotly/example_plotly_word_network.html') }}" width="600" height="600"></iframe>
+    <p class="small text-muted">
+      <strong>Each topic node links to its top words.</strong> Blue circles are topics, grey ones are words. Helps visualise word overlap and outliers.
+    </p>
+    
+  
+    <!-- 6. Topic Evolution Over Time -->
+    <h6 class="mt-5">6. Topic Evolution Over Time</h6>
+    <iframe src="{{ url_for('static', filename='results/plotly/example_topic_evolution.html') }}" width="600" height="600"></iframe>
+    <p class="small text-muted">
+      <strong>Each line shows a topic's weight across time.</strong> Use this to detect historical shifts or evolving discourse patterns.
+    </p>
+    
+    <!-- 7. Topic Distribution Across Documents -->
+    <h6 class="mt-5">7. Topic Distribution Across Documents</h6>
+    <iframe src="{{ url_for('static', filename='results/plotly/example_topic_distribution_scatter.html') }}" width="600" height="600"></iframe>
+    <p class="small text-muted">
+      <strong>Each dot shows a topic's weight in one document.</strong> Useful for detecting niche vs. broad topics and skewed presence.
+    </p>
+    
+  
+  
+    <!-- 8. Topic Distance Dendrogram -->
+    <h6 class="mt-5">8. Topic Distance (Clustering Dendrogram)</h6>
+    <img src="{{ url_for('static', filename='results/plotly/example_topic_dendrogram.png') }}" alt="Topic Dendrogram" class="img-fluid rounded border">
+    <p></p>
+    <p class="small text-muted">
+      <strong>Shorter branches = more similar topics.</strong> This dendrogram clusters topics by semantic similarity. Helps spot overlap or hierarchy.
+    </p>
+    
+  </div>
+
+  
+<!-- 5. Report -->
+<div class="usage-pane" id="usage-report">
+  <h5 class="doc-section-title">5. Report</h5>
+  <p>
+    The <em>Report</em> tab gives you a structured breakdown of the model’s results — from high-level training stats to granular, paragraph-level illustrations. It’s designed to support interpretive work, especially when working with complex or literary texts.
+  </p>
+
+  <div class="bg-light p-3 mb-4 rounded">
+    <h6 class="fw-semibold mb-2">Table of Content</h6>
+    <ul class="list-unstyled mb-0">
+      <li><a href="#report-training" class="text-decoration-none">1. Training Overview</a></li>
+      <li><a href="#report-topwords" class="text-decoration-none">2. Top Words per Topic</a></li>
+      <li><a href="#report-topicweights" class="text-decoration-none">3. Topic Weights per Document</a></li>
+      <li><a href="#report-topterms" class="text-decoration-none">4. Top terms in the Corpus</a></li>
+      <li><a href="#report-prevalence" class="text-decoration-none">5. Topic Prevalence</a></li>
+      <li><a href="#report-sentences" class="text-decoration-none">6. Representative Sentences</a></li>
+
+    </ul>
+  </div>
+
+<!-- 1. Training Overview -->
+<h6 class="mt-4 fw-semibold" id = "report-training">1. Training Overview</h6>
+<p>
+  This section is designed to help you tune your topic model by reflecting on how the input data and training parameters shaped the model. It provides a snapshot of your corpus and the internal diagnostics logged during training. Used carefully, this is where interpretability begins.
+</p>
+
+<h6 class="mt-4">Corpus Statistics</h6>
+<p>
+  These values reflect the input that the model actually received, *after* all filtering and preprocessing. They help you assess whether your model is working with enough — and the right kind of — data.
+</p>
+<ul>
+  <li><strong>Total Documents:</strong> Each file uploaded is treated as one document. Fewer than 30 documents usually leads to unstable, overgeneralised topics. Over 100 allows more granularity.</li>
+
+  <li><strong>Average Document Length:</strong> If this is under <code>300 tokens</code>, topics may feel thin or generic. In such cases, consider:
+    <ul>
+      <li>Reducing stopword or rare word removal</li>
+      <li>Disabling stemming</li>
+      <li>Merging short documents</li>
+    </ul>
+  </li>
+
+  <li><strong>Vocabulary Size:</strong> The number of unique tokens remaining after filtering. A range between <code>1,000–10,000</code> is often ideal for LDA. 
+    <ul>
+      <li>Too low: try lowering <code>no_below</code> or disabling <code>remove common words</code></li>
+      <li>Too high: consider adding custom stopwords or raising <code>no_above</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h6 class="mt-4">Training Log</h6>
+<p>
+  These logs come directly from the LDA engine (gensim), grouped into stages. They’re not just for debugging — they help you interpret model behaviour and stability.
+</p>
+<ul>
+  <li><strong>Token Filtering:</strong> Shows how many terms were discarded by your frequency thresholds. If too many tokens are discarded, your topics may become incoherent.</li>
+
+  <li><strong>Training Configuration:</strong> Confirms what values were used for parameters like <code>alpha</code>, <code>eta</code>, and <code>chunksize</code>. These affect sparsity and learning rate.</li>
+
+  <li><strong>Perplexity Estimates:</strong> This is an internal measure of how surprised the model is by the data. Lower perplexity is usually better — but not always. Watch for:
+    <ul>
+      <li><strong>Steady decline and flattening:</strong> good sign — model has stabilised</li>
+      <li><strong>Sharp drops late in training:</strong> may suggest overfitting</li>
+      <li><strong>Rising after flattening:</strong> potential overtraining — try fewer <code>passes</code></li>
+    </ul>
+  </li>
+
+  <li><strong>Final Model Info:</strong> Marks the lifecycle stages of the model. Mostly useful for confirming that training completed without interruption.</li>
+</ul>
+
+<h6 class="mt-4 fw-semibold">What to Do With This</h6>
+<ul>
+  <li>
+    If your topics seem repetitive, generic, or incoherent, start by checking your <strong>average document length</strong> and <strong>vocabulary size</strong>.
+  </li>
+  <li>
+    If training logs show <strong>rapid convergence but poor topics</strong>, try increasing <code>passes</code> or adjusting <code>alpha</code> for more topic sparsity.
+  </li>
+  <li>
+    If <strong>perplexity never settles</strong>, it may indicate noisy input or a mismatch between the number of topics and the size of the corpus.
+  </li>
+  <li>
+    If you see <strong>“keeping N of M words”</strong> in token filtering, and N is very low, revisit your stopwords and frequency thresholds.
+  </li>
+</ul>
+
+<div class="bg-light p-3 small rounded">
+  <strong>Reminder:</strong> You don’t need to understand every log line. But if your output looks wrong, this is the first place to look — and the best place to learn.
+</div>
+
+<p class="small text-muted mt-4"><a href="#usage-report" class="text-decoration-none">↑ Back to top</a></p>
+
+
+ <!-- 2. Top Words per Topic -->
+<h6 class="mt-5 fw-semibold" id = "report-topwords">2. Top Words per Topic</h6>
+<p>
+  This section shows the top 10 words in each topic, ranked by their probability of occurring within that topic. These are taken directly from the model — no filtering, smoothing, or interpretation has been applied.
+</p>
+
+<p>
+  In technical terms, this is based on <strong>p(w | t)</strong> — the probability of a word given a topic. The higher the value, the more representative that word is for that topic. However, this measure does not account for whether the word is <em>distinctive</em> across topics.
+</p>
+
+<h6 class="mt-4">How to Interpret</h6>
+<ul>
+  <li><strong>Repetition across topics:</strong> If the same word appears in many topics, it may be common across the corpus — not distinctive. You may want to add it to your custom stopwords.</li>
+  <li><strong>Unusual terms:</strong> Some topics may include broken suffixes, particles, or OCR noise. These are signs of preprocessing issues, not model failure.</li>
+  <li><strong>Use your judgement:</strong> These word lists are prompts. Try to label each topic yourself — what theme or discourse might these words suggest?</li>
+  <li><strong>Check against documents:</strong> Return to the representative sentences and paragraphs. Do the top words actually appear in those contexts?</li>
+</ul>
+
+<h6 class="mt-4">Download and Use</h6>
+<p>
+  The top word lists are available in <code>CSV</code> and <code>TXT</code> format for export. Many users annotate these manually with topic names or notes, then revisit the corpus with a clearer interpretive frame.
+</p>
+
+<div class="bg-light p-3 small rounded">
+  <strong>Tip:</strong> These are the words the model “believes” belong to each topic — but the model doesn’t understand meaning. That part is yours.
+</div>
+
+<h6 class="mt-4">How to Read This Table</h6>
+<p>
+  Each row shows a document, and each column shows the strength of a particular topic in that document. The values are probabilities — and they reflect how much that topic contributes to the document overall.
+</p>
+
+<p><strong>Example:</strong> Suppose a document has the following topic weights:
+</p>
+<pre class="bg-light p-2 small border rounded">Topic 2: 0.61, Topic 4: 0.24, Topic 7: 0.11</pre>
+<p class="mb-3">This means:
+</p>
+<ul>
+  <li><strong>Topic 2</strong> is strongly dominant in this document — likely the main theme</li>
+  <li><strong>Topic 4</strong> plays a secondary role</li>
+  <li><strong>Topic 7</strong> is minor but present — perhaps just a passing motif or shared vocabulary</li>
+</ul>
+
+
+<h6 class="mt-4">What to Watch For</h6>
+<ul>
+  <li><strong>Flat profiles:</strong> If all weights are between 0.05 and 0.15, the document may not have a clear thematic identity — or the model may be overfitting.</li>
+  <li><strong>Dominant patterns:</strong> If one topic dominates many documents, the number of topics may be too low.</li>
+  <li><strong>Missing topics:</strong> If a topic is missing from many documents, it may be too narrow or poorly formed.</li>
+</ul>
+
+<h6 class="mt-4">Why Some Values Are Blank or Zero</h6>
+<p>
+  <em>anvay</em> uses a probability threshold (<code>minimum_probability = 0.1</code>) when querying the model. This means:
+</p>
+<ul>
+  <li>Any topic that contributes less than 10% to a document will not appear in its weight vector.</li>
+  <li>This helps reduce noise and focus attention on more meaningful associations.</li>
+</ul>
+
+<h6 class="mt-4">Next Steps</h6>
+<p>
+  Use this table to identify which documents best represent each topic — then refer to the paragraph view to see what those documents actually say. This two-step reading (weight + text) is key to interpretability.
+</p>
+
+<div class="bg-light p-3 small rounded">
+  <strong>Tip:</strong> These values are not definitive labels. They’re signals. Use them to ask: where is this topic showing up — and what form does it take?
+</div>
+
+<p class="small text-muted mt-4"><a href="#usage-report" class="text-decoration-none">↑ Back to top</a></p>
+
+
+<!-- 3. Topic Weights per Document -->
+<h6 class="mt-5 fw-semibold" id = "report-topicweights">3. Topic Weights per Document</h6>
+<p>
+  This section shows how each topic contributes to each document, based on the topic model’s output. The weights are probabilistic, not categorical — every document is a mixture of topics, and every topic appears in multiple documents to varying degrees.
+</p>
+
+<p>
+  Each value represents <strong>p(t | d)</strong> — the model’s estimate of how likely topic <code>t</code> is to occur in document <code>d</code>. The sum of all topic weights for a single document is 1.0.
+</p>
+
+<h6 class="mt-4">How to Read This Table</h6>
+<ul>
+  <li>
+    <strong>High values (e.g. ≥ 0.6):</strong> indicate a document where that topic is dominant. These are often good candidates for interpretation or representative examples.
+  </li>
+  <li>
+    <strong>Flat distributions:</strong> If a document has many topics with small weights (e.g. 0.05–0.15), it may not fit cleanly into any one theme — or the model may be overfitting.
+  </li>
+  <li>
+    <strong>Repeated patterns:</strong> If the same topic dominates across many documents, your model may be too coarse (try increasing the number of topics).
+  </li>
+  <li>
+    <strong>Missing weights:</strong> A topic with <code>0.0</code> in a document does not appear there, or appears below the model’s threshold.
+  </li>
+</ul>
+
+<h6 class="mt-4">Download Options</h6>
+<p>
+  This matrix is available for download in <code>CSV</code> and <code>TXT</code> formats. These files are useful for:
+</p>
+<ul>
+  <li>Filtering documents by topic strength</li>
+  <li>Building document-topic visualisations outside anvay</li>
+  <li>Comparing topic prevalence across authors, genres, or time periods</li>
+</ul>
+
+<div class="bg-light p-3 small rounded">
+  <strong>Interpretation Tip:</strong> There is no single “main topic” per document. These weights are gradients, not labels. Think in terms of blends, not buckets.
+</div>
+
+<p class="small text-muted mt-4"><a href="#usage-report" class="text-decoration-none">↑ Back to top</a></p>
+
+
+<!-- 4. Top Terms -->
+<h6 class="mt-5 fw-semibold" id="report-topterms">4. Top Terms</h6>
+<p>
+  These are the most frequently occurring words in the corpus after preprocessing. They are not tied to any specific topic but reflect recurring motifs and dominant vocabulary. If you see generic verbs, numbers, or formatting tokens here, consider adding them to your stopword list.
+</p>
+
+<p class="small text-muted mt-4"><a href="#usage-report" class="text-decoration-none">↑ Back to top</a></p>
+
+  <!-- 5. Topic Prevalence -->
+<h6 class="mt-5 fw-semibold" id="report-prevalence">5. Topic Prevalence</h6>
+<p>
+  Topic prevalence indicates how strongly each topic appears across the entire corpus. It is calculated by summing the topic's weight across all documents. Although topic weights do not have a fixed scale, a higher value generally means that the topic appears more consistently and with greater intensity in the dataset.
+</p>
+<p>
+  This table helps you identify which topics dominate the corpus overall — but note that very high values can sometimes reflect overfitting or topic redundancy. Use this view in combination with the document-level weights and top words to evaluate coverage and specificity.
+</p>
+
+<p class="small text-muted mt-4"><a href="#usage-report" class="text-decoration-none">↑ Back to top</a></p>
+
+
+   <!-- 5. Representative Sentences -->
+   <h6 class="mt-5 fw-semibold" id="report-sentences">6. Representative Sentences</h6>
+   <p>
+     For each topic, <em>anvay</em> displays one real sentence from the dataset where that topic is most strongly represented. These are not summaries — they are actual sentences taken from the original files.
+   </p>
+   <p>
+     Each sentence is accompanied by the filename and the topic’s weight in that document. If no sentence strongly overlaps with the top words for that topic, it is marked as <span class="text-warning fw-semibold">⚠ Low Confidence</span>.
+   </p>
+ 
+   <blockquote class="blockquote small text-muted">
+     “Topic 7: শ্রমিক, মজুরি, কারখানা → appears most clearly in a sentence describing a workers’ protest speech. The texture is emotional, not abstract.”
+   </blockquote>
+ 
+   <p class="small text-muted mt-4"><a href="#usage-report" class="text-decoration-none">↑ Back to top</a></p>
+
+</div>
+
+
+<!-- WALKTHROUGH-->
+
+<div class="usage-pane" id="usage-walk">
+  <h5 class="doc-section-title">Walkthrough: Bengali News Corpus (172 Files)</h5>
+
+  <p>This walkthrough takes you through a full topic modelling run using <strong>anvay</strong>. We’ve used a curated set of 172 Bengali news articles. You can download the same corpus and replicate the results using the parameters described below.</p>
+
+  <div class="border rounded p-3 mb-4 bg-light">
+    <h6 class="mb-3 text-primary">Walkthrough at a Glance</h6>
+    <div class="row text-center">
+      <div class="col-6 col-md">
+        <div class="mb-2"><i class="bi bi-file-zip" style="font-size: 1.5rem;"></i></div>
+        <div class="fw-semibold">Download</div>
+        <small class="text-muted">Get the sample corpus (172 news articles)</small>
+      </div>
+      <div class="col-6 col-md">
+        <div class="mb-2"><i class="bi bi-sliders" style="font-size: 1.5rem;"></i></div>
+        <div class="fw-semibold">Configure</div>
+        <small class="text-muted">Use our recommended model parameters</small>
+      </div>
+      <div class="col-6 col-md">
+        <div class="mb-2"><i class="bi bi-bar-chart-line" style="font-size: 1.5rem;"></i></div>
+        <div class="fw-semibold">Train</div>
+        <small class="text-muted">Run the topic model on your system</small>
+      </div>
+      <div class="col-6 col-md">
+        <div class="mb-2"><i class="bi bi-question-circle" style="font-size: 1.5rem;"></i></div>
+        <div class="fw-semibold">Interpret</div>
+        <small class="text-muted">Explore themes using guiding questions</small>
+      </div>
+      <div class="col-6 col-md">
+        <div class="mb-2"><i class="bi bi-images" style="font-size: 1.5rem;"></i></div>
+        <div class="fw-semibold">Visualise</div>
+        <small class="text-muted">Scroll through topic maps and graphs</small>
+      </div>
+    </div>
+  </div>
+  
+
+ 
+    <div class="mb-4">
+      <h6 style="color: #0D85D8; font-weight: 600; letter-spacing: 0.5px;">STEP 1: Download the Corpus</h6>
+      <p>We’ve provided a sample dataset of 172 real-world news articles. These are stored in <code>.txt</code> format inside a <code>.zip</code> archive.</p>
+      <div class="download-link mb-3">
+        <a href="/static/sample_corpus/news_corpus.zip" class="btn btn-sm btn-outline-primary">Download Sample Corpus (news_corpus.zip)</a>
+      </div>
+    </div>
+    <p></p>
+    
+    
+
+    <div class="mb-4">
+      <h6 style="color: #0D85D8; font-weight: 600; letter-spacing: 0.5px;">STEP 2: Use the Recommended Parameters</h6>
+      <p>To ensure stable and interpretable topics, use the following parameters in your analysis:</p>
+      <table class="table table-sm table-bordered w-auto">
+        <tbody>
+          <tr><th>num_topics</th><td>5</td></tr>
+          <tr><th>passes</th><td>5</td></tr>
+          <tr><th>iterations</th><td>40</td></tr>
+          <tr><th>alpha</th><td>0.5</td></tr>
+          <tr><th>eta</th><td>0.5</td></tr>
+          <tr><th>no_below</th><td>3</td></tr>
+          <tr><th>no_above</th><td>0.5</td></tr>
+          <tr><th>remove_common_words</th><td>10</td></tr>
+          <tr><th>use_stemming</th><td>True</td></tr>
+          <tr><th>random_state</th><td><em>Not fixed</em></td></tr>
+          <tr><th>named entity filtering</th><td><em>None</em></td></tr>
+        </tbody>
+      </table>
+      <p class="small text-muted">These settings were selected after extensive testing across multiple runs. They balance clarity, separation between topics, and interpretability — without forcing deterministic output or removing named entities.</p>
+    </div>
+
+    <div class="mb-4">
+      <h6 style="color: #0D85D8; font-weight: 600; letter-spacing: 0.5px;">STEP 3: Understand Variation and Recurrence</h6>
+      <p>LDA is a <strong>probabilistic model</strong>. This means that even if you use the exact same settings and corpus, your output may not be identical to what you see here. That’s okay — and expected. Topics may shift slightly in phrasing or weight, but thematic zones tend to remain consistent. Think of your model not as returning fixed truths, but as revealing <em>underlying structures of meaning</em> within the corpus.</p>
+    </div>
+  
+
+    <div class="mb-4">
+      <h6 style="color: #0D85D8; font-weight: 600; letter-spacing: 0.5px;">STEP 4: Interpreting the Topics</h6>
+      <p>Here are the five topics Anvay discovered in this run. We don’t assign rigid names. Instead, we invite you to explore each topic through a question — to encourage discovery, not closure.</p>
+      <table class="table table-sm table-striped">
+        <thead>
+          <tr><th>Topic</th><th>Top Words</th><th>Interpretive Prompt</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Topic 0</td><td>ছাত্রছাত্রীদের, রাজ্যপাল, বিশ্ববিদ্যালয়ের, চাপ, প্রস্তাব...</td><td>What tensions or conflicts emerge in student and university politics?</td></tr>
+          <tr><td>Topic 1</td><td>পুরস্কার, শো, বিতর্কের, ওরফে, শাসক...</td><td>How do media performances and awards intersect with political identity?</td></tr>
+          <tr><td>Topic 2</td><td>প্রধানমন্ত্রীর, সভায়, সিসিটিভি, পালিত, শতাব্দী...</td><td>What kinds of commemorative or surveillance-linked events recur in state discourse?</td></tr>
+          <tr><td>Topic 3</td><td>পুজোর, কোচ, স্টেশনে, প্রচারের, ফাঁকে...</td><td>Are there seasonal rhythms (festivals, campaigns) that structure everyday news?</td></tr>
+          <tr><td>Topic 4</td><td>ধোনি, কোহলি, উইকেট, শাহরুখ, টেস্ট...</td><td>How do sport and celebrity shape public imagination across news categories?</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mb-4">
+      <h6 style="color: #0D85D8; font-weight: 600; letter-spacing: 0.5px;">STEP 5: Visualise the Results</h6>
+      <p>We’ve generated static visualisations from this model run. These help you understand the relationships between topics, documents, and words. Use the buttons below the window to browse one image at a time.</p>
+
+      <div class="mb-3 mt-3" style="width: 600px; height: 400px; overflow: hidden; border: 1px solid #ccc; padding: 10px; background: #f8f9fa;">
+        <img id="vizImage" src="/static/images/newplot (1).png" alt="Visualisation" style="max-width: 100%; max-height: 100%;">
+      </div>
+
+      <div class="mb-3">
+        <button class="btn btn-sm btn-outline-primary me-2" onclick="prevImage()">Previous</button>
+        <button class="btn btn-sm btn-outline-primary" onclick="nextImage()">Next</button>
+      </div>
+
+      <script>
+        const images = [
+          "/static/images/newplot (1).png",
+          "/static/images/newplot (2).png",
+          "/static/images/newplot (3).png",
+          "/static/images/newplot (4).png",
+          "/static/images/newplot (5).png",
+          "/static/images/newplot (6).png",
+          "/static/images/newplot (7).png",
+          "/static/images/newplot (8).png"
+        ];
+        let currentIndex = 0;
+        function showImage(index) {
+          const img = document.getElementById("vizImage");
+          img.src = images[index];
+        }
+        function prevImage() {
+          currentIndex = (currentIndex - 1 + images.length) % images.length;
+          showImage(currentIndex);
+        }
+        function nextImage() {
+          currentIndex = (currentIndex + 1) % images.length;
+          showImage(currentIndex);
+        }
+      </script>
+
+      <p class="small text-muted">
+        These plots represent different aspects of the topic model — clustering, PCA mapping, topic-word relations, and how topics vary across documents. Your own run may produce slightly different patterns, but core structures should remain consistent.
+      </p>
+    </div>
+
+
+  <h6 style="color: #0D85D8; font-weight: 600; letter-spacing: 0.5px;">NOTE: Representative Documents</h6>
+  <p>For each topic, Anvay identifies the document that most strongly represents it (based on topic weight). These can help anchor your interpretation.</p>
+  <ul>
+    <li>Topic 0 — <code>doc_167.txt</code></li>
+    <li>Topic 1 — <code>doc_549.txt</code> <span class="text-warning">(low confidence)</span></li>
+    <li>Topic 2 — <code>doc_250.txt</code></li>
+    <li>Topic 3 — <code>doc_828.txt</code></li>
+    <li>Topic 4 — <code>doc_646.txt</code></li>
+  </ul>
+  <p class="small text-muted">“Low confidence” means the sentence shown for that topic had minimal token overlap with the top words — but was still the best match by topic weight.</p>
+</div>
+
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="tab-content" id="help">
+  <h5 class="doc-section-title">Help & Errors</h5>
+  <p>
+    This section answers common questions and explains issues that may arise when using <em>anvay</em>. Topic modelling is sensitive to your corpus and settings — so if things seem off, you're not alone.
+  </p>
+
+  <hr class="my-4" />
+
+  <h6 class="fw-semibold text-primary">Why does it say “Dictionary is empty after filtering”?</h6>
+  <p>
+    This means no words survived preprocessing. It usually happens when:
+    <ul>
+      <li>You set <code>no_below</code> too high or <code>no_above</code> too low</li>
+      <li>Your texts are too short, or your filters removed nearly everything</li>
+      <li>You combined heavy stopwording with rare word removal</li>
+    </ul>
+    <strong>What to do:</strong> Lower <code>no_below</code>, reduce filtering, and check your documents are long enough.
+  </p>
+
+  <h6 class="fw-semibold text-primary">Why do all my topics look the same?</h6>
+  <p>
+    If multiple topics use similar words or feel indistinguishable, it might be because:
+    <ul>
+      <li>Your number of topics is too high for the dataset</li>
+      <li>Common words haven’t been filtered out properly</li>
+      <li>Your documents follow a formula (like news intros or transcripts)</li>
+    </ul>
+    <strong>What to do:</strong> Reduce the number of topics, filter common words more aggressively, or use a custom stopword list.
+  </p>
+
+  <h6 class="fw-semibold text-primary">Why were some of my documents skipped?</h6>
+  <p>
+    Documents may be excluded if:
+    <ul>
+      <li>They are under ~100 tokens after preprocessing</li>
+      <li>They contain mostly filler words or invalid characters</li>
+      <li>They failed encoding validation (only UTF-8 is supported)</li>
+    </ul>
+    <strong>What to do:</strong> Use longer texts, check your token counts, and clean noisy documents before uploading.
+  </p>
+
+  <h6 class="fw-semibold text-primary">Why isn’t anything happening when I click Submit?</h6>
+  <p>
+    If the interface seems unresponsive, check whether:
+    <ul>
+      <li>You uploaded more than 800 files</li>
+      <li>Your total upload exceeds 10MB</li>
+      <li>You've accidentally included a non-<code>.txt</code> file or a file that isn’t UTF-8 encoded</li>
+    </ul>
+    <strong>What to do:</strong> Remove problematic files, stay under the file and size limits, and ensure encoding is correct.
+  </p>
+
+  <h6 class="fw-semibold text-primary">Why are the results messy or unclear?</h6>
+  <p>
+    This is a normal part of working with topic models. If topics feel noisy, repetitive, or unintelligible, it's often a sign that:
+    <ul>
+      <li>Your documents are too short or inconsistent</li>
+      <li>Your parameters (like alpha or eta) are poorly tuned</li>
+      <li>Your corpus needs better stopwording or filtering</li>
+    </ul>
+    <strong>What to do:</strong> Iterate. Change one setting at a time, rerun, and compare. Interpretation improves with each pass.
+  </p>
+</div>
+
+
+
+<div class="tab-content" id="glossary">
+  <h4 class="doc-section-title">Glossary</h4>
+
+  <div class="mb-4">
+    <input type="text" id="glossarySearch" class="form-control" placeholder="Search glossary..." oninput="filterGlossary()">
+  </div>
+
+  <!-- Core Concepts -->
+  <h6 class="mt-4 fw-semibold">Core Concepts</h6>
+  <dl class="mb-4 glossary-section">
+    <dt data-term="topic modelling"><code>Topic Modelling</code></dt>
+    <dd>A method to uncover hidden themes in a collection of texts based on word co-occurrence patterns.</dd>
+    <dt data-term="lda"><code>LDA (Latent Dirichlet Allocation)</code></dt>
+    <dd>A probabilistic model that treats each document as a mixture of topics, and each topic as a distribution over words.</dd>
+    <dt data-term="topic"><code>Topic</code></dt>
+    <dd>A statistical cluster of words that frequently occur together. Interpreted as a “theme.”</dd>
+    <dt data-term="document"><code>Document</code></dt>
+    <dd>A single text file uploaded to <em>anvay</em>. Each document is treated as a unit of analysis.</dd>
+    <dt data-term="token"><code>Token</code></dt>
+    <dd>An individual word or term, usually after preprocessing (normalisation, stemming, etc.).</dd>
+  </dl>
+
+  <!-- Parameters & Preprocessing -->
+  <h6 class="fw-semibold">Parameters & Preprocessing</h6>
+  <dl class="mb-4 glossary-section">
+    <dt data-term="stemming"><code>Stemming</code></dt>
+    <dd>Reduces inflected words to their root forms (e.g., <code>খাই</code> → <code>খা</code>).</dd>
+    <dt data-term="stopwords"><code>Stopwords</code></dt>
+    <dd>Frequently used words (e.g., <code>এই</code>, <code>ছিল</code>) that are filtered out before modelling to reduce noise.</dd>
+    <dt data-term="use nltk stopwords"><code>Use NLTK Stopwords</code></dt>
+    <dd>Enables filtering based on the built-in Bengali stopword list from the NLTK library.</dd>
+    <dt data-term="custom stopwords"><code>Custom Stopwords</code></dt>
+    <dd>A user-uploaded list of words to remove from the corpus. Must be a plain-text file, one word per line.</dd>
+    <dt data-term="number of topics"><code>Number of Topics</code></dt>
+    <dd>The number of thematic clusters the model will generate. More topics = finer granularity.</dd>
+    <dt data-term="remove common words"><code>Remove Common Words</code></dt>
+    <dd>An option to remove the top <em>N</em> most frequent words in the corpus.</dd>
+    <dt data-term="remove rare words"><code>Remove Rare Words</code></dt>
+    <dd>An option to exclude words that appear in very few documents.</dd>
+    <dt data-term="no_below"><code>no_below</code></dt>
+    <dd>The minimum number of documents a word must appear in to be included in the model.</dd>
+    <dt data-term="no_above"><code>no_above</code></dt>
+    <dd>The maximum proportion of documents a word may appear in to be retained (e.g., <code>0.6</code> = 60%).</dd>
+    <dt data-term="alpha"><code>Alpha</code></dt>
+    <dd>Controls topic sparsity per document. Lower values = fewer dominant topics per document.</dd>
+    <dt data-term="eta"><code>Eta</code></dt>
+    <dd>Controls word sparsity per topic. Lower values = sharper themes; higher = more diffuse.</dd>
+    <dt data-term="chunk size"><code>Chunk Size</code></dt>
+    <dd>The number of documents processed in each training batch. Impacts speed and stability.</dd>
+    <dt data-term="multicore training"><code>Multicore Training</code></dt>
+    <dd>Enables parallel processing across CPU cores. Recommended for large corpora.</dd>
+    <dt data-term="per-word topics"><code>Per-word Topics</code></dt>
+    <dd>Stores topic assignments at the word level. Enables token-level highlighting and diagnostics.</dd>
+    <dt data-term="advanced options"><code>Advanced Options</code></dt>
+    <dd>Hidden interface elements that allow manual configuration of model behaviour.</dd>
+    <dt data-term="utf-8"><code>UTF-8</code></dt>
+    <dd>The required text encoding for all uploaded files. Ensures Bengali characters are preserved.</dd>
+    <dt data-term="ocr noise"><code>OCR Noise</code></dt>
+    <dd>Unintended characters from scanning errors (e.g., <code>***</code>, <code>@#$%</code>).</dd>
+    <dt data-term="malformed token"><code>Malformed Token</code></dt>
+    <dd>Broken or partial words resulting from segmentation issues (e.g., <code>ন্</code>).</dd>
+  </dl>
+
+  <!-- Model Output -->
+  <h6 class="fw-semibold">Model Output & Interpretation</h6>
+  <dl class="mb-4 glossary-section">
+    <dt data-term="topic prevalence"><code>Topic Prevalence</code></dt>
+    <dd>How much a topic contributes to the corpus overall. Measured by total topic weight.</dd>
+    <dt data-term="top terms"><code>Top Terms</code></dt>
+    <dd>The most representative words per topic, ranked by λ-score.</dd>
+    <dt data-term="lambda score"><code>Lambda Score</code></dt>
+    <dd>A weighted metric combining term frequency and distinctiveness within a topic.</dd>
+    <dt data-term="representative paragraph"><code>Representative Paragraph</code></dt>
+    <dd>A real paragraph from a document where the topic has high weight.</dd>
+    <dt data-term="low-confidence topic"><code>Low-Confidence Topic</code></dt>
+    <dd>A topic that appears noisy or incoherent. Not flagged — left to user interpretation.</dd>
+    <dt data-term="low-confidence sentence"><code>Low-Confidence Sentence</code></dt>
+    <dd>A representative sentence that has little or no overlap with the top words of its topic. It is still shown to maintain coverage, but flagged as <span class="text-warning">⚠ Low Confidence</span> in the Report.</dd>
+    <dt data-term="document-topic distribution"><code>Document–Topic Distribution</code></dt>
+    <dd>A matrix showing how strongly each topic appears in each document.</dd>
+    <dt data-term="topic coherence"><code>Topic Coherence</code></dt>
+    <dd>A diagnostic metric (not computed by <em>anvay</em>) used to assess interpretability.</dd>
+  </dl>
+
+  <!-- Visualisation Types -->
+  <h6 class="fw-semibold">Visualisation Types</h6>
+  <dl class="mb-4 glossary-section">
+    <dt data-term="scatterplot"><code>Scatterplot</code></dt>
+    <dd>Plots topics in 2D space. Distance reflects topic similarity based on word distribution.</dd>
+    <dt data-term="heatmap"><code>Heatmap</code></dt>
+    <dd>A grid showing word–topic weights. Brighter = stronger association.</dd>
+    <dt data-term="pie chart"><code>Pie Chart</code></dt>
+    <dd>Displays topic prevalence visually. Larger slices = more dominant topics.</dd>
+    <dt data-term="top word frequency"><code>Top Word Frequency</code></dt>
+    <dd>Bar chart of the most frequent words across the corpus (after filtering).</dd>
+    <dt data-term="topic-word network"><code>Topic–Word Network</code></dt>
+    <dd>A graph showing links between topic nodes and their top terms.</dd>
+    <dt data-term="topic evolution"><code>Topic Evolution</code></dt>
+    <dd>A line chart showing topic prevalence over time or metadata bins.</dd>
+    <dt data-term="topic distribution"><code>Topic Distribution</code></dt>
+    <dd>Scatterplot showing how topics vary across documents.</dd>
+    <dt data-term="dendrogram"><code>Dendrogram</code></dt>
+    <dd>A tree-like diagram showing hierarchical similarity between topics.</dd>
+  </dl>
+
+  <!-- Interface Labels -->
+  <h6 class="fw-semibold">Interface Labels</h6>
+  <dl class="glossary-section">
+    <dt data-term="upload"><code>Upload</code></dt>
+    <dd>The first page where you upload files and configure parameters.</dd>
+    <dt data-term="visualisations"><code>Visualisations</code></dt>
+    <dd>The tab that displays interactive charts based on your model output.</dd>
+    <dt data-term="report"><code>Report</code></dt>
+    <dd>Summarises training parameters, top terms, topic weights, and paragraphs.</dd>
+    <dt data-term="downloads"><code>Downloads</code></dt>
+    <dd>Tab for exporting result files in <code>.txt</code> or <code>.csv</code> format.</dd>
+    <dt data-term="walkthrough"><code>Walkthrough</code></dt>
+    <dd>Step-by-step usage guide with a sample corpus and interpretation path.</dd>
+  </dl>
+
+</div>
+
+
+<script>
+      // Section toggler
+      document.querySelectorAll('#usageNav .nav-link').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#usageNav .nav-link').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          document.querySelectorAll('.usage-pane').forEach(p => p.classList.remove('active'));
+          const target = document.querySelector(btn.dataset.target);
+          if (target) target.classList.add('active');
+        });
+      });
+  
+      // Language toggle
+      function toggleCorpusExample() {
+        const en = document.getElementById("corpus-example-en");
+        const bn = document.getElementById("corpus-example-bn");
+        const btn = document.getElementById("corpusToggle");
+        en.classList.toggle("d-none");
+        bn.classList.toggle("d-none");
+        const isBengaliShown = !bn.classList.contains("d-none");
+        btn.textContent = isBengaliShown ? "Switch to English" : "Switch to Bengali";
+      }
+    </script>
+
+<!-- Toggle Script -->
+<script>
+      document.querySelectorAll('#usageNav .nav-link').forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Remove active class from all buttons
+          document.querySelectorAll('#usageNav .nav-link').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+  
+          // Hide all panes
+          document.querySelectorAll('.usage-pane').forEach(p => p.classList.remove('active'));
+          const target = document.querySelector(btn.dataset.target);
+          if (target) target.classList.add('active');
+        });
+      });
+    </script>
+
+
+
+{% include '_footer.html' %}
+  <!-- JS to Enable Tab Switching -->
+<script>
+    function toggleTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      document.getElementById(tabId + "-btn").classList.add("active");
+    }
+  
+    // Set default tab on load
+    window.onload = () => {
+      toggleTab('intro');
+    };
+  </script>
+<script>
+
+    const sunIcon = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <circle cx="12" cy="12" r="5" stroke-width="1.5"/>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 1v2m0 18v2m11-11h-2M3 12H1m17.07 4.93l-1.42-1.42M6.34 6.34L4.93 4.93m12.14 0l-1.41 1.41M6.34 17.66l-1.41 1.41"/>
+    </svg>
+    `;
+    
+    const moonIcon = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+    </svg>
+    `;
+    
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute("data-theme") === "light" ? "dark" : "light";
+      html.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      document.getElementById("themeToggleIconWrapper").innerHTML = next === "dark" ? sunIcon : moonIcon;
+    }
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      const current = localStorage.getItem('theme') || 'light';
+      document.getElementById("themeToggleIconWrapper").innerHTML = current === 'dark' ? sunIcon : moonIcon;
+    });
+    
+        </script>
+
+<script>
+  function filterGlossary() {
+    const query = document.getElementById("glossarySearch").value.toLowerCase();
+    const sections = document.querySelectorAll(".glossary-section");
+  
+    sections.forEach(section => {
+      let hasVisible = false;
+      const entries = section.querySelectorAll("dt");
+  
+      entries.forEach(dt => {
+        const dd = dt.nextElementSibling;
+        const term = dt.getAttribute("data-term");
+  
+        if (!query || term.includes(query)) {
+          dt.style.display = "";
+          dd.style.display = "";
+          hasVisible = true;
+        } else {
+          dt.style.display = "none";
+          dd.style.display = "none";
+        }
+      });
+  
+      section.style.display = hasVisible ? "" : "none";
+    });
+  }
+  </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
