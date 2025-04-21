@@ -9,11 +9,12 @@ This release provides a production-ready implementation of the full pipeline —
 - Upload plain text files (.txt) as corpus input
 - Configure LDA parameters (topics, alpha, eta, chunk size, etc.)
 - Bengali-specific preprocessing: stemming, stopword removal, proper noun filtering
-- Visualisations using Plotly, Bokeh, Seaborn, and PyLDAvis
+- Visualisations using Plotly, Bokeh, and Seaborn
 - Report tab with structured interpretive summaries
 - Drilldown views: document-topic and topic-term exploration
 - Clean, responsive interface with dark mode and custom styling
 - Downloadable outputs (CSV, TXT)
+- Robust Documentations section that walks the user through topic modelling as a concept and how to anvay
 
 ## Requirements
 
