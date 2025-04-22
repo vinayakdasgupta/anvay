@@ -1,10 +1,10 @@
-# Anvay: A Bengali Topic Modelling Dashboard
+# anvay: A Bengali Topic Modelling Dashboard
 
-**Anvay** is a web-based topic modelling interface built for exploring, analysing, and interpreting large corpora of Bengali text. Developed with a focus on literary and historical materials, Anvay offers users fine-grained control over preprocessing options and presents results in a structured, interactive interface designed for both researchers and students. The application is modular, interpretable, and lightweight, making it suitable for public deployment and pedagogical use.
+**anvay** is a web-based topic modelling interface built for exploring, analysing, and interpreting large corpora of Bengali text. Developed with a focus on literary and historical materials, anvay offers users fine-grained control over preprocessing options and presents results in a structured, interactive interface designed for both researchers and students. The application is modular, interpretable, and lightweight, making it suitable for public deployment and pedagogical use.
 
 ## Overview
 
-Anvay takes plain-text `.txt` files in Bengali, performs preprocessing (tokenisation, stemming, stopword removal, frequency filtering, n-gram construction), builds a Latent Dirichlet Allocation (LDA) topic model using Gensim, and visualises the results across multiple tabs with topic-wise document insights.
+1nvay takes plain-text `.txt` files in Bengali, performs preprocessing (tokenisation, stemming, stopword removal, frequency filtering, n-gram construction), builds a Latent Dirichlet Allocation (LDA) topic model using Gensim, and visualises the results across multiple tabs with topic-wise document insights.
 
 The interface is designed to foreground interpretability over complexity: there is no reliance on neural networks, transformer embeddings, or LLMs. Every transformation is documented and controlled by the user.
 
@@ -52,7 +52,7 @@ The interface is designed to foreground interpretability over complexity: there 
 ---
 
 ## Documentation
-Anvay includes a fully integrated documentation panel accessible from the interface itself. The documentation is designed not merely as technical reference, but as a pedagogical aid that walks users through each stage of the topic modelling process — from corpus preparation and parameter selection to result interpretation. It explains preprocessing choices (e.g. stopword filtering, n-gram selection, stemming) in clear language, and provides visual examples and tooltips to guide first-time users. The documentation also includes a walkthrough of a sample run, highlighting what users can expect from the model outputs. Importantly, the documentation assumes no prior knowledge of machine learning, making Anvay accessible to students, scholars, and corpus curators working with Bengali texts.
+anvay includes a fully integrated documentation panel accessible from the interface itself. The documentation is designed not merely as technical reference, but as a pedagogical aid that walks users through each stage of the topic modelling process — from corpus preparation and parameter selection to result interpretation. It explains preprocessing choices (e.g. stopword filtering, n-gram selection, stemming) in clear language, and provides visual examples and tooltips to guide first-time users. The documentation also includes a walkthrough of a sample run, highlighting what users can expect from the model outputs. Importantly, the documentation assumes no prior knowledge of machine learning, making anvay accessible to students, scholars, and corpus curators working with Bengali texts.
 
 ---
 
@@ -71,7 +71,7 @@ To fix this manually, here’s the fully rewritten **Installation** section that
 ---
 
 ## Installation
-Anvay has been tested with Python 3.9 and Gensim 4.3.3. Compatibility with other versions may vary.
+anvay has been tested with Python 3.9 and Gensim 4.3.3. Compatibility with other versions may vary.
 
 ### Prerequisites
 - Python 3.9 or higher
@@ -117,11 +117,11 @@ Let me know if you'd like me to insert this into the `.md` file directly instead
 
 ---
 
-## How to Cite Anvay
+## How to Cite anvay
 
-If you use Anvay in academic work, please cite it as follows:
+If you use anvay in academic work, please cite it as follows:
 
-> Vinayak Das Gupta. *Anvay: A Bengali Topic Modelling Dashboard*. v1.1.0, 2025. GitHub repository: https://github.com/vinayakdasgupta/anvay (accessed [date]).
+> Vinayak Das Gupta. *anvay: A Bengali Topic Modelling Dashboard*. v1.1.0, 2025. GitHub repository: https://github.com/vinayakdasgupta/anvay (accessed [date]).
 
 Once a DOI or formal publication is available, this should be replaced with the appropriate citation.
 
@@ -129,7 +129,7 @@ Once a DOI or formal publication is available, this should be replaced with the 
 
 ## Referenced Datasets and Libraries
 
-The following tools, datasets, and libraries are used in Anvay and should be cited as appropriate:
+The following tools, datasets, and libraries are used in anvay and should be cited as appropriate:
 
 ### Lemmatization Dataset
 ```bibtex
@@ -206,7 +206,7 @@ The following tools, datasets, and libraries are used in Anvay and should be cit
 
 ## Acknowledgements
 
-Anvay draws on multiple open-source projects:
+anvay draws on multiple open-source projects:
 - **Gensim** – topic modelling
 - **NLTK** – stopword filtering
 - **Plotly, Seaborn, Matplotlib** – visualisation
@@ -214,13 +214,11 @@ Anvay draws on multiple open-source projects:
 - **Scikit-learn** – PCA and clustering
 - **Flask** – web application framework
 
-Thanks also to the developers and maintainers of the Bengali lemma dataset.
-
 ---
 
 ## License
 
-Anvay is released under the MIT License. 
+anvay is released under the MIT License. 
 
 ---
 
