@@ -147,7 +147,7 @@ def process_txt_files(
 
     # Create dictionary and corpus
     id2word = corpora.Dictionary(all_tokens)
-    id2word.filter_extremes(no_below=no_below, no_above=no_above)
+    id2word.filter_extremes(no_below=no_below, no_above=no_above, keep_n=None)
     if len(id2word) == 0:
         raise ValueError("Dictionary is empty after filtering. Adjust no_below/no_above.")
     corpus = [id2word.doc2bow(tok) for tok in all_tokens]
