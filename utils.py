@@ -146,15 +146,32 @@ def remove_suffix(word, suffix):
 # ------------------------------------------------------------------------------
 # Bengali Dictionary-Based Stemmer
 #
-# This function uses lemma mappings from the BNLP Project:
+# This function uses lemma mappings from the BanglaNLP Project:
 # https://github.com/bedanta79/bnlp
 #
-# We gratefully acknowledge the authors of BNLP for making their resources
+# We gratefully acknowledge the makers and curators for making their resources
 # publicly available. The stemmer below is a lightweight dictionary-based
 # lookup that replaces an earlier rule-based stemmer in Anvay.
 #
-# Citation (as recommended by BNLP):
-# [Insert their citation block here verbatim]
+# Citation 
+# @article{alam2021review,
+#  title={A Review of Bangla Natural Language Processing Tasks and the Utility of Transformer Models},
+#  author={Alam, Firoj and Hasan, Md Arid and Alam, Tanvir and Khan, Akib and Tajrin, Janntatul and Khan, Naira and Chowdhury, Shammur Absar},
+#  journal={arXiv preprint arXiv:2107.03844},
+#  year={2021}
+#}
+#
+#@inproceedings{chakrabarty-etal-2017-context,
+# address = {Vancouver, Canada},
+# author = {Chakrabarty, Abhisek  and Pandit, Onkar Arun  and Garain, Utpal},
+# booktitle = {Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics},
+# doi = {10.18653/v1/P17-1136},
+# pages = {1481--1491},
+# publisher = {Association for Computational Linguistics},
+# title = {Context Sensitive Lemmatization Using Two Successive Bidirectional Gated Recurrent Networks},
+# url = {https://www.aclweb.org/anthology/P17-1136},
+# year = {2017}
+#}
 # ------------------------------------------------------------------------------
 
 import os
