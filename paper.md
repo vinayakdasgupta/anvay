@@ -15,6 +15,7 @@ affiliations:
   - name: Shiv Nadar Institute of Eminence
     index: 1
 date: "2025-04-23"
+bibliography: paper.bib
 ---
 
 # Summary
@@ -96,3 +97,5 @@ The software is released under the MIT License.
 # Acknowledgements
 
 *anvay* was developed as part of my regular teaching and research activities, without grant funding. The lemma module draws on publicly available datasets and is documented separately. Thanks are due to the developers of the open-source libraries used throughout the project. Feedback from my wife and parents has shaped both the interface logic and the project’s ethos of generosity and care. ChatGPT was used to generate HTML templates, assist with interface logic, layout design, error testing, and portions of the documentation.
+
+# References
