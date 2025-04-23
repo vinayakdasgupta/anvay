@@ -20,7 +20,7 @@ bibliography: paper.bib
 
 # Summary
 
-*anvay* is a web-based tool for topic modelling in bengali, developed for exploratory reading and interpretive analysis. It provides a full pipeline for Latent Dirichlet Allocation (LDA)—from corpus ingestion and preprocessing to model configuration and visual output—within a lightweight, browser-based interface. The tool foregrounds user interpretation: rather than providing coherence scores or fixed topic labels, *anvay* presents model results as provisional surfaces to be read, questioned, and restructured by the user.
+*anvay* is a web-based tool for topic modelling in bengali, developed for exploratory reading and interpretive analysis. It provides a full pipeline for Latent Dirichlet Allocation (LDA) [@blei2003latent]—from corpus ingestion and preprocessing to model configuration and visual output—within a lightweight, browser-based interface. The tool foregrounds user interpretation: rather than providing coherence scores or fixed topic labels, *anvay* presents model results as provisional surfaces to be read, questioned, and restructured by the user.
 
 Designed for literary, journalistic, and historical corpora in bengali, *anvay* supports a range of language-specific preprocessing functions including lemmatisation, frequency filtering, and stopword pruning. The outputs—ranging from topic-word networks to document-level previews—are rendered with clarity and designed to scaffold close reading. Each topic is accessible through multiple lenses: top words, paragraph-level examples, document weights, and corpus-wide distribution.
 
@@ -30,7 +30,7 @@ The source code and full documentation are available at: https://github.com/vina
 
 # Statement of Need
 
-There are few interpretive modelling tools for bengali, and fewer still that support pedagogical engagement. Most existing frameworks for LDA assume technical fluency, rely on scripts or notebooks, and provide minimal attention to interpretability. While backend libraries like Gensim and Mallet offer robust implementations, they do not assist users in making sense of what a topic is, how it shifts across documents, or how it might relate to thematic or conceptual questions.
+There are few interpretive modelling tools for bengali, and fewer still that support pedagogical engagement. Most existing frameworks for LDA assume technical fluency, rely on scripts or notebooks, and provide minimal attention to interpretability. While backend libraries like Gensim [@rehurek2010software] and Mallet offer robust implementations, they do not assist users in making sense of what a topic is, how it shifts across documents, or how it might relate to thematic or conceptual questions.
 
 *anvay* addresses this gap by making topic modelling visible and usable. It offers an in-browser interface with no coding requirements, and is particularly suited to students, independent researchers, and archival practitioners working in South Asian languages. It allows users to upload their own text corpora, adjust model parameters, and inspect topic boundaries through interactive, multi-modal visualisations. The tool has already been used in classroom and workshop settings to introduce interpretive topic modelling to humanities students with no programming background.
 
@@ -40,7 +40,7 @@ Built in Python using Flask, Gensim, and standard data visualisation libraries, 
 
 - **Corpus upload and preprocessing**: Users may upload up to 800 `.txt` files in a single run. Preprocessing options include standard and custom stopword filtering, optional stemming or lemmatisation, and frequency-based token pruning.
 - **Topic model training**: Users can adjust passes, iterations, alpha, eta, chunk size, and other hyperparameters. Models are trained on the server and stored temporarily for display.
-- **Language-specific processing**: Bengali tokenisation is handled with custom rules to prevent malformed segmentation. Lemma support is drawn from publicly available datasets.
+- **Language-specific processing**: Bengali tokenisation is handled with custom rules to prevent malformed segmentation. Lemma support is drawn from publicly available datasets [@chakrabarty-etal-2017-context; @alam2021review].
 - **Visual outputs**: Model results are rendered via multiple interactive modules:
   - PCA-reduced topic plots (Plotly)
   - Topic-word heatmaps (Seaborn)
@@ -60,7 +60,7 @@ To support this, *anvay* includes extensive web-based documentation—not just t
 
 # Comparison with Existing Tools
 
-Most open-source topic modelling tools prioritise scale or coherence evaluation. *pyLDAvis*, for instance, provides excellent topic distance visualisations and relevance-based ranking, but relies on pre-tokenised, preprocessed input and assumes English-language conventions. It offers no support for Indic scripts, and its interface—though informative—is not designed for novice users or pedagogical contexts. Similarly, Voyant Tools provides a visually rich environment for text exploration, but lacks custom LDA configurability and does not support Bengali tokenisation or lemmatisation.
+Most open-source topic modelling tools prioritise scale or coherence evaluation. *pyLDAvis*, for instance, provides excellent topic distance visualisations and relevance-based ranking, but relies on pre-tokenised, preprocessed input and assumes English-language conventions. It offers no support for Indic scripts, and its interface—though informative—is not designed for novice users or pedagogical contexts. Similarly, Voyant Tools [@voyant] provides a visually rich environment for text exploration, but lacks custom LDA configurability and does not support Bengali tokenisation or lemmatisation.
 
 *anvay* differs in both scope and ethos. It is built for **interpretation over evaluation**, and for **accessibility over scale**. Unlike pyLDAvis, which emphasises statistical overlap, *anvay* foregrounds **contextual previews**, **representative sentences**, and **visual topic-document mappings**—elements designed to support **reading**, not just inspection. Unlike Voyant, which is multilingual but limited in model customisation, *anvay* allows fine-tuning of LDA parameters, stopword filters, and token thresholds—all with support for Bengali scripts and morphologies. These choices reflect the tool’s commitment to low-resource contexts, and its role as both a scholarly and pedagogical infrastructure.
 
@@ -76,7 +76,10 @@ The application is written in Python 3.9 and uses:
 
 Deployment is intended to be production-ready using Gunicorn, with Docker support under active development. While *anvay* handles concurrent sessions for moderate use, high-load queueing (e.g., via Celery or Redis) is not currently implemented but remains a planned feature.
 
-# Performance and Limitations
+# 
+Scikit-learn utilities were used for model evaluation and dimensionality support [@pedregosa2011scikit].
+
+Performance and Limitations
 
 *anvay* is designed for moderate-scale corpora, where interpretability and visual exploration are prioritised over throughput. In a benchmark run using **800 Bengali `.txt` files** (totalling **21.9MB**, ~**940,000 tokens**, and **171,754 unique vocabulary terms**), the system successfully trained a 10-topic LDA model with **10 passes** and **50 iterations** in approximately **62 seconds** on a single-core setup (Windows 10, Python 3.9, Gensim 4.3.3). This corpus included highly variable document lengths—from **79** to **86,099 tokens** per file—demonstrating robustness against input heterogeneity.
 
