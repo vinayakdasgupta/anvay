@@ -1,0 +1,63 @@
+@article{blei2003latent,
+  title={Latent Dirichlet Allocation},
+  author={Blei, David M. and Ng, Andrew Y. and Jordan, Michael I.},
+  journal={Journal of Machine Learning Research},
+  volume={3},
+  pages={993--1022},
+  year={2003}
+}
+
+@inproceedings{rehurek2010software,
+  title={Software Framework for Topic Modelling with Large Corpora},
+  author={Řehůřek, Radim and Sojka, Petr},
+  booktitle={Proceedings of the LREC 2010 Workshop on New Challenges for NLP Frameworks},
+  year={2010}
+}
+
+@article{pedregosa2011scikit,
+  title={Scikit-learn: Machine Learning in Python},
+  author={Pedregosa, Fabian and Varoquaux, Ga{\"e}l and Gramfort, Alexandre and others},
+  journal={Journal of Machine Learning Research},
+  volume={12},
+  pages={2825--2830},
+  year={2011}
+}
+
+@inproceedings{hagberg2008exploring,
+  title={Exploring Network Structure, Dynamics, and Function using NetworkX},
+  author={Hagberg, Aric and Swart, Pieter and Schult, Daniel A.},
+  booktitle={Proceedings of the 7th Python in Science Conference (SciPy)},
+  year={2008}
+}
+
+@inproceedings{chakrabarty-etal-2017-context,
+  title={Context Sensitive Lemmatization Using Two Successive Bidirectional Gated Recurrent Networks},
+  author={Chakrabarty, Arindam and Pandit, Om Pankaj and Garain, Utpal},
+  booktitle={Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics},
+  pages={1481--1491},
+  year={2017},
+  doi={10.18653/v1/P17-1136}
+}
+
+@article{alam2021review,
+  title={A Review of Bangla Natural Language Processing Tasks and the Utility of Transformer Models},
+  author={Alam, Firoj and Hasan, Md. Ashraful and Alam, Tanvir and Khan, Akib and Tajrin, Jannatul and Khan, Nayeem and Chowdhury, Shammur Absar},
+  journal={arXiv preprint arXiv:2107.03844},
+  year={2021},
+  archivePrefix={arXiv},
+  eprint={2107.03844}
+}
+
+@article{pyldavis2014,
+  title={pyLDAvis: Interactive topic model visualization},
+  author={Sievert, Carson and Shirley, Kenneth},
+  journal={ICML Workshop on Topic Models},
+  year={2014}
+}
+
+@misc{voyant,
+  title={Voyant Tools},
+  author={Sinclair, Stéfan and Rockwell, Geoffrey},
+  year={2016},
+  howpublished={https://voyant-tools.org/}
+}
