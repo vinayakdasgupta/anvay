@@ -14,15 +14,6 @@
   year={2010}
 }
 
-@article{pedregosa2011scikit,
-  title={Scikit-learn: Machine Learning in Python},
-  author={Pedregosa, Fabian and Varoquaux, Ga{\"e}l and Gramfort, Alexandre and others},
-  journal={Journal of Machine Learning Research},
-  volume={12},
-  pages={2825--2830},
-  year={2011}
-}
-
 @inproceedings{hagberg2008exploring,
   title={Exploring Network Structure, Dynamics, and Function using NetworkX},
   author={Hagberg, Aric and Swart, Pieter and Schult, Daniel A.},

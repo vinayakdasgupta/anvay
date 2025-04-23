@@ -70,7 +70,7 @@ The application is written in Python 3.9 and uses:
 - **Flask** for web framework
 - **Gensim** for topic modelling
 - **NLTK** for tokenisation
-- **Plotly**, **Seaborn**, **NetworkX**, **Bokeh** for visualisation
+- **Plotly**, **Seaborn**, **NetworkX** [@hagberg2008exploring], **Bokeh** for visualisation
 - **Bootstrap** and custom CSS for UI layout
 
 Deployment is intended to be production-ready using Gunicorn, with Docker support under active development. While *anvay* handles concurrent sessions for moderate use, high-load queueing (e.g., via Celery or Redis) is not currently implemented but remains a planned feature.
