@@ -113,10 +113,6 @@ You can now upload your `.txt` files and begin exploring topics.
 
 ---
 
-Let me know if you'd like me to insert this into the `.md` file directly instead.
-
----
-
 ## How to Cite anvay
 
 If you use anvay in academic work, please cite it as follows:
