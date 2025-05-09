@@ -64,12 +64,6 @@ anvay includes a fully integrated documentation panel accessible from the interf
 
 ---
 
-I attempted to update the **Installation** section of your README with clearer, step-by-step instructions. However, the update failed due to a formatting issue — specifically, the regular expression pattern couldn't match the exact block or process the multi-line replacement properly.
-
-To fix this manually, here’s the fully rewritten **Installation** section that you can paste directly into your README:
-
----
-
 ## Installation
 anvay has been tested with Python 3.9 and Gensim 4.3.3. Compatibility with other versions may vary.
 
