@@ -77,6 +77,8 @@ anvay has been tested with Python 3.9 and Gensim 4.3.3. Compatibility with other
 1. **Clone the Repository**
 ```bash
 git clone https://github.com/vinayakdasgupta/anvay.git
+```
+```bash
 cd anvay
 ```
 
