@@ -37,6 +37,6 @@ pytest tests/test_utils.py
 
 - This ensures the suite is fast, self-contained, and does not rely on external corpora or large data files.
 
-- Visualisation functions are tested by checking for valid Plotly-generated HTML snippets (presence of <div>).
+- Visualisation functions are tested by checking for valid Plotly-generated HTML snippets (presence of '<div>').
 
-- The Flask app is tested internally via app.test_client() — no live server or browser is required.
+- The Flask app is tested internally via 'app.test_client()' — no live server or browser is required.
