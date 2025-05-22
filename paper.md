@@ -12,7 +12,7 @@ authors:
     orcid: 0009-0008-5623-1226
     affiliation: 1
 affiliations:
-  - name: Shiv Nadar Institute of Eminence
+  - name: Shiv Nadar Institution of Eminence
     index: 1
 date: "2025-04-23"
 bibliography: paper.bib
