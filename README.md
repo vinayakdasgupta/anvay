@@ -218,7 +218,7 @@ anvay is released under the MIT License.
 
 Vinayak Das Gupta  
 Shiv Nadar University
-[https://vinayakdasgupta.github.io](https://vinayakdasgupta.github.io)
+[https://vinayakdasgupta.com]
 
 For questions, suggestions, or scholarly collaborations, please open an issue or contact via GitHub.
 
