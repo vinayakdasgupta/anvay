@@ -4,7 +4,7 @@
 
 ## Overview
 
-1nvay takes plain-text `.txt` files in Bengali, performs preprocessing (tokenisation, stemming, stopword removal, frequency filtering, n-gram construction), builds a Latent Dirichlet Allocation (LDA) topic model using Gensim, and visualises the results across multiple tabs with topic-wise document insights.
+anvay takes plain-text `.txt` files in Bengali, performs preprocessing (tokenisation, stemming, stopword removal, frequency filtering, n-gram construction), builds a Latent Dirichlet Allocation (LDA) topic model using Gensim, and visualises the results across multiple tabs with topic-wise document insights.
 
 The interface is designed to foreground interpretability over complexity: there is no reliance on neural networks, transformer embeddings, or LLMs. Every transformation is documented and controlled by the user.
 
@@ -222,8 +222,8 @@ anvay is released under the MIT License.
 ## Contact
 
 Vinayak Das Gupta  
-Shiv Nadar Institute of Eminence
-[https://vinayakdasgupta.github.io](https://vinayakdasgupta.github.io)
+Shiv Nadar University
+[https://vinayakdasgupta.com]
 
 For questions, suggestions, or scholarly collaborations, please open an issue or contact via GitHub.
 

@@ -1,0 +1,14 @@
+# Mark only the results directory as generated visualisations
+results/** linguist-generated
+
+# Static assets (optional to ignore)
+static/** linguist-vendored
+
+# Count all Python code
+*.py linguist-detectable
+
+# Count Markdown files (if you use .md docs)
+*.md linguist-detectable
+
+# Count your HTML files too (Flask templates, docs)
+*.html linguist-detectable
