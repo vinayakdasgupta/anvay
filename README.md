@@ -126,15 +126,20 @@ The following tools, datasets, and libraries are used in anvay and should be cit
 ### Lemmatization Dataset
 ```bibtex
 @inproceedings{chakrabarty-etal-2017-context,
-  author = {Chakrabarty, Abhisek and Pandit, Onkar Arun and Garain, Utpal},
-  title = {Context Sensitive Lemmatization Using Two Successive Bidirectional Gated Recurrent Networks},
-  booktitle = {Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics},
-  pages = {1481--1491},
-  year = {2017},
-  publisher = {Association for Computational Linguistics},
-  address = {Vancouver, Canada},
-  url = {https://www.aclweb.org/anthology/P17-1136},
-  doi = {10.18653/v1/P17-1136}
+    title = "Context Sensitive Lemmatization Using Two Successive Bidirectional Gated Recurrent Networks",
+    author = "Chakrabarty, Abhisek  and
+      Pandit, Onkar Arun  and
+      Garain, Utpal",
+    editor = "Barzilay, Regina  and
+      Kan, Min-Yen",
+    booktitle = "Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2017",
+    address = "Vancouver, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P17-1136/",
+    doi = "10.18653/v1/P17-1136",
+    pages = "1481--1491"
 }
 
 @article{alam2021review,
