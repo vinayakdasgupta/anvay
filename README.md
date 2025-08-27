@@ -1,12 +1,5 @@
 # anvay: A Bengali Topic Modelling Dashboard
 
-<details open>
-  <summary>Anvay demo video</summary>
-
-  ![Anvay screen capture](docs/video/anvay_screen_capture.mp4)
-
-</details>
-
 **anvay** is a web-based topic modelling interface built for exploring, analysing, and interpreting large corpora of Bengali text. Developed with a focus on literary and historical materials, anvay offers users fine-grained control over preprocessing options and presents results in a structured, interactive interface designed for both researchers and students. The application is modular, interpretable, and lightweight, making it suitable for public deployment and pedagogical use.
 
 ## Overview
