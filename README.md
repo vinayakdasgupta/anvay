@@ -64,22 +64,22 @@ anvay includes a fully integrated documentation panel accessible from the interf
 
 <details>
   <summary>Upload interface screenshot</summary>
-  <img src="docs/img/anvay_upload.PNG" alt="Upload interface" width="200"/>
+  <img src="docs/img/anvay_upload.PNG" alt="Upload interface" width="500"/>
 </details>
 
 <details>
   <summary>Documentation interface screenshot</summary>
-  <img src="docs/img/anvay_documentation.PNG" alt="Upload interface" width="200"/>
+  <img src="docs/img/anvay_documentation.PNG" alt="Upload interface" width="500"/>
 </details>
 
 <details>
   <summary>Visualization interface screenshot</summary>
-  <img src="docs/img/anvay_viz.PNG" alt="Upload interface" width="200"/>
+  <img src="docs/img/anvay_viz.PNG" alt="Upload interface" width="500"/>
 </details>
 
 <details>
   <summary>Report interface screenshot</summary>
-  <img src="docs/img/anvay_results.PNG" alt="Upload interface" width="200"/>
+  <img src="docs/img/anvay_results.PNG" alt="Upload interface" width="500"/>
 </details>
 
 
