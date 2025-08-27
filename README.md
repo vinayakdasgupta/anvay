@@ -62,22 +62,22 @@ anvay includes a fully integrated documentation panel accessible from the interf
 
 ## Screenshots
 
-<details>
+<details open>
   <summary>Upload interface screenshot</summary>
   <img src="docs/img/anvay_upload.PNG" alt="Upload interface" width="500"/>
 </details>
 
-<details>
+<details open>
   <summary>Documentation interface screenshot</summary>
   <img src="docs/img/anvay_documentation.PNG" alt="Upload interface" width="500"/>
 </details>
 
-<details>
+<details open>
   <summary>Visualization interface screenshot</summary>
   <img src="docs/img/anvay_viz.PNG" alt="Upload interface" width="500"/>
 </details>
 
-<details>
+<details open>
   <summary>Report interface screenshot</summary>
   <img src="docs/img/anvay_results.PNG" alt="Upload interface" width="500"/>
 </details>
