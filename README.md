@@ -35,17 +35,19 @@ The interface is designed to foreground interpretability over complexity: there 
   - Chunk size
   - Minimum probability threshold
 
+
 ### Visualisations (Tabbed UI)
 - **Visualisations Tab**: Bar chart, scatter plot, pie chart, heatmap, topic-word network graph
 - **Report Tab**: Training summary, top tokens, topic prevalence, representative documents
 - **Downloads Tab**: Export results as CSV and TXT
 - **Guide Tab**: Step-by-step interpretive instructions
-
+![Upload interface](docs/img/anvay_upload.png)
+![Results interface](docs/img/anvay_results.PNG.png)
 ### Topic-Document Drilldown
 - Per-topic list of most representative documents
 - Context-aware sentence preview
 - Topic label and confidence indicator
-
+![Visualization interface](docs/img/anvay_viz.png)
 ### Design Principles
 - Mobile-friendly and responsive layout
 
@@ -53,7 +55,8 @@ The interface is designed to foreground interpretability over complexity: there 
 
 ## Documentation
 anvay includes a fully integrated documentation panel accessible from the interface itself. The documentation is designed not merely as technical reference, but as a pedagogical aid that walks users through each stage of the topic modelling process — from corpus preparation and parameter selection to result interpretation. It explains preprocessing choices (e.g. stopword filtering, n-gram selection, stemming) in clear language, and provides visual examples and tooltips to guide first-time users. The documentation also includes a walkthrough of a sample run, highlighting what users can expect from the model outputs. Importantly, the documentation assumes no prior knowledge of machine learning, making anvay accessible to students, scholars, and corpus curators working with Bengali texts.
-
+![Documentation interface](docs/img/anvay_documentation.png)
+![Documentation interface](docs/img/anvay_documentation2.png)
 ---
 
 ## Technical Stack
