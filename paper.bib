@@ -1,12 +1,3 @@
-@article{blei2003latent,
-  title={Latent Dirichlet Allocation},
-  author={Blei, David M. and Ng, Andrew Y. and Jordan, Michael I.},
-  journal={Journal of Machine Learning Research},
-  volume={3},
-  pages={993--1022},
-  year={2003}
-}
-
 @inproceedings{rehurek_lrec,
       title = {{Software Framework for Topic Modelling with Large Corpora}},
       author = {Radim {\v R}eh{\r u}{\v r}ek and Petr Sojka},
@@ -20,14 +11,6 @@
       address = {Valletta, Malta},
       note={\url{http://is.muni.cz/publication/884893/en}},
       language={English}
-}
-
-@inproceedings{hagberg2008exploring,
-  title={Exploring Network Structure, Dynamics, and Function using NetworkX},
-  author={Hagberg, Aric and Swart, Pieter and Schult, Daniel A.},
-  booktitle={Proceedings of the 7th Python in Science Conference (SciPy)},
-  year={2008},
-  doi={10.25080/TCWV9851}
 }
 
 @inproceedings{chakrabarty-etal-2017-context,
@@ -56,13 +39,6 @@
   eprint={2107.03844}
 }
 
-@article{pyldavis2014,
-  title={pyLDAvis: Interactive topic model visualization},
-  author={Sievert, Carson and Shirley, Kenneth},
-  journal={ICML Workshop on Topic Models},
-  year={2014}
-}
-
 @misc{voyant,
   title={Voyant Tools},
   author={Sinclair, Stéfan and Rockwell, Geoffrey},
@@ -70,13 +46,193 @@
   howpublished={https://voyant-tools.org/}
 }
 
-@article{pedregosa2011scikit,
-  title={Scikit-learn: Machine learning in Python},
-  author={Pedregosa, Fabian and Varoquaux, Ga{\"e}l and Gramfort, Alexandre and Michel, Vincent and Thirion, Bertrand and Grisel, Olivier and Blondel, Mathieu and Prettenhofer, Peter and Weiss, Ron and Dubourg, Vincent and others},
-  journal={Journal of Machine Learning Research},
-  volume={12},
-  pages={2825--2830},
-  year={2011},
-  publisher={JMLR. org}
+@inproceedings{bianchi-etal-2021-pre,
+    title = "Pre-training is a Hot Topic: Contextualized Document Embeddings Improve Topic Coherence",
+    author = "Bianchi, Federico  and
+      Terragni, Silvia  and
+      Hovy, Dirk",
+    editor = "Zong, Chengqing  and
+      Xia, Fei  and
+      Li, Wenjie  and
+      Navigli, Roberto",
+    booktitle = "Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 2: Short Papers)",
+    month = aug,
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.acl-short.96/",
+    doi = "10.18653/v1/2021.acl-short.96",
+    pages = "759--766",
+    abstract = "Topic models extract groups of words from documents, whose interpretation as a topic hopefully allows for a better understanding of the data. However, the resulting word groups are often not coherent, making them harder to interpret. Recently, neural topic models have shown improvements in overall coherence. Concurrently, contextual embeddings have advanced the state of the art of neural models in general. In this paper, we combine contextualized representations with neural topic models. We find that our approach produces more meaningful and coherent topics than traditional bag-of-words topic models and recent neural models. Our results indicate that future improvements in language models will translate into better topic models."
 }
 
+
+@article{goldstone2014quiet,
+  title={The Quiet Transformations of Literary Studies: What Thirteen Thousand Scholars Could Tell Us},
+  author={Goldstone, Andrew and Underwood, Ted},
+  journal={New Literary History},
+  volume={45},
+  number={3},
+  pages={359--384},
+  year={2014},
+  doi={10.1353/nlh.2014.0025}
+}
+
+@inproceedings{chuang2012termite,
+author = {Chuang, Jason and Manning, Christopher D. and Heer, Jeffrey},
+title = {Termite: visualization techniques for assessing textual topic models},
+year = {2012},
+isbn = {9781450312875},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2254556.2254572},
+doi = {10.1145/2254556.2254572},
+abstract = {Topic models aid analysis of text corpora by identifying latent topics based on co-occurring words. Real-world deployments of topic models, however, often require intensive expert verification and model refinement. In this paper we present Termite, a visual analysis tool for assessing topic model quality. Termite uses a tabular layout to promote comparison of terms both within and across latent topics. We contribute a novel saliency measure for selecting relevant terms and a seriation algorithm that both reveals clustering structure and promotes the legibility of related terms. In a series of examples, we demonstrate how Termite allows analysts to identify coherent and significant themes.},
+booktitle = {Proceedings of the International Working Conference on Advanced Visual Interfaces},
+pages = {74–77},
+numpages = {4},
+keywords = {topic models, text visualization, seriation},
+location = {Capri Island, Italy},
+series = {AVI '12}
+}
+
+@article{blei2003lda,
+author = {Blei, David M. and Ng, Andrew Y. and Jordan, Michael I.},
+title = {Latent dirichlet allocation},
+year = {2003},
+issue_date = {3/1/2003},
+publisher = {JMLR.org},
+volume = {3},
+issn = {1532-4435},
+abstract = {We describe latent Dirichlet allocation (LDA), a generative probabilistic model for collections of discrete data such as text corpora. LDA is a three-level hierarchical Bayesian model, in which each item of a collection is modeled as a finite mixture over an underlying set of topics. Each topic is, in turn, modeled as an infinite mixture over an underlying set of topic probabilities. In the context of text modeling, the topic probabilities provide an explicit representation of a document. We present efficient approximate inference techniques based on variational methods and an EM algorithm for empirical Bayes parameter estimation. We report results in document modeling, text classification, and collaborative filtering, comparing to a mixture of unigrams model and the probabilistic LSI model.},
+journal = {J. Mach. Learn. Res.},
+month = mar,
+pages = {993–1022},
+numpages = {30}
+}
+
+@inproceedings{sievert-shirley-2014-ldavis,
+    title = "{LDA}vis: A method for visualizing and interpreting topics",
+    author = "Sievert, Carson  and
+      Shirley, Kenneth",
+    editor = "Chuang, Jason  and
+      Green, Spence  and
+      Hearst, Marti  and
+      Heer, Jeffrey  and
+      Koehn, Philipp",
+    booktitle = "Proceedings of the Workshop on Interactive Language Learning, Visualization, and Interfaces",
+    month = jun,
+    year = "2014",
+    address = "Baltimore, Maryland, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/W14-3110/",
+    doi = "10.3115/v1/W14-3110",
+    pages = "63--70"
+}
+
+@misc{kardos2025topicwizardmodernmodelagnostic,
+      title={topicwizard -- a Modern, Model-agnostic Framework for Topic Model Visualization and Interpretation}, 
+      author={Márton Kardos and Kenneth C. Enevoldsen and Kristoffer Laigaard Nielbo},
+      year={2025},
+      eprint={2505.13034},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2505.13034}, 
+}
+
+@misc{mimno_jslda,
+  title={jsLDA: In-Browser Topic Modeling},
+  author={Mimno, David},
+  howpublished={\url{https://github.com/mimno/jsLDA}},
+  note={Accessed 2025}
+}
+
+@misc{enderle2019topictool,
+  title={Topic Modeling Tool},
+  author={Enderle, Scott},
+  year={2019},
+  howpublished={\url{https://github.com/senderle/topic-modeling-tool}},
+  note={Accessed 2025}
+}
+
+@misc{goldstone2014dfrbrowser,
+  title={DFR-Browser},
+  author={Goldstone, Andrew and Underwood, Ted},
+  year={2014},
+  howpublished={\url{https://github.com/agoldst/dfr-browser}},
+  note={Accessed 2025}
+}
+
+@misc{grootendorst2022bertopic,
+      title={BERTopic: Neural topic modeling with a class-based TF-IDF procedure}, 
+      author={Maarten Grootendorst},
+      year={2022},
+      eprint={2203.05794},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2203.05794}, 
+}
+
+
+@misc{angelov2020top2vec,
+      title={Top2Vec: Distributed Representations of Topics}, 
+      author={Dimo Angelov},
+      year={2020},
+      eprint={2008.09470},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2008.09470}, 
+}
+
+@misc{mccallum2002mallet,
+  title        = {MALLET: A Machine Learning for Language Toolkit},
+  author       = {McCallum, Andrew K.},
+  howpublished = {\url{http://mallet.cs.umass.edu/}},
+  year         = {2002},
+  note         = {Accessed 2025}
+}
+
+
+@online{plotly, author = {Plotly Technologies Inc.}, 
+	title = {Collaborative data science}, 
+	publisher = {Plotly Technologies Inc.}, 
+	address = {Montreal, QC}, 
+	year = {2015}, 
+	url = {https://plot.ly} 
+
+}
+
+@article{Waskom2021,
+    doi = {10.21105/joss.03021},
+    url = {https://doi.org/10.21105/joss.03021},
+    year = {2021},
+    publisher = {The Open Journal},
+    volume = {6},
+    number = {60},
+    pages = {3021},
+    author = {Michael L. Waskom},
+    title = {seaborn: statistical data visualization},
+    journal = {Journal of Open Source Software}
+ }
+
+@inproceedings{hagberg2008exploring,
+  author = {Hagberg, Aric A. and Schult, Daniel A. and Swart, Pieter J.},
+  title = {Exploring Network Structure, Dynamics, and Function using NetworkX},
+  booktitle = {Proceedings of the 7th Python in Science Conference (SciPy2008)},
+  pages = {11--15},
+  year = {2008}
+}
+
+@book{bird2009natural,
+  author = {Bird, Steven and Klein, Ewan and Loper, Edward},
+  title = {Natural Language Processing with Python},
+  year = {2009},
+  publisher = {O'Reilly Media, Inc.}
+}
+
+@book{jockers2013macroanalysis,
+  title={Macroanalysis: Digital methods and literary history},
+  author={Jockers, Matthew L.},
+  year={2013},
+  publisher={University of Illinois Press}
+}
