@@ -792,7 +792,13 @@
     </p>
     <div class="alert alert-info small mt-3">
       💡 <strong>Pro Tip:</strong> Hover over any chart to explore tooltips and interactive details.
-    </div>
+  </div>
+    <p class="small text-muted mt-2">
+    <strong>Note:</strong> All visualisations in <em>anvay</em> now display the top words for each topic on hover. 
+    This makes it easy to identify and interpret topics directly from the charts without switching back 
+    to the Report tab.
+    </p>
+
     <p class="mt-3">
       No single chart can capture the complexity of a topic model. Each visualisation in <em>anvay</em> reveals a different facet — from how topics relate to each other, to how they spread across documents and time.
     </p>
@@ -812,7 +818,8 @@
     <h6 class="mt-5">2. Topic × Word Heatmap</h6>
     <iframe src="{{ url_for('static', filename='results/plotly/example_heatmap.html') }}" width="600" height="600"></iframe>
     <p class="small text-muted">
-      <strong>Brighter cells = stronger topic–word link.</strong> Each cell shows how strongly a word is associated with a topic. Use this to explore overlap and word distribution depth.
+      <strong>Brighter cells = stronger topic–word link.</strong> Each cell shows how strongly a word is associated with a topic. Use this to explore overlap and word distribution depth. This view presents the same information shown in the bar chart, but emphasises patterns and 
+contrast across topics.
     </p>
     
     <!-- 3. Topic Prevalence Pie Chart -->

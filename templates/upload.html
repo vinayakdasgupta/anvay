@@ -277,7 +277,9 @@
     </form>
   </div>
   
-
+  <div id="loading-overlay">
+    <div class="spinner" aria-label="Loading…"></div>
+  </div>
 
   {% include '_footer.html' %}
 
@@ -385,6 +387,19 @@ document.getElementById('files').addEventListener('change', function () {
     this.value = ""; // reset file input
   }
 });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("form[action='/process']");
+    const overlay = document.getElementById("loading-overlay");
+
+    if (form) {
+      form.addEventListener("submit", () => {
+        overlay.style.display = "flex";
+      });
+    }
+  });
 </script>
   
   

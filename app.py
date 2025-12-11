@@ -421,9 +421,9 @@ def process_files():
         'scatter': ('Scatter Plot', save_plot_html(create_interactive_scatter(lda_model), 'scatter.html', 'bokeh'), 'bokeh'),
         'bars': ('Bar Chart', save_plot_html(create_interactive_bar_charts(lda_model), 'bars.html', 'bokeh'), 'bokeh'),
         'heatmap': ('Heatmap', save_plot_html(create_interactive_heatmap(lda_model), 'heatmap.html', 'seaborn'), 'seaborn'),
-        'evolution': ('Topic Evolution', save_plot_html(create_interactive_topic_evolution(lda_model, corpus), 'evolution.html', 'seaborn'), 'seaborn'),
+        'evolution': ('Topic Evolution', save_plot_html(create_interactive_topic_evolution(lda_model, corpus, doc_names=doc_names), 'evolution.html', 'seaborn'), 'seaborn'),
         'clustering': ('Clustering', save_plot_html(create_interactive_clustering(lda_model), 'clustering.html', 'seaborn'), 'seaborn'),
-        'distribution': ('Distribution', save_plot_html(create_interactive_topic_distribution(lda_model, corpus), 'distribution.html', 'seaborn'), 'seaborn'),
+        'distribution': ('Distribution', save_plot_html(create_interactive_topic_distribution(lda_model, corpus, doc_names=doc_names), 'distribution.html', 'seaborn'), 'seaborn'),
         'prevalence_pie': ('Topic Prevalence Pie', save_plot_html(create_topic_prevalence_pie(lda_model, corpus), 'prevalence_pie.html', 'plotly'), 'plotly'),
         'word_network': ('Topic Word Graph', save_plot_html(create_topic_word_network(lda_model), 'word_network.html', 'plotly'), 'plotly'),
         'overview': ('Training Overview', 'top_tokens_bar.html', 'plotly')

@@ -1,25 +1,25 @@
-৬.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.9858999848365784, Topic 4: 0.0
-১৩.txt: Topic 0: 0.0, Topic 1: 0.9830999970436096, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0
-অগ্রদূত.txt: Topic 0: 0.9779999852180481, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0
-অটোগ্রাফ.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.9771999716758728
-অধীরা.txt: Topic 0: 0.5764999985694885, Topic 1: 0.3978999853134155, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0
-অনবসর.txt: Topic 0: 0.9785000085830688, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0
-অস্থানে.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.9786999821662903, Topic 3: 0.0, Topic 4: 0.0
-আকাশ.txt: Topic 0: 0.982699990272522, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0
-আকুল আহ্বান.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.9847000241279602, Topic 3: 0.0, Topic 4: 0.0
-আছি.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.9871000051498413, Topic 3: 0.0, Topic 4: 0.0
-আন‍্মনা.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.9761000275611877, Topic 4: 0.0
-উনিশ.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.9660000205039978, Topic 4: 0.0
-এক গাঁয়ে.txt: Topic 0: 0.0, Topic 1: 0.9868999719619751, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0
-কন্টিকারি.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.9843000173568726, Topic 3: 0.0, Topic 4: 0.0
-কর্মফল.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.9711999893188477
-কৃষ্ণকলি.txt: Topic 0: 0.9833999872207642, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0
-গীতহীন.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.982699990272522, Topic 3: 0.0, Topic 4: 0.0
-চাবি.txt: Topic 0: 0.0, Topic 1: 0.2574000060558319, Topic 2: 0.7296000123023987, Topic 3: 0.0, Topic 4: 0.0
-ছত্রিশ.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.9757999777793884
-জন্মকথা.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.9837999939918518
-জবতী.txt: Topic 0: 0.0, Topic 1: 0.9595999717712402, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0
-জলপাত্র.txt: Topic 0: 0.0, Topic 1: 0.9718999862670898, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0
-জ্যোতিষী.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.9800999760627747, Topic 3: 0.0, Topic 4: 0.0
-ত্রিশ.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.977400004863739, Topic 3: 0.0, Topic 4: 0.0
-দায়মোচন.txt: Topic 0: 0.16830000281333923, Topic 1: 0.5703999996185303, Topic 2: 0.0, Topic 3: 0.25360000133514404, Topic 4: 0.0
+অকাল ঘুম.txt: Topic 0: 0.2370000034570694, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.20479999482631683, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.510200023651123, Topic 8: 0.0, Topic 9: 0.0
+অগ্রদূত.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.9822999835014343, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অচলা বুড়ি.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.9926000237464905, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অচলায়তন.txt: Topic 0: 0.995199978351593, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অটোগ্রাফ.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.9794999957084656, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অতিবাদ.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.9911999702453613, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অতীতের ছায়া.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.9861999750137329, Topic 9: 0.0
+অধীরা.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.9735000133514404, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অধ্যাপক.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.9995999932289124, Topic 8: 0.0, Topic 9: 0.0
+অনধিকার প্রবেশ.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.9984999895095825, Topic 8: 0.0, Topic 9: 0.0
+অনন্ত জীবন.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.9894999861717224, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অনন্ত মরণ.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.32749998569488525, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.576200008392334, Topic 8: 0.0, Topic 9: 0.0
+অনবসর.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.978600025177002, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অনসূয়া.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.989799976348877, Topic 9: 0.0
+অনাদৃত.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.9902999997138977, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অনাদৃতা লেখনী.txt: Topic 0: 0.18629999458789825, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.7221999764442444, Topic 8: 0.0, Topic 9: 0.0
+অনাহত.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.9718999862670898, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অনুগ্রহ.txt: Topic 0: 0.0, Topic 1: 0.9801999926567078, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অন্তরতম.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.987500011920929, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অন্তর্যামী.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.9962999820709229, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অন্তর্হিতা.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.9807999730110168
+অন্ত্যেষ্টি-সৎকার.txt: Topic 0: 0.9961000084877014, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
+অন্ধকার.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.9939000010490417
+অন্য মা.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.0, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.9822999835014343
+অপমান-বর.txt: Topic 0: 0.0, Topic 1: 0.0, Topic 2: 0.0, Topic 3: 0.0, Topic 4: 0.9952999949455261, Topic 5: 0.0, Topic 6: 0.0, Topic 7: 0.0, Topic 8: 0.0, Topic 9: 0.0
