@@ -16,7 +16,7 @@ The interface is designed to foreground interpretability over complexity: there 
 
 ---
 
-### Improvements
+### Release 1.1.1
 #### Clustering
 - Enhanced hierarchical clustering with BERTopic-style merged-cluster keyword tooltips.  
 
