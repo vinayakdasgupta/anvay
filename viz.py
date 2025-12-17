@@ -15,6 +15,7 @@ import re
 import json
 import uuid
 import html
+import colorsys
 from utils import (
     custom_bengali_tokenize,
     split_sentences_bengali
@@ -34,35 +35,37 @@ import colorsys
 
 def build_topic_color_map(num_topics):
     """
-    Generate a deterministic, non-repeating colour for each topic.
-    Topic 0 uses the brand colour.
-    Remaining topics are evenly spaced in HSV colour space.
+    Deterministic topic colours with strong perceptual separation.
+    - Topic 0 uses brand colour
+    - Remaining topics use golden-ratio hue jumps
+    - Lightness alternates to reduce near-neighbour similarity
     """
 
     def hsv_to_hex(h, s, v):
         r, g, b = colorsys.hsv_to_rgb(h, s, v)
         return f"#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}"
 
-    color_map = {}
+    GOLDEN_RATIO = 0.618033988749895
 
-    # Topic 0: brand colour
+    color_map = {}
     color_map["Topic 0"] = BRAND_COLOR
 
-    if num_topics <= 1:
-        return color_map
+    hue = 0.0
 
-    # Remaining topics: evenly spaced hues
     for i in range(1, num_topics):
-        # distribute hues uniformly around the circle
-        hue = (i - 1) / max(1, (num_topics - 1))
-        # tuned for readability on white background
+        hue = (hue + GOLDEN_RATIO) % 1.0
+
+        # alternate brightness to separate neighbours further
+        value = 0.85 if i % 2 == 0 else 0.65
+
         color_map[f"Topic {i}"] = hsv_to_hex(
             h=hue,
-            s=0.65,
-            v=0.85
+            s=0.70,
+            v=value
         )
 
     return color_map
+
 
 
 
