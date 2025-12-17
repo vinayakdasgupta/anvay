@@ -30,20 +30,40 @@ FONT_SIZE = 11
 BRAND_COLOR = "#0D85D8"
 DEFAULT_PALETTE = px.colors.qualitative.Plotly  # reliable qualitative palette
 
+import colorsys
+
 def build_topic_color_map(num_topics):
     """
-    Return a dict mapping 'Topic 0'..'Topic N' -> hex colour.
-    Ensures Topic 0 uses BRAND_COLOR and cycles the default palette for others.
+    Generate a deterministic, non-repeating colour for each topic.
+    Topic 0 uses the brand colour.
+    Remaining topics are evenly spaced in HSV colour space.
     """
-    # create working palette copy
-    palette = DEFAULT_PALETTE.copy()
-    # ensure first colour is brand colour
-    if len(palette) > 0:
-        palette[0] = BRAND_COLOR
-    # extend palette if num_topics exceeds length by repeating
-    color_list = [palette[i % len(palette)] for i in range(num_topics)]
-    return {f"Topic {i}": color_list[i] for i in range(num_topics)}
-# -----------------------------------------------------------------------
+
+    def hsv_to_hex(h, s, v):
+        r, g, b = colorsys.hsv_to_rgb(h, s, v)
+        return f"#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}"
+
+    color_map = {}
+
+    # Topic 0: brand colour
+    color_map["Topic 0"] = BRAND_COLOR
+
+    if num_topics <= 1:
+        return color_map
+
+    # Remaining topics: evenly spaced hues
+    for i in range(1, num_topics):
+        # distribute hues uniformly around the circle
+        hue = (i - 1) / max(1, (num_topics - 1))
+        # tuned for readability on white background
+        color_map[f"Topic {i}"] = hsv_to_hex(
+            h=hue,
+            s=0.65,
+            v=0.85
+        )
+
+    return color_map
+
 
 
 def get_topic_tooltips(lda_model, topn=5):
@@ -78,39 +98,32 @@ def create_interactive_scatter(lda_model):
     coords = pca.fit_transform(topic_term_matrix)
 
     tooltips = get_topic_tooltips(lda_model, topn=5)
-    labels = [f"Topic {i}" for i in range(len(coords))]
-
-    df = pd.DataFrame({
-        "x": coords[:, 0],
-        "y": coords[:, 1],
-        "label": labels,
-        "top_words": [tooltips[i] for i in range(len(coords))]
-    })
-
     color_map = build_topic_color_map(len(coords))
 
-    # Tell px to colour by the label column and use our map
-    fig = px.scatter(
-        df,
-        x="x",
-        y="y",
-        text="label",
-        color="label",                      # <- important
-        color_discrete_map=color_map,
-        height=480
-    )
-    fig.update_layout(font=dict(family=FONT_FAMILY, size=FONT_SIZE))
+    fig = go.Figure()
 
-    # only set marker size here — do NOT set marker.color
-    fig.update_traces(
-        marker=dict(size=14),
-        textposition='top center',
-        hovertemplate="<b>%{text}</b><br>Top words: %{customdata[0]}<extra></extra>",
-        customdata=df[["top_words"]].values
+    for topic_id, (x, y) in enumerate(coords):
+        label = f"Topic {topic_id}"
+        fig.add_trace(go.Scatter(
+            x=[x],
+            y=[y],
+            mode="markers+text",
+            text=[label],
+            textposition="top center",
+            marker=dict(size=14, color=color_map[label]),
+            customdata=[[tooltips.get(topic_id, "")]],
+            hovertemplate="<b>%{text}</b><br>Top words: %{customdata[0]}<extra></extra>"
+        ))
+
+    fig.update_layout(
+        height=480,
+        margin=dict(l=0, r=0, t=0, b=0),
+        font=dict(family=FONT_FAMILY, size=FONT_SIZE),
+        showlegend=False
     )
 
-    fig.update_layout(margin=dict(l=0, r=0, t=0, b=0))
     return plot_to_div(fig)
+
 
 
 def create_interactive_bar_charts(lda_model):
@@ -118,82 +131,90 @@ def create_interactive_bar_charts(lda_model):
 
     data = []
     for topic_id in range(lda_model.num_topics):
-        topic_words = lda_model.show_topic(topic_id, topn=10)
-        for word, weight in topic_words:
+        for word, weight in lda_model.show_topic(topic_id, topn=10):
             data.append({
                 "Topic": f"Topic {topic_id}",
                 "Word": word,
-                "Weight": weight,
-                "top_words": tooltips[topic_id]
+                "Weight": weight
             })
 
-    # --- start replacement block ---
     df = pd.DataFrame(data)
 
-# set how many global words to show
-    GLOBAL_TOP_N = 25  # change to 10-15 as you prefer
+    GLOBAL_TOP_N = 25
 
-# 1) choose the top GLOBAL_TOP_N words by total weight across topics
     global_top_words = (
         df.groupby("Word")["Weight"]
-        .sum()
-        .nlargest(GLOBAL_TOP_N)
-        .index
-        .tolist()
+          .sum()
+          .nlargest(GLOBAL_TOP_N)
+          .index
+          .tolist()
     )
 
-# 2) build a complete topic x word matrix for the selected words.
-#    This ensures each (Topic, Word) pair exists (weight 0 if absent), so every
-#    topic is represented for every selected global word.
     pivot = (
         df[df["Word"].isin(global_top_words)]
         .pivot_table(index="Word", columns="Topic", values="Weight", aggfunc="sum")
-        .reindex(index=global_top_words)   # preserve the chosen ordering
+        .reindex(index=global_top_words)
+        .fillna(0.0)
     )
 
-# ensure all topics are present as columns (even if some have no weight for these words)
     all_topics = [f"Topic {i}" for i in range(lda_model.num_topics)]
     for t in all_topics:
         if t not in pivot.columns:
             pivot[t] = 0.0
-
-# Reorder columns to Topic 0..Topic N
     pivot = pivot[all_topics]
 
-# 3) melt back to long form for Plotly, filling missing with 0
-    df_long = pivot.reset_index().melt(id_vars="Word", var_name="Topic", value_name="Weight")
-    df_long["Weight"] = df_long["Weight"].fillna(0.0)
+    df_long = (
+        pivot.reset_index()
+             .melt(id_vars="Word", var_name="Topic", value_name="Weight")
+    )
 
-# 4) preserve ordering for the y-axis (largest on top visually)
-    df_long["Word"] = pd.Categorical(df_long["Word"],
-                                 categories=global_top_words,
-                                 ordered=True)
+    df_long["Word"] = pd.Categorical(
+        df_long["Word"],
+        categories=global_top_words,
+        ordered=True
+    )
 
-# 5) use the original 'top_words' tooltip strings for topics (unchanged)
-    tooltips = get_topic_tooltips(lda_model, topn=5)
-# attach tooltip text per Topic so hover remains identical to previous behaviour
-    df_long["top_words"] = df_long["Topic"].apply(lambda t: tooltips.get(int(t.replace("Topic ", "")), ""))
-
-# 6) final figure (no theme or hover template changes from your code)
     color_map = build_topic_color_map(lda_model.num_topics)
-    fig = px.bar(df_long, x='Weight', y='Word', color='Topic', orientation='h',
-             height=600, color_discrete_map=color_map, category_orders={'Word': global_top_words})
+
+    fig = px.bar(
+        df_long,
+        x="Weight",
+        y="Word",
+        color="Topic",
+        orientation="h",
+        height=600,
+        color_discrete_map=color_map,
+        category_orders={"Word": global_top_words}
+    )
+
     fig.update_yaxes(autorange="reversed")
 
-# reattach your hover template exactly as before (keeping your tooltips)
-    fig.update_traces(
-        customdata=df_long[["top_words", "Topic"]].values,
-        hovertemplate="<b>%{y}</b><br>Topic: %{customdata[1]}<br>Weight: %{x}<br>Top words: %{customdata[0]}<extra></extra>"
+    # ---- FIX: attach hover data PER TRACE (like scatterplot) ----
+    for trace in fig.data:
+        try:
+            tid = int(trace.name.replace("Topic ", ""))
+            top_words = tooltips.get(tid, "")
+
+            trace.customdata = [[top_words]] * len(trace.x)
+            trace.hovertemplate = (
+                "<b>%{y}</b><br>"
+                "Topic: %{fullData.name}<br>"
+                "Weight: %{x}<br>"
+                "Top words: %{customdata[0]}"
+                "<extra></extra>"
+            )
+        except Exception:
+            continue
+
+    fig.update_layout(
+        yaxis={"categoryorder": "array", "categoryarray": global_top_words},
+        font=dict(family=FONT_FAMILY, size=FONT_SIZE)
     )
-    fig.update_layout(yaxis={'categoryorder': 'array',
-                         'categoryarray': global_top_words,})
-    fig.update_layout(font=dict(family=FONT_FAMILY, size=FONT_SIZE))
-
-# --- end replacement block ---
-
-   
 
     return plot_to_div(fig)
+
+
+
 
 
 
