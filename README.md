@@ -25,7 +25,7 @@ The interface is designed to foreground interpretability over complexity: there 
 
 #### Visualisation  
 - Added top-word hover tooltips across all visualisations for clearer topic interpretation.  
-- Standardised global topic colour scheme across all charts.  
+- Standardised global topic colour scheme across all charts. The automated marker colours are determined by golden-ratio hue jumping + lightness alternation  
 - Reduced number of displayed terms in plots to prevent hidden tick labels; added hover-based x-axis details where needed.  
 - Unified Plotly font styling using Roboto/Noto Bengali; reduced margins for a cleaner layout.  
 
