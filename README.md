@@ -16,6 +16,30 @@ The interface is designed to foreground interpretability over complexity: there 
 
 ---
 
+### Release 1.1.1
+#### Clustering
+- Enhanced hierarchical clustering with BERTopic-style merged-cluster keyword tooltips.  
+
+#### Documentation
+- Updated documentation to explain that Heatmap and Bar Chart visualise the same topic–word weight matrix.  
+
+#### Visualisation  
+- Added top-word hover tooltips across all visualisations for clearer topic interpretation.  
+- Standardised global topic colour scheme across all charts.  
+- Reduced number of displayed terms in plots to prevent hidden tick labels; added hover-based x-axis details where needed.  
+- Unified Plotly font styling using Roboto/Noto Bengali; reduced margins for a cleaner layout.  
+
+#### Quality-Of-Life
+- Clarified Topic Evolution axis (document upload order) and added filenames to hover output.  
+- Added missing loading spinner to indicate processing during analysis.  
+
+---
+### Notes
+- Hovering on Plotly legends is unfortunately not supported; tooltips are therefore provided directly on the plots.
+
+---
+These changes significantly improve clarity, consistency, and user experience in the visualisation interface.
+
 ## Features
 
 ### Upload & Preprocessing
