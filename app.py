@@ -184,7 +184,7 @@ def process_txt_files(
             f.write(f"Topic {t[0]}:\n{', '.join(w[0] for w in t[1])}\n\n")
 
     csv_path = os.path.join(RESULT_FOLDER, 'topics.csv')
-    with open(csv_path, 'w', encoding='utf-8', newline='') as f:
+    with open(csv_path, 'w', encoding='utf-8-sig', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['Topic', 'Words'])
         for t in topics:
@@ -388,7 +388,7 @@ def process_files():
 
     # Save topic_words to CSV and TXT
     topic_words_csv_path = os.path.join(app.config['RESULT_FOLDER'], 'topic_words.csv')
-    with open(topic_words_csv_path, 'w', encoding='utf-8', newline='') as f:
+    with open(topic_words_csv_path, 'w', encoding='utf-8-sig', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['Topic', 'Top Words'])
         for tid, words in topic_words.items():
@@ -401,7 +401,7 @@ def process_files():
 
 # Save doc_topic_matrix to CSV and TXT
     doc_weights_csv_path = os.path.join(app.config['RESULT_FOLDER'], 'doc_topic_weights.csv')
-    with open(doc_weights_csv_path, 'w', encoding='utf-8', newline='') as f:
+    with open(doc_weights_csv_path, 'w', encoding='utf-8-sig', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['Document'] + [f'Topic {i}' for i in range(num_topics)])
         for doc, weights in doc_topic_matrix.items():
@@ -418,7 +418,7 @@ def process_files():
     visualizations = {
         'topics_txt': ('Download TXT', 'topics.txt', 'results'),
         'topics_csv': ('Download CSV', 'topics.csv', 'results'),
-        'scatter': ('Scatter Plot', save_plot_html(create_interactive_scatter(lda_model), 'scatter.html', 'bokeh'), 'bokeh'),
+        'scatter': ('Scatter Plot', save_plot_html(create_interactive_scatter(lda_model, corpus), 'scatter.html', 'bokeh'), 'bokeh'),
         'bars': ('Bar Chart', save_plot_html(create_interactive_bar_charts(lda_model), 'bars.html', 'bokeh'), 'bokeh'),
         'heatmap': ('Heatmap', save_plot_html(create_interactive_heatmap(lda_model), 'heatmap.html', 'seaborn'), 'seaborn'),
         'evolution': ('Topic Evolution', save_plot_html(create_interactive_topic_evolution(lda_model, corpus, doc_names=doc_names), 'evolution.html', 'seaborn'), 'seaborn'),

@@ -808,69 +808,78 @@ This ensures that every chart—scatterplot, heatmap, network, pie chart, evolut
   
     <!-- 1. Topic Similarity Scatterplot -->
     <h6 class="mt-4">1. Topic Similarity Scatterplot</h6>
-    <iframe src="{{ url_for('static', filename='results/plotly/example_scatter.html') }}" width="600" height="600"></iframe>
+    <img src="{{ url_for('static', filename='images/ex_scatter.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
     <p class="small text-muted">
       <strong>Closer dots = more similar topics.</strong> This chart plots topics based on their word distributions. Topics that are close together share many high-weight words. Use this to identify overlapping themes or cluster boundaries.
     </p>
+    <p class="small text-muted"><strong>Axes:</strong> Both axes represent a two-dimensional projection of topic–word distributions. Distance between points reflects topic similarity; the axes themselves have no intrinsic semantic meaning.</p>
     
     
   
     <!-- 2. Topic × Word Heatmap -->
     <h6 class="mt-5">2. Topic × Word Heatmap</h6>
-    <iframe src="{{ url_for('static', filename='results/plotly/example_heatmap.html') }}" width="600" height="600"></iframe>
+    <img src="{{ url_for('static', filename='images/ex_heat.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
     <p class="small text-muted">
       <strong>Brighter cells = stronger topic–word link.</strong> Each cell shows how strongly a word is associated with a topic. Use this to explore overlap and word distribution depth. This view presents the same information shown in the bar chart, but emphasises patterns and 
 contrast across topics.
     </p>
+    <p class="small text-muted"><strong>Axes:</strong> The horizontal axis lists topic indices, and the vertical axis lists a globally selected set of high-weight words. Cell intensity reflects the strength of association between a word and a topic.</p>
     
     <!-- 3. Topic Prevalence Pie Chart -->
     <h6 class="mt-5">3. Topic Prevalence Pie Chart</h6>
-    <iframe src="{{ url_for('static', filename='results/plotly/example_pie_numbered.html') }}" width="600" height="600"></iframe>
+    <img src="{{ url_for('static', filename='images/ex_pie.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
     <p class="small text-muted">
       <strong>Bigger slices = more dominant topics.</strong> This chart shows how much each topic contributes to the corpus overall.
     </p>
+    <p class="small text-muted"><strong>Encoding:</strong> Slice size represents the cumulative weight of a topic across the corpus.</p>
     
   
     <!-- 4. Top Word Frequency -->
     <h6 class="mt-5">4. Top Word Frequency</h6>
-    <iframe src="{{ url_for('static', filename='results/plotly/example_top_word_frequency.html') }}" width="600" height="600"></iframe>
+    <img src="{{ url_for('static', filename='images/ex_bar.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
     <p class="small text-muted">
       <strong>High bars = frequent words in your corpus.</strong> Use this to inspect lexical dominance and identify potential noise.
     </p>
+    <p class="small text-muted"><strong>Axes:</strong> The horizontal axis shows word tokens, and the vertical axis shows their frequency in the corpus after preprocessing.</p>
+
     
   
     <!-- 5. Topic-Word Network Graph -->
     <h6 class="mt-5">5. Topic–Word Network Graph</h6>
-    <iframe src="{{ url_for('static', filename='results/plotly/example_plotly_word_network.html') }}" width="600" height="600"></iframe>
+    <img src="{{ url_for('static', filename='images/ex_network.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
     <p class="small text-muted">
       <strong>Each topic node links to its top words.</strong> Blue circles are topics, grey ones are words. Helps visualise word overlap and outliers.
     </p>
+    <p class="small text-muted"><strong>Encoding:</strong> Spatial layout reflects relational structure rather than scale; proximity and connections indicate association, not distance or magnitude.</p>
     
   
     <!-- 6. Topic Evolution Over Time -->
     <h6 class="mt-5">6. Topic Evolution Over Time</h6>
-    <iframe src="{{ url_for('static', filename='results/plotly/example_topic_evolution.html') }}" width="600" height="600"></iframe>
+    <img src="{{ url_for('static', filename='images/ex_evo.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
     <p class="small text-muted">
       <strong>Each line shows a topic's weight across time.</strong> Use this to detect historical shifts or evolving discourse patterns.
     </p>
-    
+    <p class="small text-muted"><strong>Axes:</strong> The horizontal axis represents document order (or a derived sequence such as time bins), and the vertical axis shows topic weight, tracing how topic presence changes across the corpus.</p>
+        <em class="small text-muted"><strong>Use case:</strong> For example, if a novel is divided into chapters and each chapter is uploaded as a separate file with filenames reflecting chapter order, this visualisation can be used to examine how thematic emphasis shifts across the course of the narrative.</em>
+
+
     <!-- 7. Topic Distribution Across Documents -->
     <h6 class="mt-5">7. Topic Distribution Across Documents</h6>
-    <iframe src="{{ url_for('static', filename='results/plotly/example_topic_distribution_scatter.html') }}" width="600" height="600"></iframe>
+    <img src="{{ url_for('static', filename='images/ex_dist.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
     <p class="small text-muted">
       <strong>Each dot shows a topic's weight in one document.</strong> Useful for detecting niche vs. broad topics and skewed presence.
     </p>
+    <p class="small text-muted"><strong>Axes:</strong> The horizontal axis lists documents in the uploaded corpus, and the vertical axis shows topic weight, indicating how strongly each topic is represented in individual documents.</p>
     
   
   
     <!-- 8. Topic Distance Dendrogram -->
     <h6 class="mt-5">8. Topic Distance (Clustering Dendrogram)</h6>
-    <img src="{{ url_for('static', filename='results/plotly/example_topic_dendrogram.png') }}" alt="Topic Dendrogram" class="img-fluid rounded border">
-    <p></p>
+    <img src="{{ url_for('static', filename='images/ex_dendogram.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
     <p class="small text-muted">
       <strong>Shorter branches = more similar topics.</strong> This dendrogram clusters topics by semantic similarity. Helps spot overlap or hierarchy.
     </p>
-    
+    <p class="small text-muted"><strong>Axes:</strong> The vertical axis shows inter-topic distance, while the horizontal arrangement reflects hierarchical grouping rather than a quantitative scale.</p>
   </div>
 
   

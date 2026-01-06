@@ -95,11 +95,30 @@ def get_topic_tooltips(lda_model, topn=5):
 def plot_to_div(fig):
     return pio.to_html(fig, full_html=False, include_plotlyjs='cdn')
 
-def create_interactive_scatter(lda_model):
+def compute_topic_prevalence(lda_model, corpus, normalize=False):
+    """
+    Compute global topic prevalence as the sum of document–topic weights.
+    Optionally normalise to sum to 1.0.
+    """
+    topic_totals = [0.0] * lda_model.num_topics
+
+    for doc in corpus:
+        for topic_id, weight in lda_model.get_document_topics(doc):
+            topic_totals[topic_id] += weight
+
+    if normalize:
+        total = sum(topic_totals) or 1.0
+        topic_totals = [w / total for w in topic_totals]
+
+    return topic_totals
+
+
+def create_interactive_scatter(lda_model, corpus):
     topic_term_matrix = lda_model.get_topics()
     pca = PCA(n_components=2)
     coords = pca.fit_transform(topic_term_matrix)
 
+    topic_weights = compute_topic_prevalence(lda_model, corpus)
     tooltips = get_topic_tooltips(lda_model, topn=5)
     color_map = build_topic_color_map(len(coords))
 
@@ -114,8 +133,16 @@ def create_interactive_scatter(lda_model):
             text=[label],
             textposition="top center",
             marker=dict(size=14, color=color_map[label]),
-            customdata=[[tooltips.get(topic_id, "")]],
-            hovertemplate="<b>%{text}</b><br>Top words: %{customdata[0]}<extra></extra>"
+            customdata=[[
+                topic_weights[topic_id],
+                tooltips.get(topic_id, "")
+            ]],
+            hovertemplate=(
+                "<b>%{text}</b><br>"
+                "Topic weight: %{customdata[0]:.3f}<br>"
+                "Top words: %{customdata[1]}"
+                "<extra></extra>"
+            )
         ))
 
     fig.update_layout(
@@ -575,7 +602,15 @@ def create_interactive_clustering(lda_model):
 
         merge_x.append(cx)
         merge_y.append(cy)
-        merge_text.append(f"<b>Cluster {cid}</b><br>Topics: {member_topics}<br>Top words: {topw}")
+        dist = info.get("distance", 0.0)
+
+        merge_text.append(
+            f"<b>Cluster {cid}</b><br>"
+            f"Distance: {dist:.3f}<br>"
+            f"Topics: {member_topics}<br>"
+            f"Highest related terms: {topw}"
+)
+
         merge_colors.append(rep_color)
 
     fig.add_trace(go.Scatter(
@@ -628,7 +663,7 @@ def create_interactive_clustering(lda_model):
             zeroline=False,
             showticklabels=False
         ),
-        yaxis=dict(range=[y_min, y_max], title='Distance'),
+        yaxis=dict(range=[y_min, y_max], title='Distance', tickformat=".3f"),
         plot_bgcolor='white',
         paper_bgcolor='white',
         margin=dict(l=0, r=0, t=0, b=0),
@@ -641,10 +676,7 @@ def create_interactive_clustering(lda_model):
 
 
 def create_topic_prevalence_pie(lda_model, corpus):
-    topic_totals = [0.0] * lda_model.num_topics
-    for doc in corpus:
-        for topic_id, weight in lda_model.get_document_topics(doc):
-            topic_totals[topic_id] += weight
+    topic_totals = compute_topic_prevalence(lda_model, corpus)
 
     df = pd.DataFrame({
         "Topic": [f"Topic {i}" for i in range(lda_model.num_topics)],
