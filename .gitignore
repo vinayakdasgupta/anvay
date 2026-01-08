@@ -10,7 +10,7 @@ __pycache__/
 *.py[cod]
 
 # ======================================================
-# Virtual environments (not present in repo, but local-only)
+# Virtual environments
 # ======================================================
 .venv/
 venv/
@@ -19,15 +19,16 @@ ENV/
 .env.*
 
 # ======================================================
-# Uploaded user data (runtime-generated)
+# Uploaded user data (keep folder, ignore contents)
 # ======================================================
-uploads/
+uploads/*
+!uploads/.gitkeep
 
 # ======================================================
-# Generated analysis results (runtime-generated)
-# Core results directory is NOT source
+# Generated analysis results (keep folder, ignore contents)
 # ======================================================
-results/
+results/*
+!results/.gitkeep
 
 # ======================================================
 # OS / editor artefacts
@@ -40,7 +41,7 @@ Thumbs.db
 .idea/
 
 # ======================================================
-# Test artefacts / coverage (if generated locally)
+# Test artefacts / coverage
 # ======================================================
 .coverage
 htmlcov/
