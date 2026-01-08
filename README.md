@@ -222,7 +222,8 @@ You can now upload .txt files and begin exploring topics.
 
 If you use anvay in academic work, please cite it as follows:
 
-> Vinayak Das Gupta. *anvay: A Bengali Topic Modelling Dashboard*. v1.1.0, 2025. GitHub repository: https://github.com/vinayakdasgupta/anvay (accessed [date]).
+> Das Gupta, Vinayak. *anvay: a web-based tool for interpretive topic modelling in bengali*.  
+Zenodo. https://doi.org/10.5281/zenodo.18186215
 
 Once a DOI or formal publication is available, this should be replaced with the appropriate citation.
 
