@@ -124,47 +124,97 @@ anvay includes a fully integrated documentation panel accessible from the interf
 ---
 
 ## Installation
-anvay has been tested with Python 3.9 and Gensim 4.3.3. Compatibility with other versions may vary.
+
+**anvay** has been tested with Python 3.9-3.11 and Gensim 4.3.x.  
+Two installation methods are provided:
+
+- **Standard installation (virtual environment)** 
+- **Docker-based installation** 
+
+---
+
+## Option 1: Standard installation (virtual environment)
+
+This method installs anvay directly on your system using a Python virtual environment.
 
 ### Prerequisites
-- Python 3.9 or higher
-- Git
+- Python 3.9-3.11
+- Git  
 - pip (Python package installer)
 
-### Step-by-Step Instructions
+### Step-by-step instructions
 
-1. **Clone the Repository**
+Clone the repository:
+
 ```bash
 git clone https://github.com/vinayakdasgupta/anvay.git
-```
-```bash
 cd anvay
 ```
 
-2. **(Recommended) Create a Virtual Environment**
+Create and activate a virtual environment (recommended):
+
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
+source venv/bin/activate      # macOS/Linux
+venv\Scripts\activate         # Windows
 ```
 
-3. **Install Dependencies**
+Install dependencies:
+
 ```bash
 pip install -r requirements.txt
 ```
 
-4. **Run the Application**
+Run the application:
+
 ```bash
 python app.py
 ```
 
-5. **Access the Web Interface**
+Access the web interface:
 
-Open your browser and navigate to:
 ```
 http://localhost:5000
 ```
 
-You can now upload your `.txt` files and begin exploring topics.
+You can now upload `.txt` files and begin exploring topics.
+
+---
+
+## Option 2: Docker-based installation (recommended for reproducibility)
+
+
+### Prerequisites
+- Docker (Docker Desktop on Windows/macOS)
+
+### Step-by-step instructions
+
+Clone the repository:
+
+```bash
+git clone https://github.com/vinayakdasgupta/anvay.git
+cd anvay
+```
+
+Build the Docker image:
+
+```bash
+docker build -t anvay .
+```
+
+Run the container:
+
+```bash
+docker run -p 5000:5000 anvay
+```
+
+Access the web interface:
+
+```
+http://localhost:5000
+```
+
+You can now upload .txt files and begin exploring topics.
 
 ---
 
