@@ -15,6 +15,7 @@ import gensim
 import gensim.corpora as corpora
 import numpy as np
 from preprocessing.pipeline import preprocess_documents
+from analysis.corpus_stats import compute_corpus_stats
 
 from utils import (
 
@@ -131,6 +132,10 @@ def process_txt_files(
             workers=os.cpu_count() - 1 if use_multicore else 1
     )
 
+    overview_stats, top_tokens, top_token_text = compute_corpus_stats(
+    all_tokens, normalisation_order
+    )
+
     # Relevance-weighted top words & labels
     relevance_topics = get_relevance_weighted_words(lda_model, corpus, id2word, lambda_val=0.6)
     topic_labels = generate_topic_labels(relevance_topics)
@@ -153,27 +158,6 @@ def process_txt_files(
         writer.writerow(['Topic', 'Words'])
         for t in topics:
             writer.writerow([t[0], ", ".join(w[0] for w in t[1])])
-
-    # Corpus & token stats
-    total_docs = len(all_tokens)
-    flat_tokens = [t for doc in all_tokens for t in doc]
-    total_tokens = len(flat_tokens)
-    vocab_size = len(set(flat_tokens))
-    avg_len = round(np.mean([len(doc) for doc in all_tokens]), 2)
-    top_tokens = Counter(flat_tokens).most_common(10)
-    top_token_text = [
-        {"token": token, "percent": round(count / total_tokens * 100, 2)}
-        for token, count in top_tokens
-    ]
-    overview_stats = {
-        "Total Documents": total_docs,
-        "Total Tokens": total_tokens,
-        "Vocabulary Size": vocab_size,
-        "Average Document Length": avg_len,
-        "Shortest Document Length": min(len(doc) for doc in all_tokens),
-        "Longest Document Length": max(len(doc) for doc in all_tokens),
-        "Normalisation Order": normalisation_order
-    }
 
     gensim_logger.removeHandler(handler)
     full_log = log_stream.getvalue()
