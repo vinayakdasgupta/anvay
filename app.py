@@ -89,7 +89,7 @@ def process_txt_files(
     file_paths, num_topics, iterations, passes, minimum_probability,
     chunk_size, ngram, alpha, eta, per_word_topics,
     no_below, no_above, use_stemming, use_multicore,
-    percent, remove_stopwords, normalisation_order, custom_stopwords=None
+    percent, remove_stopwords, normalisation_order, custom_stopwords=None, language="bn"
 ):
     
     # Capture gensim training logs for display
@@ -108,7 +108,7 @@ def process_txt_files(
         normalisation_order=normalisation_order,
         percent=percent,
         ngram=ngram,
-        language="bn"
+        language=language
     )
 
 
@@ -246,6 +246,7 @@ def process_files():
     use_multicore = request.form.get('use_multicore', 'false').lower() == 'true'
     percent = float(request.form.get('percent_most_common', 0))
     minimum_probability = 0.1
+    language = request.form.get("language", "bn")
  
 
     # Load custom stopwords if provided
@@ -297,7 +298,8 @@ def process_files():
             percent,
             True,
             normalisation_order,
-            custom_stopwords_set
+            custom_stopwords_set,
+            "en"
         )
     except ValueError as ve:
         app.logger.warning(f"User-level processing error: {ve}")
