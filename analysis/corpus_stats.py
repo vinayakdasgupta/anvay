@@ -1,28 +1,16 @@
-# analysis/corpus_stats.py
-
 from collections import Counter
 import numpy as np
 
 
 def compute_corpus_stats(all_tokens, normalisation_order):
     """
-    Compute corpus-level statistics from tokenized documents.
+    Compute corpus-level statistics from preprocessed tokens.
 
-    Parameters
-    ----------
-    all_tokens : list[list[str]]
-        Tokenized documents after preprocessing.
-    normalisation_order : str
-        Normalisation order used ("stem_first", "filter_first", etc.).
-
-    Returns
-    -------
-    overview_stats : dict
-        High-level corpus statistics for display.
-    top_tokens : list[tuple]
-        Top tokens with raw counts.
-    top_token_text : list[dict]
-        Top tokens with percentage values for visualization.
+    Notes
+    -----
+    - This function is intentionally language-agnostic.
+    - All linguistic decisions are assumed to be resolved upstream.
+    - normalisation_order is included for reporting only.
     """
 
     total_docs = len(all_tokens)
@@ -38,7 +26,7 @@ def compute_corpus_stats(all_tokens, normalisation_order):
     top_token_text = [
         {
             "token": token,
-            "percent": round(count / total_tokens * 100, 2)
+            "percent": round((count / total_tokens) * 100, 2)
         }
         for token, count in top_tokens
     ]

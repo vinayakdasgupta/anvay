@@ -1,4 +1,4 @@
-# anvay: A Bengali Topic Modelling Dashboard
+# anvay: A Topic Modelling Dashboard
 
 
 
@@ -6,15 +6,78 @@ https://github.com/user-attachments/assets/75327a2f-27fb-467a-8ebf-e1585a97e0ec
 
 
 
-**anvay** is a web-based topic modelling interface built for exploring, analysing, and interpreting large corpora of Bengali text. Developed with a focus on literary and historical materials, anvay offers users fine-grained control over preprocessing options and presents results in a structured, interactive interface designed for both researchers and students. The application is modular, interpretable, and lightweight, making it suitable for public deployment and pedagogical use.
+**anvay** is a web-based topic modelling interface built for exploring, analysing, and interpreting large corpora of text. Developed with a focus on literary and historical materials, anvay offers users fine-grained control over preprocessing options and presents results in a structured, interactive interface designed for both researchers and students. The application is modular, interpretable, and lightweight, making it suitable for public deployment and pedagogical use.
 
 ## Overview
 
-anvay takes plain-text `.txt` files in Bengali, performs preprocessing (tokenisation, stemming, stopword removal, frequency filtering, n-gram construction), builds a Latent Dirichlet Allocation (LDA) topic model using Gensim, and visualises the results across multiple tabs with topic-wise document insights.
+anvay takes plain-text `.txt` files and performs preprocessing (tokenisation, stemming, stopword removal, frequency filtering, n-gram construction), builds a Latent Dirichlet Allocation (LDA) topic model using Gensim, and visualises the results across multiple tabs with topic-wise document insights.
 
 The interface is designed to foreground interpretability over complexity: there is no reliance on neural networks, transformer embeddings, or LLMs. Every transformation is documented and controlled by the user.
 
 ---
+
+Release 2.0 (in progress)
+-------------------------
+
+This release represents a significant architectural and methodological expansion of anvay. While Bengali remains the primary and most stable language, anvay now supports multiple languages through a unified, language-aware preprocessing pipeline. Non-Bengali languages should be considered **experimental** at this stage.
+
+### Multilingual Expansion (Experimental)
+
+anvay now supports topic modelling for multiple languages beyond Bengali:
+
+*   **English**: Tokenisation with NLTK, lemmatisation using WordNet. Normalisation order is fixed (filter → lemmatise) to ensure predictable behaviour.
+    
+*   **Hindi**: Custom Devanagari tokenisation with dictionary-based lemmatisation (via simplemma). Stopword handling and normalisation are currently conservative and experimental.
+    
+*   **Tamil**: Custom Unicode-aware tokenisation with dictionary-based stemming.Designed for narrative and devotional corpora; behaviour is still under evaluation.
+    
+
+All non-Bengali language pipelines are modular and isolated, allowing future refinement without affecting core Bengali functionality.
+
+### Expanded Bengali Stemming Dictionary
+
+*   The Bengali stemming dictionary has been expanded from approximately **7,000** word pairs to over **75,000** word pairs.
+    
+*   This significantly improves coverage of inflectional and derivational variants.
+    
+*   Results in more stable and interpretable topic-word distributions, especially for long-form journalistic and literary corpora.
+    
+
+### Configurable Stemming and Filtering Order
+
+*   Users can now explicitly choose the preprocessing order:
+    
+    *   **Stem → Filter**
+        
+    *   **Filter → Stem**
+        
+*   This makes preprocessing behaviour transparent and reproducible.
+    
+*   Enables comparative experimentation with token reduction strategies and their effects on topic coherence and interpretability.
+    
+*   Particularly relevant for dictionary-based stemming pipelines.
+    
+
+### Enhanced Representative Sentence Display
+
+*   For each topic, the interface now displays:
+    
+    *   The most representative sentence.
+        
+    *   Two sentences before and two sentences after it (context window).
+        
+    *   The topic weight of the representative sentence.
+        
+*   This improves interpretability by situating topic salience within **local textual context**, rather than presenting isolated sentences.
+    
+
+### Notes
+
+*   Bengali remains the most mature and thoroughly validated language in anvay.
+    
+*   English, Hindi, and Tamil support are **experimental** and intended primarily for methodological exploration and testing.
+    
+*   This release prioritises architectural extensibility and interpretive transparency over feature completeness.
 
 ### Release 1.1.1
 #### Clustering

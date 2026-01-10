@@ -8,6 +8,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
 from sklearn.decomposition import PCA
+import nltk
+from nltk.tokenize import word_tokenize, sent_tokenize
 from scipy.cluster.hierarchy import linkage, dendrogram
 from sklearn.cluster import AgglomerativeClustering
 from collections import Counter
@@ -817,6 +819,7 @@ def get_representative_sentences_custom(
     raw_texts,
     dictionary,
     doc_names=None,
+    language="bn",
     num_topics=10,
     topn=10,
     window=2,
@@ -845,41 +848,54 @@ def get_representative_sentences_custom(
         seen_docs.add(best_doc_index)
 
         raw_text = raw_texts[best_doc_index]
-        sentences = split_sentences_bengali(raw_text)
+
+    # --- language-aware sentence splitting ---
+        if language == "bn":
+            sentences = split_sentences_bengali(raw_text)
+        else:
+            sentences = sent_tokenize(raw_text)
 
         top_words = [
             dictionary[w_id]
             for w_id, _ in lda_model.get_topic_terms(topic_id, topn=topn)
         ]
 
+        topic_word_set = set(top_words)   # ← THIS WAS THE MISSING LINE
+
         best_idx = 0
         best_overlap = -1
-        topic_word_set = set(top_words)
 
-        # --- find most representative sentence ---
         for i, sent in enumerate(sentences):
-            tokens = set(custom_bengali_tokenize(sent))
+            if language == "bn":
+                tokens = set(custom_bengali_tokenize(sent))
+            else:
+                tokens = set(
+                t.lower()
+                for t in word_tokenize(sent)
+                if t.isalpha()
+            )
+
             overlap = len(tokens & topic_word_set)
             if overlap > best_overlap:
                 best_overlap = overlap
                 best_idx = i
 
         # --- expand to context window (±2 sentences) ---
-        start = max(0, best_idx - window)
-        end = min(len(sentences), best_idx + window + 1)
+            start = max(0, best_idx - window)
+            end = min(len(sentences), best_idx + window + 1)
 
-        snippet = "। ".join(sentences[start:end]).strip()
+            snippet = "। ".join(sentences[start:end]).strip()
 
         # safety cap
-        if len(snippet) > max_chars:
-            snippet = snippet[:max_chars].rsplit(" ", 1)[0] + "…"
+            if len(snippet) > max_chars:
+                snippet = snippet[:max_chars].rsplit(" ", 1)[0] + "…"
 
-        topic_sentences[topic_id] = {
-            "doc": doc_names[best_doc_index] if doc_names else f"Doc {best_doc_index}",
-            "weight": round(max_score, 4),
-            "text": snippet,
-            "low_confidence": best_overlap == 0
-        }
+            topic_sentences[topic_id] = {
+                "doc": doc_names[best_doc_index] if doc_names else f"Doc {best_doc_index}",
+                "weight": round(max_score, 4),
+                "text": snippet,
+                "low_confidence": best_overlap == 0
+            }
 
     return topic_sentences
 

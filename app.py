@@ -17,14 +17,14 @@ import numpy as np
 from preprocessing.pipeline import preprocess_documents
 from analysis.corpus_stats import compute_corpus_stats
 from lda.train import train_lda_model
+from analysis.postprocess import compute_topic_semantics
+from analysis.export import export_topics
+from analysis.logs import finalize_training_log
 
 from utils import (
 
     load_stopwords,
-    parse_hyperparam,
-    convert_numpy_types,
-    get_relevance_weighted_words,
-    generate_topic_labels
+    convert_numpy_types
 )
 from viz import (
     create_interactive_scatter,
@@ -36,8 +36,7 @@ from viz import (
     create_topic_prevalence_pie,
     create_topic_word_network,
     prepare_topic_doc_drilldown,
-    create_corpus_top_tokens_bar,
-    get_representative_sentences_custom
+    create_corpus_top_tokens_bar
 )
 
 # Configure logging
@@ -88,7 +87,7 @@ except LookupError:
 def process_txt_files(
     file_paths, num_topics, iterations, passes, minimum_probability,
     chunk_size, ngram, alpha, eta, per_word_topics,
-    no_below, no_above, use_stemming, use_multicore,
+    no_below, no_above, normalisation, use_multicore,
     percent, remove_stopwords, normalisation_order, custom_stopwords=None, language="bn"
 ):
     
@@ -104,7 +103,7 @@ def process_txt_files(
         file_paths=file_paths,
         remove_stopwords=remove_stopwords,
         custom_stopwords=custom_stopwords,
-        use_stemming=use_stemming,
+        normalisation=normalisation,
         normalisation_order=normalisation_order,
         percent=percent,
         ngram=ngram,
@@ -136,36 +135,34 @@ def process_txt_files(
 
 
     overview_stats, top_tokens, top_token_text = compute_corpus_stats(
-    all_tokens, normalisation_order
+        all_tokens,
+        normalisation_order
+)
+
+
+    # Semantic postprocessing
+    relevance_topics, topic_labels, representative_sents = compute_topic_semantics(
+        lda_model=lda_model,
+        corpus=corpus,
+        id2word=id2word,
+        raw_texts=raw_texts,
+        doc_names=doc_names,
+        language=language
     )
 
-    # Relevance-weighted top words & labels
-    relevance_topics = get_relevance_weighted_words(lda_model, corpus, id2word, lambda_val=0.6)
-    topic_labels = generate_topic_labels(relevance_topics)
-
-    # Representative sentences
-    representative_sents = get_representative_sentences_custom(
-        lda_model, corpus, raw_texts, id2word, doc_names=doc_names
+    # Export topics
+    txt_path, csv_path = export_topics(
+        lda_model=lda_model,
+        num_topics=num_topics,
+        result_folder=RESULT_FOLDER
     )
 
-    # Save topics to TXT & CSV
-    topics = lda_model.show_topics(num_topics=num_topics, formatted=False)
-    txt_path = os.path.join(RESULT_FOLDER, 'topics.txt')
-    with open(txt_path, 'w', encoding='utf-8') as f:
-        for t in topics:
-            f.write(f"Topic {t[0]}:\n{', '.join(w[0] for w in t[1])}\n\n")
-
-    csv_path = os.path.join(RESULT_FOLDER, 'topics.csv')
-    with open(csv_path, 'w', encoding='utf-8-sig', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['Topic', 'Words'])
-        for t in topics:
-            writer.writerow([t[0], ", ".join(w[0] for w in t[1])])
-
-    gensim_logger.removeHandler(handler)
-    full_log = log_stream.getvalue()
-
-    training_log = extract_observational_lines(full_log)
+    # Finalise logs
+    training_log = finalize_training_log(
+        gensim_logger,
+        handler,
+        log_stream
+    )
 
     return (
         txt_path,
@@ -213,9 +210,7 @@ def process_files():
         flash("Only .txt files are supported.", "danger")
         return redirect(url_for('upload_file'))
     
-    normalisation_order = request.form.get(
-    "normalisation_order", "stem_first"
-    )
+
 
     file_paths = []
     
@@ -232,21 +227,10 @@ def process_files():
         file_paths.append(path) 
 
     # Hyperparameters
-    alpha = parse_hyperparam(request.form.get("alpha", "symmetric"))
-    eta = parse_hyperparam(request.form.get("eta", "symmetric"))
-    num_topics = int(request.form.get('num_topics', 10))
-    iterations = int(request.form.get('iterations', 40))
-    passes = int(request.form.get('passes', 10))
-    chunk_size = int(request.form.get('chunk_size', 200))
-    ngram = request.form.get('ngram', 'unigram')
-    per_word_topics = request.form.get('per_word_topics', 'false').lower() == 'true'
-    no_below = int(request.form.get('no_below', 1))
-    no_above = float(request.form.get('no_above', 0.9))
-    use_stemming = request.form.get('use_stemming', '') == 'dictionary'
-    use_multicore = request.form.get('use_multicore', 'false').lower() == 'true'
-    percent = float(request.form.get('percent_most_common', 0))
-    minimum_probability = 0.1
-    language = request.form.get("language", "bn")
+    from config.analysis_config import build_analysis_config
+
+    config = build_analysis_config(request.form)
+
  
 
     # Load custom stopwords if provided
@@ -279,28 +263,28 @@ def process_files():
             topic_labels,
             representative_sents,
             training_log
-       
         ) = process_txt_files(
             file_paths,
-            num_topics,
-            iterations,
-            passes,
-            minimum_probability,
-            chunk_size,
-            ngram,
-            alpha,
-            eta,
-            per_word_topics,
-            no_below,
-            no_above,
-            use_stemming,
-            use_multicore,
-            percent,
-            True,
-            normalisation_order,
+            config.num_topics,
+            config.iterations,
+            config.passes,
+            config.minimum_probability,
+            config.chunk_size,
+            config.ngram,
+            config.alpha,
+            config.eta,
+            config.per_word_topics,
+            config.no_below,
+            config.no_above,
+            config.normalisation,
+            config.use_multicore,
+            config.percent_most_common,
+            config.remove_stopwords,
+            config.normalisation_order,
             custom_stopwords_set,
-            "en"
+            config.language
         )
+
     except ValueError as ve:
         app.logger.warning(f"User-level processing error: {ve}")
         return render_template("error.html", error={
@@ -335,12 +319,12 @@ def process_files():
 
     topic_words = {
     i: [word for word, _ in lda_model.show_topic(i, topn=10)]
-    for i in range(num_topics)
+    for i in range(config.num_topics)
     }
     doc_topic_matrix = {
     doc_names[i]: [
         dict(lda_model.get_document_topics(corpus[i])).get(tid, 0.0)
-        for tid in range(num_topics)
+        for tid in range(config.num_topics)
     ]
     for i in range(min(25, len(corpus)))  # Limit for display
     }
@@ -362,7 +346,7 @@ def process_files():
     doc_weights_csv_path = os.path.join(app.config['RESULT_FOLDER'], 'doc_topic_weights.csv')
     with open(doc_weights_csv_path, 'w', encoding='utf-8-sig', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(['Document'] + [f'Topic {i}' for i in range(num_topics)])
+        writer.writerow(['Document'] + [f'Topic {i}' for i in range(config.num_topics)])
         for doc, weights in doc_topic_matrix.items():
             writer.writerow([doc] + [round(w, 4) for w in weights])
 
@@ -406,7 +390,7 @@ def process_files():
             training_log=training_log,
             topic_words=topic_words,
             doc_topic_matrix=doc_topic_matrix,
-            num_topics=num_topics
+            num_topics=config.num_topics
        
 
         )
@@ -426,33 +410,6 @@ def capture_lda_training_log():
     lda_logger.addHandler(handler)
 
     return buffer, handler, lda_logger
-
-def extract_observational_lines(full_log):
-    lines = full_log.splitlines()
-    parsed = {
-        "token_filtering": [],
-        "config": [],
-        "progress": [],
-        "convergence": [],
-        "perplexity": [],
-        "final": []
-    }
-
-    for line in lines:
-        if "built Dictionary<" in line or "discarding" in line or "keeping" in line or "resulting dictionary" in line:
-            parsed["token_filtering"].append(line)
-        elif "using symmetric" in line or "running online LDA training" in line or "training LDA model" in line:
-            parsed["config"].append(line)
-        elif line.startswith("PROGRESS:"):
-            parsed["progress"].append(line)
-        elif "documents converged" in line:
-            parsed["convergence"].append(line)
-        elif "perplexity estimate" in line:
-            parsed["perplexity"].append(line)
-        elif "LdaMulticore lifecycle event" in line:
-            parsed["final"].append(line)
-
-    return parsed
 
 @app.route('/results/<folder>/<filename>')
 def view_result_file(folder, filename):

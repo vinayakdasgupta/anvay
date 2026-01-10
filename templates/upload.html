@@ -84,18 +84,32 @@
           </label>
           <input type="number" class="form-control" name="num_topics" id="num_topics" value="10" min="1" max="100">
         </div>
-  
-        <div class="col-md-6">
+
+                <div class="col-md-6">
           <label for="remove_stopwords" class="form-label d-flex justify-content-between align-items-center">
             Remove NLTK Stopwords
             <i class="bi bi-info-circle ms-2 text-muted"
               data-bs-toggle="tooltip"
-              title="Removes common Bengali stopwords like ‘এই’, ‘যে’, etc. to improve topic clarity."></i>
+              title="Removes common language-specific stopwords to improve topic clarity."></i>
           </label>
           <select name="remove_nltk_stopwords" class="form-select" id="remove_nltk_stopwords">
             <option value="false">No</option>
             <option value="true" selected>Yes</option>
           </select>
+        </div>
+
+
+        <div class="col-md-6 mb-3">
+        <label for="language" class="form-label">Language</label>
+        <select class="form-select" name="language" id="language">
+        <option value="bn" selected>Bengali</option>
+        <option value="en">English</option>
+        <option value="hi">Hindi</option>
+        <option value="ta">Tamil</option>
+        </select>
+        <div class="form-text">
+        Select the primary language of the uploaded documents.
+        </div>
         </div>
   
         <div class="col-12 text-center">
@@ -230,16 +244,22 @@
             </div>
   
             <div class="col-md-6">
-              <label for="use_stemming" class="form-label d-flex justify-content-between align-items-center">
-                Stemming
+              <label for="normalisation" class="form-label d-flex justify-content-between align-items-center">
+                Normalisation
                 <i class="bi bi-info-circle ms-2 text-muted"
                   data-bs-toggle="tooltip"
-                  title="Applies dictionary-based Bengali stemming to group variants of the same word."></i>
+                  title="Applies language-specific lexical normalisation."></i>
               </label>
-              <select name="use_stemming" class="form-select" id="use_stemming">
-                <option value="none">None</option>
-                <option value="dictionary">Dictionary-Based</option>
+              <select name="normalisation" class="form-select" id="normalisation">
+              <option value="none">None</option>
+
+              <!-- Bengali -->
+              <option value="stem">Stemming</option>
+
+              <!-- English -->
+              <option value="lemma">Lemmatization</option>
               </select>
+
             </div>
 
             <div class="col-md-6 d-none" id="stemmingOrderWrapper">
@@ -392,12 +412,34 @@ document.getElementById("themeToggleIconWrapper").innerHTML = current === 'dark'
 <script>
 document.getElementById('files').addEventListener('change', function () {
   const maxFiles = 800;
+  const maxBytes = 100 * 1024 * 1024; // 100 MB
+
+  let totalSize = 0;
+  for (const file of this.files) {
+    totalSize += file.size;
+  }
+
   if (this.files.length > maxFiles) {
-    alert(`You selected ${this.files.length} files. The maximum allowed is ${maxFiles}.`);
-    this.value = ""; // reset file input
+    alert(
+      `You selected ${this.files.length} files.\n` +
+      `The maximum allowed is ${maxFiles}.`
+    );
+    this.value = "";
+    return;
+  }
+
+  if (totalSize > maxBytes) {
+    const mb = (totalSize / (1024 * 1024)).toFixed(1);
+    alert(
+      `Total upload size is ${mb} MB.\n` +
+      `The maximum allowed is 100 MB.`
+    );
+    this.value = "";
+    return;
   }
 });
 </script>
+
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
@@ -412,26 +454,100 @@ document.getElementById('files').addEventListener('change', function () {
   });
 </script>
 
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const stemmingSelect = document.getElementById("use_stemming");
+  const languageSelect = document.getElementById("language");
+  const normSelect = document.getElementById("normalisation");
   const orderWrapper = document.getElementById("stemmingOrderWrapper");
   const orderSelect = orderWrapper.querySelector("select");
+  const stopwordSelect = document.getElementById("remove_nltk_stopwords");
 
-  function updateStemmingOrderVisibility() {
-    if (stemmingSelect.value === "dictionary") {
+  const stemOption = normSelect.querySelector('option[value="stem"]');
+  const lemmaOption = normSelect.querySelector('option[value="lemma"]');
+
+function updateNormalisationUI() {
+  const language = languageSelect.value;
+  const norm = normSelect.value;
+
+  if (language === "bn") {
+    // Bengali: stemming only, NLTK stopwords allowed
+    stemOption.disabled = false;
+    lemmaOption.disabled = true;
+
+    stopwordSelect.disabled = false;
+
+    if (norm === "lemma") {
+      normSelect.value = "stem";
+    }
+
+    if (normSelect.value === "stem") {
       orderWrapper.classList.remove("d-none");
       orderSelect.disabled = false;
     } else {
       orderWrapper.classList.add("d-none");
       orderSelect.disabled = true;
     }
+
+  } else if (language === "en") {
+    // English: lemmatization only, NLTK stopwords allowed
+    stemOption.disabled = true;
+    lemmaOption.disabled = false;
+
+    stopwordSelect.disabled = false;
+
+    if (norm === "stem") {
+      normSelect.value = "lemma";
+    }
+
+    orderWrapper.classList.add("d-none");
+    orderSelect.disabled = true;
+
+  } else if (language === "hi") {
+    // Hindi: lemmatization only, NO NLTK stopwords
+    stemOption.disabled = true;
+    lemmaOption.disabled = false;
+
+    if (norm === "stem") {
+      normSelect.value = "lemma";
+    }
+
+    stopwordSelect.value = "false";
+    stopwordSelect.disabled = true;
+
+    orderWrapper.classList.add("d-none");
+    orderSelect.disabled = true;
   }
 
-  updateStemmingOrderVisibility();
-  stemmingSelect.addEventListener("change", updateStemmingOrderVisibility);
+ else if (language === "ta") {
+  // Tamil: stemming only, stemming order allowed, NO NLTK stopwords
+  stemOption.disabled = false;
+  lemmaOption.disabled = true;
+
+  if (norm === "lemma") {
+    normSelect.value = "stem";
+  }
+
+  stopwordSelect.value = "false";
+  stopwordSelect.disabled = true;
+
+  // Allow stemming order selection
+  orderWrapper.classList.remove("d-none");
+  orderSelect.disabled = false;
+}
+
+
+}
+
+
+
+
+  updateNormalisationUI();
+  languageSelect.addEventListener("change", updateNormalisationUI);
+  normSelect.addEventListener("change", updateNormalisationUI);
 });
 </script>
+
 
   
   
