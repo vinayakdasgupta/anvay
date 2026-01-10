@@ -16,6 +16,7 @@ import gensim.corpora as corpora
 import numpy as np
 from preprocessing.pipeline import preprocess_documents
 from analysis.corpus_stats import compute_corpus_stats
+from lda.train import train_lda_model
 
 from utils import (
 
@@ -116,21 +117,22 @@ def process_txt_files(
     if len(id2word) == 0:
         raise ValueError("Dictionary is empty after filtering. Adjust no_below/no_above.")
     corpus = [id2word.doc2bow(tok) for tok in all_tokens]
-    with redirect_stdout(log_stream):
-    # Train LDA
-        lda_model = gensim.models.LdaMulticore(
-            corpus=corpus,
-            id2word=id2word,
-            num_topics=num_topics,
-            iterations=iterations,
-            passes=passes,
-            chunksize=chunk_size,
-            alpha=alpha,
-            eta=eta,
-            per_word_topics=per_word_topics,
-            minimum_probability=minimum_probability,
-            workers=os.cpu_count() - 1 if use_multicore else 1
+   
+    lda_model = train_lda_model(
+    corpus=corpus,
+    id2word=id2word,
+    num_topics=num_topics,
+    iterations=iterations,
+    passes=passes,
+    chunk_size=chunk_size,
+    alpha=alpha,
+    eta=eta,
+    per_word_topics=per_word_topics,
+    minimum_probability=minimum_probability,
+    use_multicore=use_multicore,
+    log_stream=log_stream
     )
+
 
     overview_stats, top_tokens, top_token_text = compute_corpus_stats(
     all_tokens, normalisation_order
