@@ -9,24 +9,20 @@ from werkzeug.exceptions import HTTPException
 from flask import Flask, request, render_template, send_file, send_from_directory, jsonify, flash, redirect, url_for
 from contextlib import redirect_stdout
 import nltk
-from nltk.corpus import stopwords
 from nltk.data import find
 import io
 import gensim
 import gensim.corpora as corpora
 import numpy as np
+from preprocessing.pipeline import preprocess_documents
 
 from utils import (
-    remove_most_frequent_words,
-    custom_bengali_tokenize,
-    stem_tokens,
-    load_list_from_file,
+
     load_stopwords,
     parse_hyperparam,
     convert_numpy_types,
     get_relevance_weighted_words,
-    generate_topic_labels,
-    remove_punctuation
+    generate_topic_labels
 )
 from viz import (
     create_interactive_scatter,
@@ -78,13 +74,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['RESULT_FOLDER'] = RESULT_FOLDER
 app.config['STOPWORDS_FOLDER'] = STOPWORDS_FOLDER
 
-# Load stemmer roots/suffixes once
-NOUN_ROOTS = set(load_list_from_file(os.path.join(STOPWORDS_FOLDER, 'noun_roots.txt')))
-VERB_ROOTS = set(load_list_from_file(os.path.join(STOPWORDS_FOLDER, 'verb_roots.txt')))
-NOUN_SUFFIXES = load_list_from_file(os.path.join(STOPWORDS_FOLDER, 'noun_suffixes.txt'))
-VERB_SUFFIXES = load_list_from_file(os.path.join(STOPWORDS_FOLDER, 'verb_suffixes.txt'))
-
-
 # Download NLTK resources if needed
 try:
     find('corpora/stopwords')
@@ -98,7 +87,7 @@ def process_txt_files(
     file_paths, num_topics, iterations, passes, minimum_probability,
     chunk_size, ngram, alpha, eta, per_word_topics,
     no_below, no_above, use_stemming, use_multicore,
-    percent, remove_stopwords, custom_stopwords=None
+    percent, remove_stopwords, normalisation_order, custom_stopwords=None
 ):
     
     # Capture gensim training logs for display
@@ -109,41 +98,16 @@ def process_txt_files(
     gensim_logger = logging.getLogger('gensim')
     gensim_logger.addHandler(handler)
 
-    # Build stopwords set
-    stop_words = set(stopwords.words('bengali')) if remove_stopwords else set()
-    if custom_stopwords:
-        stop_words.update(custom_stopwords)
-    
+    all_tokens, raw_texts, doc_names = preprocess_documents(
+        file_paths=file_paths,
+        remove_stopwords=remove_stopwords,
+        custom_stopwords=custom_stopwords,
+        use_stemming=use_stemming,
+        normalisation_order=normalisation_order,
+        percent=percent,
+        ngram=ngram
+    )
 
-    all_tokens, raw_texts, doc_names = [], [], []
-    for path in file_paths:
-        with open(path, 'r', encoding='utf-8') as f:
-            raw = f.read()
-            clean_text = remove_punctuation(raw)
-
-        tokens = custom_bengali_tokenize(clean_text)
-        tokens = [t for t in tokens if len(t) > 1 and t not in stop_words]
-        if use_stemming:
-            tokens = stem_tokens(
-                [tokens], NOUN_ROOTS, VERB_ROOTS, NOUN_SUFFIXES, VERB_SUFFIXES
-            )[0]
-        all_tokens.append(tokens)
-        raw_texts.append(clean_text)
-        doc_names.append(os.path.basename(path))
-
-
-    # Optionally remove most frequent words
-    if percent > 0:
-        all_tokens = remove_most_frequent_words(all_tokens, percent)
-
-    # Build bigrams/trigrams if requested
-    if ngram == 'bigram':
-        model = gensim.models.Phrases(all_tokens, min_count=2, threshold=50)
-        all_tokens = [model[t] for t in all_tokens]
-    elif ngram == 'trigram':
-        bigram = gensim.models.Phrases(all_tokens, min_count=2, threshold=50)
-        trigram = gensim.models.Phrases(bigram[all_tokens], min_count=2, threshold=50)
-        all_tokens = [trigram[bigram[t]] for t in all_tokens]
 
     # Create dictionary and corpus
     id2word = corpora.Dictionary(all_tokens)
@@ -208,6 +172,7 @@ def process_txt_files(
         "Average Document Length": avg_len,
         "Shortest Document Length": min(len(doc) for doc in all_tokens),
         "Longest Document Length": max(len(doc) for doc in all_tokens),
+        "Normalisation Order": normalisation_order
     }
 
     gensim_logger.removeHandler(handler)
@@ -260,6 +225,10 @@ def process_files():
     if not all(f.filename.endswith('.txt') for f in files):
         flash("Only .txt files are supported.", "danger")
         return redirect(url_for('upload_file'))
+    
+    normalisation_order = request.form.get(
+    "normalisation_order", "stem_first"
+    )
 
     file_paths = []
     
@@ -286,7 +255,7 @@ def process_files():
     per_word_topics = request.form.get('per_word_topics', 'false').lower() == 'true'
     no_below = int(request.form.get('no_below', 1))
     no_above = float(request.form.get('no_above', 0.9))
-    use_stemming = request.form.get('use_stemming', '') == 'rule_based'
+    use_stemming = request.form.get('use_stemming', '') == 'dictionary'
     use_multicore = request.form.get('use_multicore', 'false').lower() == 'true'
     percent = float(request.form.get('percent_most_common', 0))
     minimum_probability = 0.1
@@ -340,6 +309,7 @@ def process_files():
             use_multicore,
             percent,
             True,
+            normalisation_order,
             custom_stopwords_set
         )
     except ValueError as ve:
