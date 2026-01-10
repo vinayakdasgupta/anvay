@@ -107,7 +107,8 @@ def process_txt_files(
         use_stemming=use_stemming,
         normalisation_order=normalisation_order,
         percent=percent,
-        ngram=ngram
+        ngram=ngram,
+        language="bn"
     )
 
 

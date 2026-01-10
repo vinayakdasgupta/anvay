@@ -86,7 +86,7 @@
         </div>
   
         <div class="col-md-6">
-          <label for="remove_nltk_stopwords" class="form-label d-flex justify-content-between align-items-center">
+          <label for="remove_stopwords" class="form-label d-flex justify-content-between align-items-center">
             Remove NLTK Stopwords
             <i class="bi bi-info-circle ms-2 text-muted"
               data-bs-toggle="tooltip"
@@ -238,7 +238,17 @@
               </label>
               <select name="use_stemming" class="form-select" id="use_stemming">
                 <option value="none">None</option>
-                <option value="rule_based">Dictionary-Based</option>
+                <option value="dictionary">Dictionary-Based</option>
+              </select>
+            </div>
+
+            <div class="col-md-6 d-none" id="stemmingOrderWrapper">
+              <label class="form-label d-flex justify-content-between align-items-center">Stemming Order<i class="bi bi-info-circle ms-2 text-muted" data-bs-toggle="tooltip" title="Choose whether stemming is applied before or after stopword filtering."></i>
+              </label>
+
+              <select name="normalisation_order" class="form-select">
+                <option value="stem_first" selected>Stem → Filter</option>
+                <option value="filter_first">Filter → Stem</option>
               </select>
             </div>
   
@@ -401,6 +411,28 @@ document.getElementById('files').addEventListener('change', function () {
     }
   });
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const stemmingSelect = document.getElementById("use_stemming");
+  const orderWrapper = document.getElementById("stemmingOrderWrapper");
+  const orderSelect = orderWrapper.querySelector("select");
+
+  function updateStemmingOrderVisibility() {
+    if (stemmingSelect.value === "dictionary") {
+      orderWrapper.classList.remove("d-none");
+      orderSelect.disabled = false;
+    } else {
+      orderWrapper.classList.add("d-none");
+      orderSelect.disabled = true;
+    }
+  }
+
+  updateStemmingOrderVisibility();
+  stemmingSelect.addEventListener("change", updateStemmingOrderVisibility);
+});
+</script>
+
   
   
   

@@ -18,7 +18,8 @@ def preprocess_documents(
     use_stemming,
     normalisation_order,
     percent,
-    ngram
+    ngram,
+    language="bn"
 ):
     # Build stopwords set
     stop_words = set(stopwords.words('bengali')) if remove_stopwords else set()

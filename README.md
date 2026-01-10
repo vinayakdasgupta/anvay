@@ -258,6 +258,15 @@ The following tools, datasets, and libraries are used in anvay and should be cit
   journal={arXiv preprint arXiv:2107.03844},
   year={2021}
 }
+
+@article{islam2025banglalem,
+  title={BanglaLem: A Transformer-based Bangla Lemmatizer with an Enhanced Dataset},
+  author={Islam, Md Fuadul and Hasan, Jakir and Islam, Md Ashikul and Dewan, Prato and Rahman, M Shahidur},
+  journal={Systems and Soft Computing},
+  pages={200244},
+  year={2025},
+  publisher={Elsevier}
+}
 ```
 
 ### Gensim

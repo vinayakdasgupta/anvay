@@ -811,7 +811,17 @@ def create_corpus_top_tokens_bar(top_tokens):
 
 
 
-def get_representative_sentences_custom(lda_model, corpus, raw_texts, dictionary, doc_names=None, num_topics=10, topn=10):
+def get_representative_sentences_custom(
+    lda_model,
+    corpus,
+    raw_texts,
+    dictionary,
+    doc_names=None,
+    num_topics=10,
+    topn=10,
+    window=2,
+    max_chars=600
+):
     topic_sentences = {}
     seen_docs = set()
 
@@ -819,7 +829,7 @@ def get_representative_sentences_custom(lda_model, corpus, raw_texts, dictionary
         max_score = 0
         best_doc_index = -1
 
-        # Find highest-weight doc for topic not already used
+        # --- select best document for topic ---
         for i, bow in enumerate(corpus):
             if i in seen_docs:
                 continue
@@ -829,29 +839,47 @@ def get_representative_sentences_custom(lda_model, corpus, raw_texts, dictionary
                 max_score = score
                 best_doc_index = i
 
-        if best_doc_index != -1:
-            seen_docs.add(best_doc_index)
-            raw_text = raw_texts[best_doc_index]
-            sentences = split_sentences_bengali(raw_text)
-            top_words = [dictionary[w_id] for w_id, _ in lda_model.get_topic_terms(topic_id, topn=topn)]
+        if best_doc_index == -1:
+            continue
 
+        seen_docs.add(best_doc_index)
 
-            best_sent = sentences[0] if sentences else ""
-            best_overlap = -1
-            for sent in sentences:
-                tokens = custom_bengali_tokenize(sent)
-                overlap = len(set(tokens) & set(top_words))
-                if overlap > best_overlap:
-                    best_overlap = overlap
-                    best_sent = sent
-                    
+        raw_text = raw_texts[best_doc_index]
+        sentences = split_sentences_bengali(raw_text)
 
-            topic_sentences[topic_id] = {
-                "doc": doc_names[best_doc_index] if doc_names else f"Doc {best_doc_index}",
-                "weight": round(max_score, 4),
-                "text": best_sent,
-                "low_confidence": best_overlap == 0  
+        top_words = [
+            dictionary[w_id]
+            for w_id, _ in lda_model.get_topic_terms(topic_id, topn=topn)
+        ]
 
-            }
+        best_idx = 0
+        best_overlap = -1
+        topic_word_set = set(top_words)
+
+        # --- find most representative sentence ---
+        for i, sent in enumerate(sentences):
+            tokens = set(custom_bengali_tokenize(sent))
+            overlap = len(tokens & topic_word_set)
+            if overlap > best_overlap:
+                best_overlap = overlap
+                best_idx = i
+
+        # --- expand to context window (±2 sentences) ---
+        start = max(0, best_idx - window)
+        end = min(len(sentences), best_idx + window + 1)
+
+        snippet = "। ".join(sentences[start:end]).strip()
+
+        # safety cap
+        if len(snippet) > max_chars:
+            snippet = snippet[:max_chars].rsplit(" ", 1)[0] + "…"
+
+        topic_sentences[topic_id] = {
+            "doc": doc_names[best_doc_index] if doc_names else f"Doc {best_doc_index}",
+            "weight": round(max_score, 4),
+            "text": snippet,
+            "low_confidence": best_overlap == 0
+        }
 
     return topic_sentences
+
