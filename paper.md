@@ -1,5 +1,5 @@
 ---
-title: 'anvay: a web-based tool for interpretive topic modelling in bengali'
+title: 'anvay: A Web-based Tool for Interpretive Topic Modelling in Bengali'
 tags:
   - topic modelling
   - bengali language
@@ -73,9 +73,7 @@ To support this, *anvay* includes extensive web-based documentation. Each sectio
 
 *anvay* is designed for moderate-scale corpora, where interpretability and visual exploration are prioritised over throughput. In a benchmark run using **800 Bengali `.txt` files** (totalling **21.9MB**, ~**940,000 tokens**, and **171,754 unique vocabulary terms**), the system successfully trained a 10-topic LDA model with **10 passes** and **50 iterations** in approximately **62 seconds** on a single-core setup. This corpus included highly variable document lengths, from **79** to **86,099 tokens** per file, demonstrating robustness against input heterogeneity.
 
-While the system is tuned for formal Bengali prose, there are limitations:
-- **Informal or dialectal orthographies** may lead to malformed tokens
-- **OCR artefacts or non-Unicode glyphs** may interfere with tokenisation
+While the system is tuned for formal Bengali prose, there are limitations: informal or dialectal orthographies may lead to malformed tokens, and OCR artefacts or non-Unicode glyphs may interfere with tokenisation.
 
 The modelling backend is standard LDA; no coherence optimisation or neural alignment is included. As such, *anvay* is best used as an exploratory interface, for interpretive reading rather than automated evaluation.
 
