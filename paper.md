@@ -53,7 +53,7 @@ Transformer-based topic-modelling systems, such as BERTopic, Top2Vec and context
 - **Model training**: Parameters such as passes, iterations, alpha, and chunk size can be adjusted. Models are trained on the server.
 - **Bengali processing**: Tokenisation avoids malformed output. Lemma data is drawn from public resources [@chakrabarty-etal-2017-context; @alam2021review].
 - **Visualisations**: Results are shown using:
-  - Topic scatter plots (Plotly) [@plotly]
+  - Topic scatter plots (Plotly)
   - Heatmaps (Seaborn) [@Waskom2021]
   - Bar and pie charts for topic-document relations
   - Topic-word network graphs (NetworkX) [@hagberg2008exploring]
