@@ -20,7 +20,7 @@ bibliography: paper.bib
 
 # Summary
 
-*anvay* is a web-based tool for topic modelling in Bengali, developed for exploratory reading and interpretive analysis. It provides a full pipeline for Latent Dirichlet Allocation (LDA) [@blei2003lda]—from corpus ingestion and preprocessing to model configuration and visual output—within a lightweight, browser-based interface. The tool foregrounds user interpretation: rather than providing coherence scores or fixed topic labels, anvay presents the model output to be read, interpreted, and adjusted by the user.
+*anvay* is a web-based tool for topic modelling in Bengali, developed for exploratory reading and interpretive analysis. It provides a full pipeline for Latent Dirichlet Allocation (LDA) [@blei2003lda]—from corpus ingestion and preprocessing to model configuration and visual output—within a lightweight, browser-based interface. The tool foregrounds user interpretation: rather than providing coherence scores or fixed topic labels, *anvay* presents the model output to be read, interpreted, and adjusted by the user.
 
 Designed for literary, journalistic, and historical corpora in Bengali, *anvay* supports a range of language-specific preprocessing functions including lemmatisation, frequency filtering, and stopword pruning. The outputs, ranging from topic-word networks to document-level previews, are rendered with clarity and designed to enable close reading. Each topic is accessible through multiple lenses: top words, paragraph-level examples, document weights, and corpus-wide distribution.
 
@@ -79,7 +79,8 @@ The modelling backend is standard LDA; no coherence optimisation or neural align
 
 # Repository and License
 
-The source code and documentation for *anvay* are hosted on GitHub: https://github.com/vinayakdasgupta/anvay  
+The source code and documentation for *anvay* are hosted on GitHub: 
+https://github.com/vinayakdasgupta/anvay  
 The software is released under the MIT License.
 
 # References
