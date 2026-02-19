@@ -8,7 +8,8 @@ tags:
   - interpretability
   - pedagogy
 authors:
-  - name: Vinayak Das Gupta
+  - given-names: Vinayak
+    surname: Das Gupta
     orcid: 0009-0008-5623-1226
     affiliation: 1
 affiliations:
