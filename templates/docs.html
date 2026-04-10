@@ -1,83 +1,213 @@
 <!DOCTYPE html>
-
-<html data-theme="light" lang="en">
+<html lang="en" data-theme="light">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Documentation | <em>anvay</em></title>
-<link href="/static/logo.png" rel="icon" type="image/png"/>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
-<link href="{{ url_for('static', filename='css/anvay.css') }}" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Anton+SC&display=swap" rel="stylesheet">
-
-
-
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentation – anvay</title>
+  <link rel="icon" type="image/png" href="/static/logo.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/anvay.css') }}">
+  <script>(function(){const t=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <style>
+    .doc-section-title {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--ink-faint); margin-bottom: 1.25rem;
+    }
+    .usage-sidebar { position: sticky; top: calc(var(--nav-h) + 56px); }
+    .usage-sidebar .nav-link {
+      font-size: 0.8rem; font-weight: 500; color: var(--ink-muted);
+      padding: 0.4rem 0.75rem; border-radius: var(--radius);
+      border: none; border-left: 2px solid transparent;
+      text-align: left; width: 100%; cursor: pointer; background: none;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .usage-sidebar .nav-link:hover { color: var(--ink); background: rgba(13,133,216,0.05); }
+    .usage-sidebar .nav-link.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-glow); }
+    .usage-pane { display: none; }
+    .usage-pane.active { display: block; }
+    dl dt { font-weight: 600; margin-top: 1rem; font-size: 0.875rem; }
+    dl dd { color: var(--ink-muted); font-size: 0.875rem; margin-bottom: 0.5rem; }
+    .table-walk { font-size: 0.82rem; }
+    .table-walk td:first-child { font-family: var(--font-mono); color: var(--accent); }
+    details summary { cursor: pointer; color: var(--accent); font-weight: 600; font-size: 0.875rem; }
+    blockquote { border-left: 3px solid var(--border-strong); padding-left: 1rem; color: var(--ink-muted); font-style: italic; margin: 1rem 0; }
+    .lda-word-btn {
+      font-size: 0.8rem; padding: 0.25rem 0.6rem; background: var(--bg);
+      border: 1px solid var(--border-strong); border-radius: var(--radius);
+      cursor: pointer; color: var(--ink); transition: background 0.15s, border-color 0.15s;
+    }
+    .lda-word-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .lda-word-btn:disabled { opacity: 0.35; cursor: default; }
+    #sentence {
+      min-height: 48px; background: var(--bg); border: 1px solid var(--border-strong);
+      border-radius: var(--radius); padding: 0.75rem 1rem; font-size: 0.9rem; line-height: 1.7;
+    }
+    pre.code-example {
+      background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 0.75rem 1rem; font-size: 0.8rem; font-family: var(--font-mono); white-space: pre-wrap;
+    }
+    /* Language badges */
+    .lang-badge {
+      display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 0.1rem 0.45rem; border-radius: 3px;
+      margin-right: 0.35rem; vertical-align: middle;
+    }
+    .lang-bn { background: rgba(13,133,216,0.12); color: var(--accent); }
+    .lang-en { background: rgba(39,174,96,0.12); color: #27ae60; }
+    .lang-hi { background: rgba(230,126,34,0.12); color: #e67e22; }
+    .lang-ta { background: rgba(155,89,182,0.12); color: #9b59b6; }
+    /* Experimental banner */
+    .experimental-banner {
+      background: rgba(200,151,42,0.08); border: 1px solid rgba(200,151,42,0.3);
+      border-radius: var(--radius); padding: 0.75rem 1rem; font-size: 0.85rem; margin-bottom: 1.25rem;
+    }
+    /* Language support grid */
+    .lang-support-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+    .lang-card {
+      padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius);
+      background: var(--bg);
+    }
+    .lang-card .lang-name { font-weight: 600; font-size: 0.875rem; margin-bottom: 0.4rem; }
+    .lang-card .lang-detail { font-size: 0.78rem; color: var(--ink-muted); }
+    .lang-card .lang-detail span { display: block; margin-top: 0.2rem; }
+    /* info box */
+    .info-box {
+      background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 0.85rem 1rem; font-size: 0.875rem;
+    }
+    .warn-box {
+      background: rgba(200,151,42,0.06); border: 1px solid rgba(200,151,42,0.25);
+      border-radius: var(--radius); padding: 0.85rem 1rem; font-size: 0.875rem;
+    }
+    /* card reveal */
+    .card.question-reveal { min-height: 180px; cursor: pointer; }
+    .card.question-reveal .card-question,
+    .card.question-reveal .card-answer { font-size: 0.875rem; }
+    .card.question-reveal .card-answer { display: none; }
+    .card.question-reveal:hover { background: var(--accent) !important; color: #fff !important; }
+    .card.question-reveal:hover .card-title,
+    .card.question-reveal:hover .card-question { color: rgba(255,255,255,0.75) !important; }
+    .card.question-reveal:hover .card-question { display: none; }
+    .card.question-reveal:hover .card-answer { display: block; color: #fff; }
+    #glossarySearch { max-width: 380px; }
+  </style>
 </head>
 <body>
-<nav>
-<div class="nav-logo">
-<a href="/"><span></span> anvay</a>
-</div>
-<div class="nav-links">
-<a href="/">Upload</a>
-<a href="/about">About</a>
-<a href="/docs">Documentation</a>
-<a href="/contact">Contact</a>
-<button aria-label="Toggle Theme" class="toggle-btn" onclick="toggleTheme()">
-<span id="themeToggleIconWrapper"></span>
-</button>
-</div>
-</nav>
+
+  <nav>
+    <div class="nav-logo">
+      <a href="/"><span class="dot"></span> anvay</a>
+    </div>
+    <div class="nav-links">
+      <a href="/">Upload</a>
+      <a href="/about">About</a>
+      <a href="/docs">Documentation</a>
+      <a href="/contact">Contact</a>
+      <button class="toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+        <span id="themeIcon"></span>
+      </button>
+    </div>
+  </nav>
+
 <div class="form-section">
 <h2 class="upload-heading">Documentation</h2>
 <p class="upload-subheading">Learn how to use <em>anvay</em> for topic modelling, visualisation, and interpretive analysis.</p>
-<!-- Replace your tab system and all tab-content structure with this -->
-<!-- Tab Buttons -->
+
 <div class="tabs">
-<button id="intro-btn" onclick="toggleTab('intro')">Introduction</button>
-<button id="topic-btn" onclick="toggleTab('topic')">Topic Modelling</button>
-<button id="usage-btn" onclick="toggleTab('usage')">Using <em>anvay</em></button>
-<button id="help-btn" onclick="toggleTab('help')">Help & Errors</button>
-<button id="glossary-btn" onclick="toggleTab('glossary')">Glossary</button>
+  <button id="intro-btn"    onclick="toggleTab('intro')">Introduction</button>
+  <button id="topic-btn"   onclick="toggleTab('topic')">Topic Modelling</button>
+  <button id="usage-btn"   onclick="toggleTab('usage')">Using <em>anvay</em></button>
+  <button id="help-btn"    onclick="toggleTab('help')">Help &amp; Errors</button>
+  <button id="glossary-btn" onclick="toggleTab('glossary')">Glossary</button>
 </div>
-<!-- Tab Content -->
-<!-- INTRO -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     INTRO TAB
+═══════════════════════════════════════════════════════════ -->
 <div class="tab-content active" id="intro">
 <h4 class="doc-section-title">Introduction</h4>
+
 <p>
-<em>anvay</em> is a web-based platform for topic modelling and interpretive analysis of Bengali-language texts. Built for scholars, students, and digital humanists, it provides an end-to-end workflow that enables users to upload a corpus, generate interpretable topic models, and explore their thematic structure through a suite of interactive visualisations and reports.
-    </p>
-<p>At its core, <em>anvay</em> uses Latent Dirichlet Allocation (LDA) to uncover latent themes in textual corpora. It complements this algorithmic analysis with tools that foreground interpretability and readability, especially for morphologically rich and low-resource languages like Bengali.</p>
-    <h5 class="mt-5 mb-3 fw-semibold">Contents</h5>
-    <p>Each of the following sections corresponds to a tab in the documentation. Together, they walk the user through the entire modelling process, from theory to interpretation:</p>
-    <ul>
-    <li><a class="text-accent" href="javascript:void(0)" onclick="toggleTab('intro')"><strong>Introduction:</strong></a> What is <em>anvay</em>?</li>
-    <li><a class="text-accent" href="javascript:void(0)" onclick="toggleTab('topic')"><strong>Topic Modelling:</strong></a> Introduces the logic behind topic models and their assumptions.</li>
-    <li><a class="text-accent" href="javascript:void(0)" onclick="toggleTab('usage')"><strong>Using <em>anvay</em>:</strong></a> A walkthrough of the upload interface and core configuration options.</li>
-    <li><a class="text-accent" href="javascript:void(0)" onclick="toggleTab('help')"><strong>Help & Errors:</strong></a> Some commonly faced issues.</li>
-    <li><a class="text-accent" href="javascript:void(0)" onclick="toggleTab('glossary')"><strong>Glossary:</strong></a> Definitions of technical terms and further reading recommendations.</li>
-    </ul>
+  <em>anvay</em> is a web-based platform for topic modelling and interpretive analysis of text corpora. Built for scholars, students, and digital humanists, it provides an end-to-end workflow that enables users to upload a corpus, generate interpretable topic models, and explore their thematic structure through a suite of interactive visualisations and reports.
+</p>
+<p>
+  At its core, <em>anvay</em> uses Latent Dirichlet Allocation (LDA) to uncover latent themes in textual corpora. It complements this algorithmic analysis with tools that foreground interpretability and readability — especially for morphologically rich and low-resource languages.
+</p>
+
+<h5 class="mt-5 mb-3 fw-semibold">Supported Languages</h5>
+
+<div class="experimental-banner">
+  <strong>⚠ Experimental Support:</strong> English, Hindi, and Tamil are currently experimental. Preprocessing pipelines for these languages are functional but have not been as extensively tested or validated as Bengali. Results may be less reliable, especially for literary or informal texts. We welcome feedback from users working in these languages.
+</div>
+
+<div class="lang-support-grid">
+  <div class="lang-card">
+    <div class="lang-name"><span class="lang-badge lang-bn">BN</span> Bengali</div>
+    <div class="lang-detail">
+      <span>Tokeniser: custom (zero-width aware)</span>
+      <span>Normalisation: dictionary-based stemming</span>
+      <span>Stopwords: NLTK Bengali + custom</span>
+      <span style="color: var(--accent); font-weight: 600; margin-top: 0.4rem;">Primary supported language</span>
+    </div>
+  </div>
+  <div class="lang-card">
+    <div class="lang-name"><span class="lang-badge lang-en">EN</span> English</div>
+    <div class="lang-detail">
+      <span>Tokeniser: NLTK word_tokenize</span>
+      <span>Normalisation: WordNet lemmatisation</span>
+      <span>Stopwords: NLTK English + custom</span>
+      <span style="color: var(--gold); font-weight: 600; margin-top: 0.4rem;">⚠ Experimental</span>
+    </div>
+  </div>
+  <div class="lang-card">
+    <div class="lang-name"><span class="lang-badge lang-hi">HI</span> Hindi</div>
+    <div class="lang-detail">
+      <span>Tokeniser: custom Devanagari</span>
+      <span>Normalisation: simplemma lemmatisation</span>
+      <span>Stopwords: custom only (no NLTK Hindi)</span>
+      <span style="color: var(--gold); font-weight: 600; margin-top: 0.4rem;">⚠ Experimental</span>
+    </div>
+  </div>
+  <div class="lang-card">
+    <div class="lang-name"><span class="lang-badge lang-ta">TA</span> Tamil</div>
+    <div class="lang-detail">
+      <span>Tokeniser: custom Tamil script</span>
+      <span>Normalisation: dictionary-based stemming</span>
+      <span>Stopwords: custom only</span>
+      <span style="color: var(--gold); font-weight: 600; margin-top: 0.4rem;">⚠ Experimental</span>
+    </div>
+  </div>
+</div>
+
+<h5 class="mt-5 mb-3 fw-semibold">Contents</h5>
+<p>Each of the following sections corresponds to a tab in the documentation. Together, they walk the user through the entire modelling process, from theory to interpretation:</p>
+<ul>
+  <li><a class="text-accent" href="javascript:void(0)" onclick="toggleTab('intro')"><strong>Introduction:</strong></a> What is <em>anvay</em>? Supported languages.</li>
+  <li><a class="text-accent" href="javascript:void(0)" onclick="toggleTab('topic')"><strong>Topic Modelling:</strong></a> Introduces the logic behind topic models and their assumptions.</li>
+  <li><a class="text-accent" href="javascript:void(0)" onclick="toggleTab('usage')"><strong>Using <em>anvay</em>:</strong></a> A walkthrough of the upload interface and core configuration options.</li>
+  <li><a class="text-accent" href="javascript:void(0)" onclick="toggleTab('help')"><strong>Help &amp; Errors:</strong></a> Commonly faced issues.</li>
+  <li><a class="text-accent" href="javascript:void(0)" onclick="toggleTab('glossary')"><strong>Glossary:</strong></a> Definitions of technical terms and further reading recommendations.</li>
+</ul>
+
 <h5 class="mt-4 mb-2 fw-semibold">Key Features</h5>
 <ul>
-<li>Customisable topic modelling with fine-grained parameter control</li>
-<li>Language-specific preprocessing for Bengali, including stemming and stopword filtering</li>
-<li>Multiple interactive visualisations: scatterplots, heatmaps, pie charts, word networks</li>
-<li>Structured report with topic summaries, top terms, document drilldowns, and quality flags</li>
-<li>Support for uploading user-defined stopword lists</li>
-<li>Lightweight, browser-based interface with no data retention or third-party processing</li>
+  <li>Customisable topic modelling with fine-grained parameter control</li>
+  <li>Language-specific preprocessing for Bengali, English, Hindi, and Tamil</li>
+  <li>Multiple interactive visualisations: scatterplots, heatmaps, pie charts, word networks</li>
+  <li>Structured report with topic summaries, top terms, document drilldowns, and quality flags</li>
+  <li>Support for uploading user-defined stopword lists</li>
+  <li>Lightweight, browser-based interface with no data retention or third-party processing</li>
 </ul>
+
 <h5 class="mt-4 mb-2 fw-semibold">Why <em>anvay</em>?</h5>
 <p>
-      Most topic modelling tools are not built for Indian languages, and fewer still are designed with interpretability in mind. <em>anvay</em> is unique in combining a rigorous LDA pipeline with meaningful post-processing tailored to Bengali: relevance-weighted top words, flagging of low-confidence topics, representative paragraph extraction, and topic-document linking. It is designed for exploration as much as explanation, and aims to bridge computational methods with close reading.
-    </p>
-    <h5 class="mt-5 mb-3 fw-semibold">How the Workflow Unfolds</h5>
-<p>
-  <em>anvay</em> offers an end-to-end workflow that guides you from raw text to interpretive insight:
+  Most topic modelling tools are not built for Indian languages, and fewer still are designed with interpretability in mind. <em>anvay</em> is unique in combining a rigorous LDA pipeline with meaningful post-processing: relevance-weighted top words, flagging of low-confidence topics, representative paragraph extraction, and topic-document linking. It is designed for exploration as much as explanation, and aims to bridge computational methods with close reading.
 </p>
+
+<h5 class="mt-5 mb-3 fw-semibold">How the Workflow Unfolds</h5>
+<p><em>anvay</em> offers an end-to-end workflow that guides you from raw text to interpretive insight:</p>
 
 <div class="d-flex flex-wrap align-items-center justify-content-between bg-light rounded p-3 text-center" style="gap: 0.5rem;">
   <div class="flex-fill">
@@ -117,65 +247,56 @@
   </div>
 </div>
 
-    <h5 class="mt-4 mb-2 fw-semibold">Note:Issues with processing Bengali</h5>
-    <p>
-      Processing Bengali for topic modelling involves a set of distinct constraints that users should keep in mind when interpreting results. Unlike English, Bengali exhibits rich inflectional morphology, frequent compound word forms, and variable spelling patterns — especially in informal or older texts. The script also includes characters like zero-width joiners that complicate tokenisation, and there is no universally accepted stemming algorithm. These structural properties affect how words are grouped into topics.
-    </p>
-    <p>
-      Beyond the language itself, the <strong>type of corpus</strong> matters. A news corpus typically uses formulaic language, leading to clearer, more stable topic clusters — but often with repeated framing phrases that may require custom stopwording. Literary texts, by contrast, are stylistically diverse and thematically layered. Characters shift voice, metaphors mask meaning, and topical boundaries blur. In such cases, even well-trained models may produce diffuse or overlapping topics.
-    </p>
-    <p>
-      <em>anvay</em> offers tools to handle some of these challenges — including Bengali-specific preprocessing, configurable token filters, and detailed diagnostics. But no tool can fully resolve the ambiguity of language. Users are encouraged to view topic models not as definitive maps, but as exploratory guides: shaped by data, framed by parameters, and ultimately interpreted through human reading.
-    </p>
+<h5 class="mt-5 mb-3 fw-semibold">Note: Issues with Processing Text</h5>
+<p>
+  Processing text for topic modelling involves constraints that vary significantly by language. No tool can fully resolve the ambiguity of language — users are encouraged to view topic models not as definitive maps, but as exploratory guides: shaped by data, framed by parameters, and ultimately interpreted through human reading.
+</p>
 
-
-<div class="row g-3">
-
+<div class="row g-3 mt-2">
   <div class="col-md-4">
-    <div class="border rounded p-3 h-100 bg-light-subtle">
-      <div class="mb-2"><i class="bi bi-type" style="font-size: 1.3rem;"></i></div>
-      <strong>Linguistic Structure</strong>
+    <div class="lang-card h-100">
+      <div class="mb-2"><i class="bi bi-type" style="font-size: 1.3rem; color: var(--accent);"></i></div>
+      <strong>Morphological Complexity</strong>
       <p class="small text-muted mt-2">
-        Bengali includes inflection, compound words, and zero-width joiners — all of which make tokenisation and stemming less reliable than in English.
+        Bengali, Hindi, and Tamil are morphologically rich — inflected forms, compound constructions, and script-specific characters (like zero-width joiners in Bengali, or Tamil vowel markers) affect tokenisation quality. English is simpler in this regard, but OCR noise and domain jargon still matter.
       </p>
     </div>
   </div>
-
   <div class="col-md-4">
-    <div class="border rounded p-3 h-100 bg-light-subtle">
-      <div class="mb-2"><i class="bi bi-diagram-3" style="font-size: 1.3rem;"></i></div>
+    <div class="lang-card h-100">
+      <div class="mb-2"><i class="bi bi-diagram-3" style="font-size: 1.3rem; color: var(--accent);"></i></div>
       <strong>Corpus Type Matters</strong>
       <p class="small text-muted mt-2">
-        News texts yield clearer clusters due to formulaic structure. Literary texts are more fluid, with shifting voices and metaphors that blur topical boundaries.
+        News texts yield clearer clusters due to formulaic structure. Literary texts are more fluid, with shifting voices and metaphors that blur topical boundaries. This applies regardless of language — though the effect is often more pronounced in Bengali and Tamil literary corpora.
       </p>
     </div>
   </div>
-
   <div class="col-md-4">
-    <div class="border rounded p-3 h-100 bg-light-subtle">
-      <div class="mb-2"><i class="bi bi-tools" style="font-size: 1.3rem;"></i></div>
-      <strong><em>anvay</em>’s Approach</strong>
+    <div class="lang-card h-100">
+      <div class="mb-2"><i class="bi bi-tools" style="font-size: 1.3rem; color: var(--accent);"></i></div>
+      <strong><em>anvay</em>'s Approach</strong>
       <p class="small text-muted mt-2">
-        The platform applies Bengali-specific preprocessing and topic diagnostics. But interpretation remains essential — topic models show patterns, not meanings.
+        The platform applies language-specific preprocessing and topic diagnostics. Bengali has the most mature pipeline. English, Hindi, and Tamil are functional but experimental — results should be interpreted with additional caution and validated against the source texts.
       </p>
     </div>
   </div>
-
 </div>
 
 </div>
 
 
-<!--TOPIC-->
+<!-- ═══════════════════════════════════════════════════════════
+     TOPIC MODELLING TAB
+═══════════════════════════════════════════════════════════ -->
 <div class="tab-content" id="topic">
 <h4 class="doc-section-title">Topic Modelling</h4>
 <p>
-      Topic modelling is a statistical method used to identify recurring themes in large text collections.
-      Rather than categorising documents manually, topic models detect patterns of word co-occurrence and infer abstract themes based on them.
-    </p>
+  Topic modelling is a statistical method used to identify recurring themes in large text collections.
+  Rather than categorising documents manually, topic models detect patterns of word co-occurrence and infer abstract themes based on them.
+</p>
 <p>
-      The most widely used algorithm is <strong>Latent Dirichlet Allocation (LDA)</strong>, which makes two key assumptions:
-    </p>
+  The most widely used algorithm is <strong>Latent Dirichlet Allocation (LDA)</strong>, which makes two key assumptions:
+</p>
 <div class="row g-4 mt-4">
 <div class="col-md-4">
 <div class="card question-reveal h-100 shadow-sm">
@@ -183,8 +304,8 @@
 <h5 class="card-title">Documents as Topic Mixtures</h5>
 <p class="card-question small">Can a single document contain multiple topics?</p>
 <p class="card-answer small">
-              Yes — LDA models each document as a blend of topics in different proportions. For example, one story might be 60% about migration and 40% about domestic life.
-            </p>
+  Yes — LDA models each document as a blend of topics in different proportions. For example, one story might be 60% about migration and 40% about domestic life.
+</p>
 </div>
 </div>
 </div>
@@ -194,8 +315,8 @@
 <h5 class="card-title">Topics as Word Distributions</h5>
 <p class="card-question small">How does the model define a topic without labels?</p>
 <p class="card-answer small">
-              A topic is simply a group of words that tend to appear together. For example, a topic on farming might include “পল্লী”, “ধান”, “জমি”, “চাষ”, “কৃষক”.
-            </p>
+  A topic is simply a group of words that tend to appear together. For example, a farming topic might include words for village, rice, land, cultivate, and farmer — in whatever script you are working in.
+</p>
 </div>
 </div>
 </div>
@@ -205,15 +326,15 @@
 <h5 class="card-title">Interpretation Follows Modelling</h5>
 <p class="card-question small">Does the model know what the words mean?</p>
 <p class="card-answer small">
-              No — the model detects statistical patterns, not meaning. It’s the researcher who interprets the topics after modelling is complete.
-            </p>
+  No — the model detects statistical patterns, not meaning. It's the researcher who interprets the topics after modelling is complete.
+</p>
 </div>
 </div>
 </div>
 </div>
 <div class="alert alert-secondary mt-4" role="alert">
-      Hover over each card above to test your assumptions. Topic models provide statistical, not semantic, structure. You do the interpreting.
-    </div>
+  Hover over each card above to test your assumptions. Topic models provide statistical, not semantic, structure. You do the interpreting.
+</div>
 <hr class="my-5"/>
 <h5 class="fw-semibold mb-3">What Topic Modelling Is Useful For</h5>
 <ul>
@@ -226,31 +347,27 @@
 <summary class="text-accent fw-semibold">Click to expand: Why Topic Modelling Requires Caution</summary>
 <div class="mt-3">
 <p class="small text-muted">
-          Topic models operate on co-occurrence, not semantics. In noisy or morphologically complex corpora, models may group suffixes, filler, or OCR artefacts as if they were meaningful. Always combine quantitative exploration with qualitative judgement.
-        </p>
+  Topic models operate on co-occurrence, not semantics. In noisy or morphologically complex corpora, models may group suffixes, filler, or OCR artefacts as if they were meaningful. Always combine quantitative exploration with qualitative judgement.
+</p>
 </div>
 </details>
 <hr class="my-5"/>
 
 <h5 class="fw-semibold mb-3">How Do Machines Imagine Topics?</h5>
 <p>
-  <em>anvay</em> uses a topic modelling algorithm called <strong>Latent Dirichlet Allocation</strong>, or LDA. It's one of the most widely used methods for discovering thematic structure in large text corpora — and it’s implemented here using the <code>gensim</code> Python library.
+  <em>anvay</em> uses a topic modelling algorithm called <strong>Latent Dirichlet Allocation</strong>, or LDA. It's one of the most widely used methods for discovering thematic structure in large text corpora — and it's implemented here using the <code>gensim</code> Python library.
 </p>
-
 <p>
-  LDA is a probabilistic model that assumes every document is a mixture of latent “topics,” and each topic is a distribution over words. It doesn’t “understand” your texts — it notices patterns. If certain words tend to appear together across documents, the model assumes they belong to the same thematic cluster.
+  LDA is a probabilistic model that assumes every document is a mixture of latent "topics," and each topic is a distribution over words. It doesn't "understand" your texts — it notices patterns. If certain words tend to appear together across documents, the model assumes they belong to the same thematic cluster.
 </p>
-
 <p>
-  Technically, every word in the corpus — even common ones like “the” or “but” — is assigned a topic distribution. But most pipelines (including ours) filter out high-frequency, low-meaning words before modelling. The topics you interpret are built from the more distinctive words that remain.
+  Technically, every word in the corpus — even common ones — is assigned a topic distribution. But most pipelines (including ours) filter out high-frequency, low-meaning words before modelling. The topics you interpret are built from the more distinctive words that remain.
 </p>
-
 <p>
-  In other words, LDA doesn’t give you meaning. It gives you <em>structure</em>. It shows you where clusters of co-occurrence exist — and leaves it to you, the reader, to decide which ones matter.
+  In other words, LDA doesn't give you meaning. It gives you <em>structure</em>. It shows you where clusters of co-occurrence exist — and leaves it to you, the reader, to decide which ones matter.
 </p>
-
 <p>
-  To help you understand how this works in practice, we’ve included a sentence-building activity below. Select words from a shared pool, construct a sentence, and analyse which topics those words are most likely to belong to. You’ll notice that topic assignment depends on word co-occurrence — not grammar, logic, or truth. Try switching between English and Bengali to see how distributional assumptions play out across different languages.
+  To help you understand how this works in practice, we've included a sentence-building activity below. Select words from a shared pool, construct a sentence, and analyse which topics those words are most likely to belong to. You'll notice that topic assignment depends on word co-occurrence — not grammar, logic, or truth. Switch between languages to see how distributional assumptions play out across different scripts.
 </p>
 
 <div class="my-4">
@@ -272,221 +389,31 @@
 <h6 class="fw-semibold">Word Breakdown:</h6>
 <ul class="list-group" id="word-output"></ul>
 </div>
-<script>
-      let language = "en";
-  
-      const topicWords = {
-        Food: {
-          en: ["rice", "fish", "curry", "spice", "eat", "cooking"],
-          bn: ["ভাত", "মাছ", "রান্না", "খাই", "খায়", "রান্না করে"]
-        },
-        Travel: {
-          en: ["train", "station", "ticket", "journey", "travel", "goes"],
-          bn: ["ট্রেন", "স্টেশন", "টিকিট", "যাত্রা", "যায়", "যাত্রা করি"]
-        },
-        Politics: {
-          en: ["vote", "law", "minister", "election", "debate", "says"],
-          bn: ["ভোট", "আইন", "মন্ত্রী", "নির্বাচন", "বিতর্ক", "বলেন"]
-        }
-      };
-  
-      const stopwords = {
-        en: ["the", "and", "in", "on", "with", "a", "of", "is", "was", "are", "am", "to", "from", "that", "by"],
-        bn: ["এবং", "ভিতরে", "ওপর", "সহ", "একটি", "এর", "হয়", "ছিল", "আছে", "থেকে", "যে", "কে", "এই"]
-      };
-  
-      const pronouns = {
-        en: ["I", "you", "he", "she", "they", "we"],
-        bn: ["আমি", "তুমি", "সে", "তারা", "আমরা"]
-      };
-  
-      const neutralWords = {
-        en: ["walk", "read", "blue", "chair", "light"],
-        bn: ["হাঁটি", "পড়ি", "নীল", "চেয়ার", "আলো"]
-      };
-  
-      const randomSentences = {
-        en: [
-          ["I", "eat", "fish", "with", "rice"],
-          ["they", "travel", "by", "train", "to", "the", "station"],
-          ["the", "minister", "was", "in", "the", "election", "debate"],
-          ["we", "walk", "with", "a", "bag"],
-          ["he", "read", "the", "law"]
-        ],
-        bn: [
-          ["আমি", "ভাত", "খাই"],
-          ["সে", "মাছ", "রান্না", "করে"],
-          ["আমরা", "ভাত", "এবং", "মাছ", "খাই"],
-          ["তারা", "স্টেশন", "থেকে", "আসে"],
-          ["আমি", "ভোট", "দিই"]
-        ]
-      };
-  
-      const wordPool = document.getElementById("word-pool");
-      const sentenceBox = document.getElementById("sentence");
-      const topicOut = document.getElementById("topic-output");
-      const wordOut = document.getElementById("word-output");
-      const outputSection = document.getElementById("lda-output");
-  
-      function getWordType(word) {
-        if (stopwords[language].includes(word)) return "stopword";
-        for (const topic in topicWords) {
-          if (topicWords[topic][language].includes(word)) return "topic";
-        }
-        return "neutral";
-      }
-  
-      function getWordTopic(word) {
-        for (const topic in topicWords) {
-          if (topicWords[topic][language].includes(word)) return topic;
-        }
-        return null;
-      }
-  
-      function renderWordPool() {
-  wordPool.innerHTML = "";
-  const fullList = [
-    ...stopwords[language],
-    ...pronouns[language],
-    ...Object.values(topicWords).map(t => t[language]).flat(),
-    ...neutralWords[language]
-  ];
 
-  fullList.forEach(word => {
-    const btn = document.createElement("button");
-    btn.textContent = word;
-    btn.className = "btn btn-sm word-btn"; // no class yet for type
-    btn.onclick = () => addWordToSentence(word, btn);
-    wordPool.appendChild(btn);
-  });
-}
-
-  
-        if (window.bootstrap && bootstrap.Tooltip) {
-          document.querySelectorAll('[title]').forEach(el => {
-            new bootstrap.Tooltip(el);
-          });
-        }
-      
-  
-      function addWordToSentence(word, btn = null) {
-  const span = document.createElement("span");
-  span.textContent = word + " ";
-
-  const type = getWordType(word);
-  const topic = getWordTopic(word);
-
-  // Assign class
-  if (type === "stopword") {
-    span.className = "mx-1 stopword";
-    span.setAttribute("title", "Stopword – ignored by the model");
-  } else if (topic) {
-    span.className = "mx-1 topic-word";
-    span.setAttribute("title", `Contributes to the ${topic} topic`);
-  } else {
-    span.className = "mx-1";
-    span.setAttribute("title", "Not linked to any topic");
-  }
-
-  sentenceBox.appendChild(span);
-
-  // Enable tooltip only now
-  if (window.bootstrap && bootstrap.Tooltip) {
-    new bootstrap.Tooltip(span);
-  }
-
-  if (btn) btn.disabled = true;
-}
-
-  
-      function resetSentence() {
-        sentenceBox.innerHTML = "";
-        topicOut.innerHTML = "";
-        wordOut.innerHTML = "";
-        outputSection.style.display = "none";
-        document.querySelectorAll(".word-btn").forEach(b => b.disabled = false);
-      }
-  
-      function insertRandomSentence() {
-        resetSentence();
-        const sentence = randomSentences[language][Math.floor(Math.random() * randomSentences[language].length)];
-        sentence.forEach(word => {
-          const btn = Array.from(document.querySelectorAll("#word-pool button")).find(b => b.textContent === word);
-          addWordToSentence(word, btn);
-        });
-        analyseSentence();
-      }
-  
-      function analyseSentence() {
-        const words = Array.from(sentenceBox.children).map(el => el.textContent.trim());
-        const counts = { Food: 0, Travel: 0, Politics: 0 };
-  
-        topicOut.innerHTML = "";
-        wordOut.innerHTML = "";
-  
-        words.forEach(word => {
-          const type = getWordType(word);
-          const topic = getWordTopic(word);
-  
-          const item = document.createElement("li");
-          item.className = "list-group-item";
-  
-          if (type === "stopword") {
-            item.innerHTML = `<strong>${word}</strong>: Stopword – ignored`;
-          } else if (topic) {
-            counts[topic]++;
-            item.innerHTML = `<strong>${word}</strong>: contributes to <span class="text-accent">${topic}</span>`;
-          } else {
-            item.innerHTML = `<strong>${word}</strong>: not linked to any topic`;
-          }
-  
-          wordOut.appendChild(item);
-        });
-  
-        const total = Object.values(counts).reduce((a, b) => a + b, 0);
-        for (const topic in counts) {
-          const li = document.createElement("li");
-          const percent = total ? ((counts[topic] / total) * 100).toFixed(1) : 0;
-          li.className = "list-group-item";
-          li.textContent = `${topic}: ${percent}% (${counts[topic]} word${counts[topic] !== 1 ? "s" : ""})`;
-          topicOut.appendChild(li);
-        }
-  
-        outputSection.style.display = "block";
-      }
-  
-      function toggleLanguage() {
-        language = language === "en" ? "bn" : "en";
-        const toggleBtn = document.getElementById("languageToggle");
-        toggleBtn.textContent = language === "en" ? "Switch to Bengali" : "Switch to English";
-        resetSentence();
-        renderWordPool();
-      }
-  
-      // Render on page load
-      window.addEventListener("DOMContentLoaded", () => {
-        renderWordPool();
-      });
-    </script>
 <div class="mt-5">
 <h5 class="fw-semibold">Reading Topics: Interpretation and Probability</h5>
 <p>
-      Topic modelling doesn’t assign hard categories. Every word in every document is given a probability of belonging to each topic. Even a seemingly irrelevant word like “the” or “but” is mathematically linked to every topic — just with very low weight. Conversely, strongly associated words like “minister” or “train” might belong to multiple topics with varying strengths.
-    </p>
+  Topic modelling doesn't assign hard categories. Every word in every document is given a probability of belonging to each topic. Even a seemingly irrelevant word like "the" or "but" is mathematically linked to every topic — just with very low weight. Conversely, strongly associated words might belong to multiple topics with varying strengths.
+</p>
 <p>
-      This means that “topics” are not neat buckets, but soft groupings — blurry constellations of co-occurrence. What feels like a coherent theme is, in fact, a pattern we detect and make sense of as readers. The model shows us structure, but not meaning. We impose that meaning by recognising which words rise to the top, and how they resonate with our sense of language, genre, or context.
-    </p>
+  This means that "topics" are not neat buckets, but soft groupings — blurry constellations of co-occurrence. What feels like a coherent theme is, in fact, a pattern we detect and make sense of as readers. The model shows us structure, but not meaning. We impose that meaning by recognising which words rise to the top, and how they resonate with our sense of language, genre, or context.
+</p>
 <p>
-      In literary texts, this becomes even more complex. Characters shift registers, metaphors disguise literal meaning, and themes bleed across documents. Topic models can surface patterns, but not always meanings. They require interpretation — and that interpretive labour is an essential part of working with LDA, especially in the humanities.
-    </p>
+  In literary texts, this becomes even more complex. Characters shift registers, metaphors disguise literal meaning, and themes bleed across documents. Topic models can surface patterns, but not always meanings. They require interpretation — and that interpretive labour is an essential part of working with LDA, especially in the humanities.
+</p>
 </div>
 </div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     USING ANVAY TAB
+═══════════════════════════════════════════════════════════ -->
 <div class="tab-content" id="usage">
 <div class="container-fluid">
 <div class="row">
 <!-- Sidebar Navigation -->
 <div class="col-md-3">
-<ul class="nav flex-column nav-pills" id="usageNav">
+<ul class="nav flex-column nav-pills usage-sidebar" id="usageNav">
 <li class="nav-item"><button class="nav-link active" data-target="#usage-corpus">Corpus Preparation</button></li>
 <li class="nav-item"><button class="nav-link" data-target="#usage-upload">Uploading Files</button></li>
 <li class="nav-item"><button class="nav-link" data-target="#usage-stopwords">Stopwords</button></li>
@@ -495,65 +422,92 @@
 <li class="nav-item"><button class="nav-link" data-target="#usage-report">Report</button></li>
 <li class="nav-item"><button class="nav-link" data-target="#usage-walk">Walkthrough</button></li>
 </ul>
-
-
-
 </div>
 
 <!-- Content Area -->
 <div class="col-md-9 ps-md-5">
+
 <!-- 1. Corpus Preparation -->
 <div class="usage-pane active" id="usage-corpus">
 <h5 class="doc-section-title">Corpus Preparation</h5>
 <p>The quality of your topic model depends on the quality of your input. While <em>anvay</em> attempts to handle malformed characters, OCR noise, and common formatting issues, the most meaningful results come from a clean, well-prepared corpus. Below are guidelines — and examples — to help you curate your files effectively.</p>
-<div class="d-flex justify-content-end mb-3">
-<button class="btn btn-sm btn-outline-dark" id="corpusToggle" onclick="toggleCorpusExample()">Switch to Bengali</button>
+
+<h6 class="mt-4 fw-semibold">What Good Input Looks Like</h6>
+<p>The principles are the same regardless of language: plain prose, clean encoding, no page markers or structural artefacts.</p>
+
+<div class="row g-3 mt-1">
+  <div class="col-md-6">
+    <div class="lang-card" style="border-color: rgba(220,50,50,0.3); background: rgba(220,50,50,0.03);">
+      <h6 class="fw-bold" style="color: #c0392b; font-size: 0.8rem;">Problematic Input (any language)</h6>
+      <pre class="code-example mt-2" style="font-size: 0.75rem;">--- PAGE 1 ---
+
+*** OCR Scanned ***
+
+@#$%^&amp;
+
+Chapter 4: The Changing Tide
+
+	It was raining...</pre>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="lang-card" style="border-color: rgba(39,174,96,0.3); background: rgba(39,174,96,0.03);">
+      <h6 class="fw-bold" style="color: #27ae60; font-size: 0.8rem;">Preferred Input (any language)</h6>
+      <pre class="code-example mt-2" style="font-size: 0.75rem;">It was raining. The minister arrived
+quietly. People gathered near the tent.
+No slogans were shouted.</pre>
+    </div>
+  </div>
 </div>
-<div class="row" id="corpus-example-en">
-<div class="col-md-6">
-<div class="card bg-light border">
-<div class="card-body">
-<h6 class="fw-bold text-danger">Problematic Input (English)</h6>
-<pre class="small">--- PAGE 1 ---\n\n\t\tThe Honourable Minister (b. 1924 - d. 1991)\n\n*** OCR Scanned ***\n\nChapter 4: The Changing Tide\n\n@#$%^&amp;\n\n\t\tIt was raining, and the people gathered...</pre>
+
+<h6 class="mt-4 fw-semibold">Language-Specific Considerations</h6>
+
+<div class="lang-card mt-3">
+  <div class="lang-name"><span class="lang-badge lang-bn">BN</span> Bengali</div>
+  <div class="lang-detail">
+    <span>Bengali includes zero-width joiners (U+200C, U+200D) that can break tokenisation. <em>anvay</em> strips these automatically, but copying from PDFs or older digital texts may introduce them unexpectedly.</span>
+    <span class="mt-2">Hasanta (্), anusvara (ং), and vowel matras (া ি ী ু ূ) are preserved in filenames and display — make sure your source files are saved in UTF-8.</span>
+    <span class="mt-2"><strong>Typical noise:</strong> <code>পৃষ্ঠা ১</code>, <code>***</code>, speaker names like <code>রামু বলল</code> in dialogue.</span>
+  </div>
 </div>
+
+<div class="lang-card mt-2">
+  <div class="lang-name"><span class="lang-badge lang-en">EN</span> English <span class="lang-badge" style="background: rgba(200,151,42,0.12); color: #c8972a;">Experimental</span></div>
+  <div class="lang-detail">
+    <span>English is the most straightforward to tokenise and clean. The main sources of noise are OCR artefacts, headers/footers from PDFs, and domain-specific jargon that inflates the vocabulary.</span>
+    <span class="mt-2"><strong>Lemmatisation</strong> is available via WordNet. It reduces word forms (e.g. <em>running → run</em>, <em>better → good</em>) and is recommended for most English corpora.</span>
+    <span class="mt-2"><strong>Typical noise:</strong> Page numbers, chapter headings, repeated boilerplate text.</span>
+  </div>
 </div>
+
+<div class="lang-card mt-2">
+  <div class="lang-name"><span class="lang-badge lang-hi">HI</span> Hindi <span class="lang-badge" style="background: rgba(200,151,42,0.12); color: #c8972a;">Experimental</span></div>
+  <div class="lang-detail">
+    <span>Hindi uses Devanagari script, which <em>anvay</em> handles with a custom tokeniser modelled on the Bengali approach. Vowel signs (मात्राएँ) and nukta characters are preserved.</span>
+    <span class="mt-2"><strong>Important:</strong> NLTK does not provide a Hindi stopword list. You <em>must</em> upload a custom stopword file for meaningful results. Common particles like <code>है</code>, <code>था</code>, <code>और</code>, <code>में</code> should be included.</span>
+    <span class="mt-2"><strong>Lemmatisation</strong> uses simplemma, which is dictionary-based and experimental for Hindi.</span>
+  </div>
 </div>
-<div class="col-md-6">
-<div class="card bg-light border">
-<div class="card-body">
-<h6 class="fw-bold text-success">Preferred Input (English)</h6>
-<pre class="small">It was raining. The minister arrived quietly. People gathered near the tent. No slogans were shouted.</pre>
+
+<div class="lang-card mt-2">
+  <div class="lang-name"><span class="lang-badge lang-ta">TA</span> Tamil <span class="lang-badge" style="background: rgba(200,151,42,0.12); color: #c8972a;">Experimental</span></div>
+  <div class="lang-detail">
+    <span>Tamil has an agglutinative morphology — words are formed by chaining suffixes to roots, which makes stemming important. <em>anvay</em> uses a dictionary-based stemmer for Tamil.</span>
+    <span class="mt-2"><strong>Important:</strong> Like Hindi, no NLTK Tamil stopword list is available. Upload a custom stopword file with common function words (e.g. <code>அது</code>, <code>இது</code>, <code>மற்றும்</code>, <code>என்று</code>).</span>
+    <span class="mt-2"><strong>Typical noise:</strong> Tamil pulli (virama) and aaytham (ஃ) characters are handled, but some OCR tools produce fragmented Tamil glyphs.</span>
+  </div>
 </div>
-</div>
-</div>
-</div>
-<div class="row d-none" id="corpus-example-bn">
-<div class="col-md-6">
-<div class="card bg-light border">
-<div class="card-body">
-<h6 class="fw-bold text-danger">সমস্যাযুক্ত ইনপুট (Bengali)</h6>
-<pre class="small">--- পৃষ্ঠা ১ ---\n\n*** স্ক্যানকৃত ***\n\n@#$%^&amp;\n\nমন্ত্রী বললেন\n\nনির্বাচনের আগে জনতা জমায়েত হল...</pre>
-</div>
-</div>
-</div>
-<div class="col-md-6">
-<div class="card bg-light border">
-<div class="card-body">
-<h6 class="fw-bold text-success">প্রথম পছন্দের ইনপুট (Bengali)</h6>
-<pre class="small">মন্ত্রী বললেন। জনতা জড়ো হল। বৃষ্টির মধ্যে নীরবে সকলেই দাঁড়িয়ে রইল।</pre>
-</div>
-</div>
-</div>
-</div>
+
 <div class="alert alert-secondary mt-4 corpus-note">
-<p class="mb-1"><strong>Tip:</strong> Copying from PDFs may introduce invisible characters. <em>anvay</em> tries to clean these, but always check your files. Open them in a text editor and verify they are saved in <code>UTF-8</code>.</p>
-<p class="mb-0"><strong>Best practice:</strong> Use clean plain-text files, one file per document. Avoid headers, footers, and formatting.</p>
+<p class="mb-1"><strong>Tip:</strong> Copying from PDFs may introduce invisible characters in any language. Always open your files in a text editor to verify they are saved in <code>UTF-8</code> before uploading.</p>
+<p class="mb-0"><strong>Best practice:</strong> Use clean plain-text files, one file per document. Avoid headers, footers, and formatting markup of any kind.</p>
 </div>
 </div>
+
+
 <!-- 2. Uploading Files -->
 <div class="usage-pane" id="usage-upload">
   <h5 class="doc-section-title">Uploading Files</h5>
-
   <p>
     On the upload screen, drag and drop your <code>.txt</code> files or use the file picker. Each file you upload is treated as a separate document in the topic model. The more files you include, the more stable and interpretable your results — but there are practical limits to ensure performance and readability.
   </p>
@@ -561,9 +515,9 @@
   <div class="alert alert-secondary corpus-note mt-4">
     <ul class="mb-0">
       <li><strong>Maximum files:</strong> 800</li>
-      <li><strong>Total upload size:</strong> 10MB</li>
+      <li><strong>Total upload size:</strong> 100 MB</li>
       <li><strong>File format:</strong> Plain text (<code>.txt</code>) only</li>
-      <li><strong>Encoding:</strong> UTF-8 (mandatory)</li>
+      <li><strong>Encoding:</strong> UTF-8 (mandatory for all languages)</li>
     </ul>
   </div>
 
@@ -572,7 +526,7 @@
     Each file represents one document. The model learns themes across the corpus by analysing word patterns across these documents. If your files are too short (under ~300 tokens), topics may feel weak or generic. If they are too long or unevenly distributed, dominant documents may skew topic prevalence.
   </p>
   <p>
-    Use consistent file formatting and avoid uploading empty, duplicate, or placeholder files. <strong>File names are displayed in the Report tab</strong>, so name them meaningfully to track interpretations.
+    Use consistent file formatting and avoid uploading empty, duplicate, or placeholder files. <strong>File names are displayed in the Report tab</strong>, so name them meaningfully to track interpretations. Filenames in any language — Bengali, Hindi, Tamil — are fully supported and will display correctly in all charts.
   </p>
 
   <h6 class="mt-4 fw-semibold">What Not to Upload</h6>
@@ -585,79 +539,89 @@
   <h6 class="mt-4 fw-semibold">Tips for Best Results</h6>
   <ul>
     <li>Use UTF-8 encoding (check in your text editor or use <em>Save As → Encoding</em>)</li>
-    <li>Avoid OCR scans or pasted content from PDFs unless cleaned (see Corpus Preparation section)</li>
+    <li>Avoid OCR scans or pasted content from PDFs unless cleaned (see Corpus Preparation)</li>
     <li>If a document contains less than 100 tokens after filtering, it may be skipped automatically</li>
-    <li>Use short, descriptive filenames (e.g. <code>tagore_ghare_baire.txt</code>) to help interpretation later</li>
+    <li>Use short, descriptive filenames to help interpretation later — e.g. <code>tagore_ghare_baire.txt</code>, <code>premchand_godan_ch1.txt</code></li>
   </ul>
 
-  <div class="bg-light p-3 small rounded mt-4">
+  <div class="info-box mt-4">
     <strong>Note:</strong> If your upload fails or stalls, check the file count and total size. Errors are often caused by large corpora, improper encoding, or unsupported file types.
   </div>
 </div>
+
+
+<!-- 3. Stopwords -->
 <div class="usage-pane" id="usage-stopwords">
   <h5 class="doc-section-title">Stopwords</h5>
 
   <p>
-    Stopwords are high-frequency words — such as pronouns, particles, or auxiliary verbs — that tend to dilute topic modelling results. Removing them sharpens topic coherence by reducing statistical noise, especially in morphologically rich languages like Bengali.
+    Stopwords are high-frequency words — such as pronouns, particles, or auxiliary verbs — that tend to dilute topic modelling results. Removing them sharpens topic coherence by reducing statistical noise.
   </p>
 
   <h6 class="mt-4 fw-semibold">How <em>anvay</em> Handles Stopwords</h6>
   <p><em>anvay</em> offers two mechanisms for stopword removal:</p>
   <ol>
     <li>
-      <strong>Use the built-in Bengali stopword list</strong><br>
-      Enable this by checking the <code>Remove NLTK Stopwords</code> box. This includes standard pronouns (e.g. <code>আমি</code>, <code>তুমি</code>), auxiliary verbs (e.g. <code>হয়</code>, <code>ছিল</code>), and function words.
+      <strong>Use the built-in NLTK stopword list</strong><br>
+      Enable this by selecting <code>Yes</code> on the <em>Remove Stopwords</em> field. NLTK provides stopword lists for <span class="lang-badge lang-bn">BN</span> Bengali and <span class="lang-badge lang-en">EN</span> English. For <span class="lang-badge lang-hi">HI</span> Hindi and <span class="lang-badge lang-ta">TA</span> Tamil, this option has no effect — NLTK does not include these languages.
     </li>
     <li class="mt-3">
       <strong>Upload your own stopword file</strong><br>
-      In <code>Advanced Options</code>, upload a plain-text <code>.txt</code> file with <strong>one word per line</strong>. This lets you filter out:
-      <ul class="small mb-0">
-        <li>Proper names (e.g. speakers, authors)</li>
-        <li>OCR artefacts (e.g. <code>***</code>, <code>পৃষ্ঠা</code>)</li>
-        <li>Dataset-specific filler (e.g. <code>বলল</code>, <code>জিজ্ঞেস করল</code>)</li>
-      </ul>
+      In <code>Advanced Options</code>, upload a plain-text <code>.txt</code> file with <strong>one word per line</strong>. This is <strong>essential</strong> for Hindi and Tamil, and strongly recommended for all languages when working with domain-specific corpora.
     </li>
   </ol>
 
   <p class="mt-3">If both options are selected, the lists are automatically merged before modelling begins.</p>
 
-  <h6 class="mt-5 fw-semibold">Why This Matters</h6>
-  <div class="alert alert-warning small">
-    Bengali texts often repeat verbs like <code>বলল</code>, <code>করেছে</code>, or <code>জানাল</code> that add noise but little thematic value. Removing these can dramatically improve topic interpretability, especially in dialogue-heavy or scanned texts.
+  <h6 class="mt-5 fw-semibold">Language-Specific Guidance</h6>
+
+  <div class="lang-card mt-3">
+    <div class="lang-name"><span class="lang-badge lang-bn">BN</span> Bengali</div>
+    <div class="lang-detail">
+      <p class="small mt-1">Bengali texts often repeat verbs like <code>বলল</code>, <code>করেছে</code>, or <code>জানাল</code> that add noise but little thematic value. Dialogue-heavy or scanned texts especially benefit from a custom stopword list.</p>
+      <p class="small mb-1"><strong>Before custom stopwords:</strong></p>
+      <div class="code-example mb-2" style="font-size:0.78rem;">বলল, মানুষ, কথা, আছে, জানতে, বলল, জানাল, হয়েছে, কথা, কথা</div>
+      <p class="small mb-1"><strong>After:</strong></p>
+      <div class="code-example" style="font-size:0.78rem;">মানুষ, জানতে, হয়েছে, জীবন, সমস্যা, সমাজ, পরিবর্তন</div>
+    </div>
   </div>
 
-  <h6 class="mt-5 fw-semibold">Before and After (Example)</h6>
-  <p><strong>Topic before custom stopwords:</strong></p>
-  <div class="bg-light border p-2 small mb-3">বলল, মানুষ, কথা, আছে, জানতে, বলল, জানাল, হয়েছে, কথা, কথা</div>
+  <div class="lang-card mt-2">
+    <div class="lang-name"><span class="lang-badge lang-en">EN</span> English</div>
+    <div class="lang-detail">
+      <p class="small mt-1">The built-in NLTK English list covers articles, prepositions, conjunctions, and common auxiliaries. For domain corpora, supplement with domain-specific stopwords (e.g. <code>chapter</code>, <code>page</code>, <code>ibid</code> for digitised books).</p>
+    </div>
+  </div>
 
-  <p><strong>Topic after:</strong></p>
-  <div class="bg-light border p-2 small">মানুষ, জানতে, হয়েছে, জীবন, সমস্যা, সমাজ, পরিবর্তন</div>
+  <div class="lang-card mt-2">
+    <div class="lang-name"><span class="lang-badge lang-hi">HI</span> Hindi <span class="lang-badge" style="background: rgba(200,151,42,0.12); color: #c8972a;">Experimental</span></div>
+    <div class="lang-detail">
+      <p class="small mt-1">No built-in NLTK Hindi stopwords are available. You <strong>must</strong> provide a custom list. Include at minimum:</p>
+      <div class="code-example mt-1" style="font-size:0.78rem;">है  था  हैं  थे  और  में  को  से  पर  के  की  का  यह  वह  इस  उस  एक  भी  तो  ने</div>
+    </div>
+  </div>
+
+  <div class="lang-card mt-2">
+    <div class="lang-name"><span class="lang-badge lang-ta">TA</span> Tamil <span class="lang-badge" style="background: rgba(200,151,42,0.12); color: #c8972a;">Experimental</span></div>
+    <div class="lang-detail">
+      <p class="small mt-1">No built-in NLTK Tamil stopwords are available. You <strong>must</strong> provide a custom list. Include at minimum:</p>
+      <div class="code-example mt-1" style="font-size:0.78rem;">அது  இது  அந்த  இந்த  மற்றும்  என்று  ஆனால்  அல்லது  ஒரு  இல்லை  என்ன</div>
+    </div>
+  </div>
 
   <h6 class="mt-4 fw-semibold">Example Stopword File Format</h6>
-  <p>Use plain text with one term per line. Here's a sample:</p>
-  <pre class="small border bg-light p-2">
-রামু
-বলল
-এই
-কিন্তু
-আছে
-পৃষ্ঠা
-***</pre>
+  <p>Use plain text with one term per line. Encoding must be UTF-8.</p>
+  <pre class="code-example">word1
+word2
+word3</pre>
 
-  <h6 class="mt-4 fw-semibold">Suggestions for Building Your List</h6>
-  <ul>
-    <li><strong>Dialogue-heavy texts:</strong> Add verbs like <code>বলল</code>, <code>জিজ্ঞেস করল</code>, and common speaker names</li>
-    <li><strong>OCR-based corpora:</strong> Remove noise like <code>***</code>, <code>@#$%</code>, <code>পৃষ্ঠা</code>, or line breaks</li>
-    <li><strong>Formulaic language:</strong> Filter phrases used repeatedly in news intros or summaries</li>
-    <li><strong>Analytical texts:</strong> Consider removing structural words like <code>উপসংহার</code>, <code>সূচনা</code>, etc. if they appear too frequently</li>
-  </ul>
-
-  <div class="bg-light p-3 small rounded mt-4">
-    <strong>Reminder:</strong> Stopword removal happens <strong>before</strong> modelling. Any word in your list is excluded from the model’s vocabulary entirely — it won’t appear in any topic or visualisation.
+  <div class="info-box mt-4">
+    <strong>Reminder:</strong> Stopword removal happens <strong>before</strong> modelling. Any word in your list is excluded from the model's vocabulary entirely — it won't appear in any topic or visualisation.
   </div>
 </div>
 
 
+<!-- 4. Parameters -->
 <div id="usage-params" class="usage-pane">
   <h5 class="doc-section-title">Parameters</h5>
 
@@ -667,8 +631,8 @@
 
   <h6 class="mt-4 fw-semibold" style="color: #0D85D8;">Basic Parameters</h6>
 
-  <p><strong><code>Number of Topics</code></strong>  
-    <br>This controls how many thematic clusters the model will attempt to identify. It’s not a fixed setting — and depends heavily on your corpus:
+  <p><strong><code>Number of Topics</code></strong><br>
+    This controls how many thematic clusters the model will attempt to identify. It's not a fixed setting — it depends heavily on your corpus:
   </p>
   <ul class="small">
     <li><strong>Small, focused corpora (e.g., 30–50 short documents):</strong> try <code>5–10</code> topics</li>
@@ -677,420 +641,266 @@
   </ul>
   
   <div class="alert alert-warning small mt-2">
-    More topics isn’t always better. Too many can produce overlapping, incoherent, or redundant results — especially if your documents are short or formulaic.
+    More topics isn't always better. Too many can produce overlapping, incoherent, or redundant results — especially if your documents are short or formulaic.
   </div>
   
   <p class="small mt-2">
-    <strong>Tip:</strong> If topics feel repetitive or unclear, reduce the number. If topics feel too broad, increase gradually. The goal is not coverage — it’s clarity.
+    <strong>Tip:</strong> If topics feel repetitive or unclear, reduce the number. If topics feel too broad, increase gradually. The goal is not coverage — it's clarity.
   </p>
-  
 
-  <p><strong><code>Stemming</code></strong>  
-    <br>Reduces inflected Bengali words to root forms (e.g., <code>খাচ্ছে</code>, <code>খেয়েছে</code> → <code>খা</code>). Recommended for news or analytical prose. For highly literary or poetic texts, consider disabling it to preserve stylistic variation.
+  <p class="mt-3"><strong><code>Language</code></strong><br>
+    Select the primary language of your uploaded documents. This controls which tokeniser, normaliser, and stopword list are used. <strong>Do not mix languages within a single run</strong> — upload multilingual corpora as separate analyses.
   </p>
-  <div class="alert alert-warning small mt-3">
-    <strong>Why This Matters for Bengali:</strong> Morphological complexity often splits related forms. Stemming helps merge them into clearer thematic signals.
+
+  <div class="lang-card mt-2 mb-3">
+    <div class="lang-detail small">
+      <span><span class="lang-badge lang-bn">BN</span> <strong>Bengali:</strong> dictionary-based stemming, NLTK stopwords, zero-width character filtering</span>
+      <span><span class="lang-badge lang-en">EN</span> <strong>English (exp.):</strong> WordNet lemmatisation, NLTK stopwords, alphabetic token filter</span>
+      <span><span class="lang-badge lang-hi">HI</span> <strong>Hindi (exp.):</strong> simplemma lemmatisation, custom stopwords only, Devanagari tokeniser</span>
+      <span><span class="lang-badge lang-ta">TA</span> <strong>Tamil (exp.):</strong> dictionary-based stemming, custom stopwords only, Tamil script tokeniser</span>
+    </div>
   </div>
+
+  <p><strong><code>Normalisation</code></strong><br>
+    Reduces word forms to a common base. The available options depend on language:
+  </p>
+  <ul class="small">
+    <li><span class="lang-badge lang-bn">BN</span> <strong>Stemming</strong> — reduces Bengali inflected forms via dictionary lookup (e.g. <code>খাচ্ছে</code>, <code>খেয়েছে</code> → <code>খা</code>). Recommended for most Bengali corpora.</li>
+    <li><span class="lang-badge lang-en">EN</span> <strong>Lemmatisation</strong> — reduces English words to dictionary forms (e.g. <em>running → run</em>). Recommended.</li>
+    <li><span class="lang-badge lang-hi">HI</span> <strong>Lemmatisation</strong> — experimental Hindi lemmatisation via simplemma. Use cautiously.</li>
+    <li><span class="lang-badge lang-ta">TA</span> <strong>Stemming</strong> — dictionary-based Tamil stemming. Recommended for Tamil corpora.</li>
+  </ul>
 
   <h6 class="mt-5 fw-semibold" style="color: #0D85D8;">Advanced Options</h6>
 
-  <p><strong><code>Remove Common Words</code></strong>  
-    <br>Automatically discards the top <em>N</em> most frequent words. These often include generic Bengali verbs or connectors (<code>জানে</code>, <code>বলল</code>, <code>কথা</code>).
+  <p><strong><code>Remove Top Words (%)</code></strong><br>
+    Automatically discards the top <em>N</em>% most frequent words across the corpus. These often include generic verbs or connectors that don't add thematic value. Start with <code>5–10</code>.
   </p>
-  <ul class="small">
-    <li><strong>Typical range:</strong> <code>5–15</code></li>
-    <li>Start with <code>10</code> for mid-size corpora (e.g., 100–300 files)</li>
-  </ul>
 
-  <p><strong><code>Remove Rare Words</code></strong>  
-    <br>This setting filters out words that appear in very few documents — they may be typos, one-off names, or noise. These words rarely help with topic clarity because they don’t connect across documents.
+  <p><strong><code>Filter: No Below</code></strong><br>
+    Removes words that appear in fewer than N documents. Useful to exclude rare noise — typos, one-off names, OCR artefacts. Recommended: <code>3–10</code>.
   </p>
-  <ul class="small">
-    <li><code>no_below</code>: Minimum number of documents a word must appear in</li>
-    <li><strong>Recommended:</strong> <code>3–10</code></li>
-    <li><strong>Short documents:</strong> try lower values like <code>2</code></li>
-    <li><strong>Longer or cleaner documents:</strong> use <code>5–10</code> to reduce rare clutter</li>
-  </ul>
   
-  <p><strong><code>Remove Common Words</code></strong>  
-    <br>This setting removes extremely frequent words — terms that appear in nearly every document. These are often uninformative (e.g. <code>মানুষ</code>, <code>বলল</code>, <code>এই</code>) and can blur topic boundaries.
+  <p><strong><code>Filter: No Above</code></strong><br>
+    Removes words that appear in more than this fraction of documents. These are often uninformative. Recommended: <code>0.5–0.7</code>.
   </p>
-  <ul class="small">
-    <li><code>no_above</code>: Maximum proportion of documents a word can appear in</li>
-    <li><strong>Recommended:</strong> <code>0.5–0.7</code> (i.e., remove words that appear in 50–70% of documents)</li>
-    <li>For smaller or more repetitive corpora, lean toward <code>0.5</code></li>
-  </ul>
-  
 
-  <p><strong><code>Alpha</code> and <code>Eta</code></strong>  
-    <br>These govern sparsity:
+  <p><strong><code>Alpha</code> and <code>Eta</code></strong><br>
+    These govern sparsity:
   </p>
   <ul class="small">
     <li><strong>Alpha:</strong> Lower values → fewer topics per document (sharper focus)</li>
     <li><strong>Eta:</strong> Lower values → fewer words per topic (sharper boundaries)</li>
   </ul>
   <div class="alert alert-warning small mt-3">
-    <strong>Example:</strong> In the 172-file news corpus, <code>alpha = 0.5</code> and <code>eta = 0.5</code> produced clean, interpretable topics. But outcomes depend on corpus structure — experiment to find what works best for your data.
+    <strong>Example:</strong> In a 172-file Bengali news corpus, <code>alpha = 0.5</code> and <code>eta = 0.5</code> produced clean, interpretable topics. Outcomes depend on corpus structure — experiment to find what works best for your data.
   </div>
-  <ul class="small">
-    <li><strong>For focused corpora (news, essays):</strong> try <code>0.3–0.5</code> for both</li>
-    <li><strong>For thematic blending (fiction, interviews):</strong> try <code>0.6–0.8</code></li>
-    <li><strong>Leave as default</strong> unless you're comfortable fine-tuning</li>
-  </ul>
 
-  <p>
-    <strong>Alpha</strong> and <strong>Eta</strong> are not just technical settings — they’re assumptions the model makes about your corpus.
-  </p>
-  <p>
-    <strong>Alpha (α)</strong> reflects how many topics a document is <em>expected</em> to contain. A low alpha assumes documents are focused on one or two themes; a high alpha assumes they blend many.
-  </p>
-  <p>
-    <strong>Eta (η)</strong> reflects how many words each topic is <em>expected</em> to use prominently. A low eta assumes each topic is defined by a few signature words; a high eta assumes topics are more diffuse and general.
-  </p>
-  <p>
-    These assumptions don’t fix the outcome — they shape the model’s expectations during training. The closer they align with the nature of your corpus, the more interpretable your topics are likely to be.
-  </p>
-  
-
-  <p><strong><code>Chunk Size</code></strong>  
-    <br>Controls how many documents are processed at once during training. This affects speed and memory use — not model quality.
-  </p>
-  <ul class="small">
-    <li><strong>Default:</strong> <code>100–200</code></li>
-    <li>Raise only for large datasets (>500 docs)</li>
-  </ul>
-
-  <p><strong><code>Multicore Training</code></strong>  
-    <br>If enabled, <em>anvay</em> will use multiple CPU cores (if available) to speed up model training.
+  <p><strong><code>Chunk Size</code></strong><br>
+    Controls how many documents are processed at once during training. This affects speed and memory use — not model quality. Default: <code>100–200</code>.
   </p>
 
-  <dt data-term="per-word topics"><code>Per-word Topics</code></dt>
-  <dd>
-    Stores which topic each individual word in the corpus is most strongly associated with, based on its topic probability.  
-    This enables <strong>token-level visualisations</strong> — for example:
-    <ul class="mb-2">
-      <li>In a <em>heatmap</em>, each word can be colour-coded by its dominant topic</li>
-      <li>In <em>document previews</em>, it allows highlighting which words signal which topics in a sentence</li>
-    </ul>
-    Without this setting, topics are only assigned to entire documents — not individual words.  
-    Enabling <code>per-word topics</code> is useful for interpretive close reading, quality diagnostics, and visual clarity, though it slightly increases memory usage.
+  <p><strong><code>Multicore Training</code></strong><br>
+    If enabled, <em>anvay</em> will use multiple CPU cores (if available) to speed up model training.
+  </p>
+
+  <dt data-term="per-word topics"><strong><code>Per-word Topics</code></strong></dt>
+  <dd class="ms-0">
+    Stores which topic each individual word is most strongly associated with. This enables token-level visualisations. Slightly increases memory usage. Useful for interpretive close reading.
   </dd>
-  
 
-  <div class="bg-light p-3 small rounded mt-4">
+  <div class="info-box mt-4">
     <strong>Tip:</strong> If you're unsure where to begin, use the walkthrough settings — or <em>anvay's</em> defaults. The best way to improve your results is not to change everything at once. Tweak <em>one</em> parameter, rerun, then interpret.
   </div>
 </div>
 
 
-<!-- Visualizations -->
-  
-  <div id="usage-viz" class="usage-pane">
-    <h5 class="doc-section-title">4. Visualisations</h5>
-    <p>
-      Each visualisation in <em>anvay</em> helps you explore your topic model from a different angle: identifying overlap, strength, evolution, and prevalence. The charts below use mock data to explain how each works and what you can learn from it.
-    </p>
-    <div class="alert alert-info small mt-3">
-      💡 <strong>Pro Tip:</strong> Hover over any chart to explore tooltips and interactive details.
-  </div>
-    <p class="small text-muted mt-2">
-    <strong>Note:</strong> All visualisations in <em>anvay</em> now display the top words for each topic on hover. 
-    This makes it easy to identify and interpret topics directly from the charts without switching back 
-    to the Report tab. All visualisations in anvay use a single, globally consistent colour map: Topic 0 is always the first colour, Topic 1 the second, and so on.
-This ensures that every chart—scatterplot, heatmap, network, pie chart, evolution plot, and document distribution—uses the same colour for the same topic, making cross-visual comparison easier and more reliable.
-    </p>
-
-    <p class="mt-3">
-      No single chart can capture the complexity of a topic model. Each visualisation in <em>anvay</em> reveals a different facet — from how topics relate to each other, to how they spread across documents and time.
-    </p>
-    
-    
-  
-    <!-- 1. Topic Similarity Scatterplot -->
-    <h6 class="mt-4">1. Topic Similarity Scatterplot</h6>
-    <img src="{{ url_for('static', filename='images/ex_scatter.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
-    <p class="small text-muted">
-      <strong>Closer dots = more similar topics.</strong> This chart plots topics based on their word distributions. Topics that are close together share many high-weight words. Use this to identify overlapping themes or cluster boundaries.
-    </p>
-    <p class="small text-muted"><strong>Axes:</strong> Both axes represent a two-dimensional projection of topic–word distributions. Distance between points reflects topic similarity; the axes themselves have no intrinsic semantic meaning.</p>
-    
-    
-  
-    <!-- 2. Topic × Word Heatmap -->
-    <h6 class="mt-5">2. Topic × Word Heatmap</h6>
-    <img src="{{ url_for('static', filename='images/ex_heat.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
-    <p class="small text-muted">
-      <strong>Brighter cells = stronger topic–word link.</strong> Each cell shows how strongly a word is associated with a topic. Use this to explore overlap and word distribution depth. This view presents the same information shown in the bar chart, but emphasises patterns and 
-contrast across topics.
-    </p>
-    <p class="small text-muted"><strong>Axes:</strong> The horizontal axis lists topic indices, and the vertical axis lists a globally selected set of high-weight words. Cell intensity reflects the strength of association between a word and a topic.</p>
-    
-    <!-- 3. Topic Prevalence Pie Chart -->
-    <h6 class="mt-5">3. Topic Prevalence Pie Chart</h6>
-    <img src="{{ url_for('static', filename='images/ex_pie.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
-    <p class="small text-muted">
-      <strong>Bigger slices = more dominant topics.</strong> This chart shows how much each topic contributes to the corpus overall.
-    </p>
-    <p class="small text-muted"><strong>Encoding:</strong> Slice size represents the cumulative weight of a topic across the corpus.</p>
-    
-  
-    <!-- 4. Top Word Frequency -->
-    <h6 class="mt-5">4. Top Word Frequency</h6>
-    <img src="{{ url_for('static', filename='images/ex_bar.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
-    <p class="small text-muted">
-      <strong>High bars = frequent words in your corpus.</strong> Use this to inspect lexical dominance and identify potential noise.
-    </p>
-    <p class="small text-muted"><strong>Axes:</strong> The horizontal axis shows word tokens, and the vertical axis shows their frequency in the corpus after preprocessing.</p>
-
-    
-  
-    <!-- 5. Topic-Word Network Graph -->
-    <h6 class="mt-5">5. Topic–Word Network Graph</h6>
-    <img src="{{ url_for('static', filename='images/ex_network.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
-    <p class="small text-muted">
-      <strong>Each topic node links to its top words.</strong> Blue circles are topics, grey ones are words. Helps visualise word overlap and outliers.
-    </p>
-    <p class="small text-muted"><strong>Encoding:</strong> Spatial layout reflects relational structure rather than scale; proximity and connections indicate association, not distance or magnitude.</p>
-    
-  
-    <!-- 6. Topic Evolution Over Time -->
-    <h6 class="mt-5">6. Topic Evolution Over Time</h6>
-    <img src="{{ url_for('static', filename='images/ex_evo.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
-    <p class="small text-muted">
-      <strong>Each line shows a topic's weight across time.</strong> Use this to detect historical shifts or evolving discourse patterns.
-    </p>
-    <p class="small text-muted"><strong>Axes:</strong> The horizontal axis represents document order (or a derived sequence such as time bins), and the vertical axis shows topic weight, tracing how topic presence changes across the corpus.</p>
-        <em class="small text-muted"><strong>Use case:</strong> For example, if a novel is divided into chapters and each chapter is uploaded as a separate file with filenames reflecting chapter order, this visualisation can be used to examine how thematic emphasis shifts across the course of the narrative.</em>
-
-
-    <!-- 7. Topic Distribution Across Documents -->
-    <h6 class="mt-5">7. Topic Distribution Across Documents</h6>
-    <img src="{{ url_for('static', filename='images/ex_dist.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
-    <p class="small text-muted">
-      <strong>Each dot shows a topic's weight in one document.</strong> Useful for detecting niche vs. broad topics and skewed presence.
-    </p>
-    <p class="small text-muted"><strong>Axes:</strong> The horizontal axis lists documents in the uploaded corpus, and the vertical axis shows topic weight, indicating how strongly each topic is represented in individual documents.</p>
-    
-  
-  
-    <!-- 8. Topic Distance Dendrogram -->
-    <h6 class="mt-5">8. Topic Distance (Clustering Dendrogram)</h6>
-    <img src="{{ url_for('static', filename='images/ex_dendogram.png') }}" width="500" height="400" style="margin-bottom: 1.25rem;"></img>
-    <p class="small text-muted">
-      <strong>Shorter branches = more similar topics.</strong> This dendrogram clusters topics by semantic similarity. Helps spot overlap or hierarchy.
-    </p>
-    <p class="small text-muted"><strong>Axes:</strong> The vertical axis shows inter-topic distance, while the horizontal arrangement reflects hierarchical grouping rather than a quantitative scale.</p>
-  </div>
-
-  
-<!-- 5. Report -->
-<div class="usage-pane" id="usage-report">
-  <h5 class="doc-section-title">5. Report</h5>
+<!-- 5. Visualisations -->
+<div id="usage-viz" class="usage-pane">
+  <h5 class="doc-section-title">Visualisations</h5>
   <p>
-    The <em>Report</em> tab gives you a structured breakdown of the model’s results — from high-level training stats to granular, paragraph-level illustrations. It’s designed to support interpretive work, especially when working with complex or literary texts.
+    Each visualisation in <em>anvay</em> helps you explore your topic model from a different angle: identifying overlap, strength, evolution, and prevalence.
+  </p>
+  <div class="alert alert-info small mt-3">
+    💡 <strong>Pro Tip:</strong> Hover over any chart to explore tooltips and interactive details. All charts use a single, globally consistent colour map — Topic 0 is always the first colour, Topic 1 the second, and so on. This makes cross-visual comparison reliable.
+  </div>
+  <p class="small text-muted mt-2">
+    <strong>Note:</strong> All visualisations display the top words for each topic on hover — making it easy to identify and interpret topics directly from the charts without switching back to the Report tab.
   </p>
 
-  <div class="bg-light p-3 mb-4 rounded">
-    <h6 class="fw-semibold mb-2">Table of Content</h6>
+  <!-- 1. Topic Similarity Scatterplot -->
+  <h6 class="mt-4">1. Topic Similarity Scatterplot</h6>
+  <img src="{{ url_for('static', filename='images/ex_scatter.png') }}" width="500" height="400" style="margin-bottom: 1.25rem; max-width: 100%;"></img>
+  <p class="small text-muted">
+    <strong>Closer dots = more similar topics.</strong> This chart plots topics based on their word distributions. Topics that are close together share many high-weight words. Use this to identify overlapping themes or cluster boundaries.
+  </p>
+  <p class="small text-muted"><strong>Axes:</strong> Both axes represent a two-dimensional projection of topic–word distributions. Distance between points reflects topic similarity; the axes themselves have no intrinsic semantic meaning.</p>
+
+  <!-- 2. Topic × Word Heatmap -->
+  <h6 class="mt-5">2. Topic × Word Heatmap</h6>
+  <img src="{{ url_for('static', filename='images/ex_heat.png') }}" width="500" height="400" style="margin-bottom: 1.25rem; max-width: 100%;"></img>
+  <p class="small text-muted">
+    <strong>Brighter cells = stronger topic–word link.</strong> Each cell shows how strongly a word is associated with a topic. Use this to explore overlap and word distribution depth. This view presents the same information shown in the bar chart, but emphasises patterns and contrast across topics.
+  </p>
+  <p class="small text-muted"><strong>Axes:</strong> The horizontal axis lists topic indices, and the vertical axis lists a globally selected set of high-weight words. Cell intensity reflects the strength of association between a word and a topic.</p>
+
+  <!-- 3. Topic Prevalence Pie Chart -->
+  <h6 class="mt-5">3. Topic Prevalence Pie Chart</h6>
+  <img src="{{ url_for('static', filename='images/ex_pie.png') }}" width="500" height="400" style="margin-bottom: 1.25rem; max-width: 100%;"></img>
+  <p class="small text-muted">
+    <strong>Bigger slices = more dominant topics.</strong> This chart shows how much each topic contributes to the corpus overall.
+  </p>
+  <p class="small text-muted"><strong>Encoding:</strong> Slice size represents the cumulative weight of a topic across the corpus.</p>
+
+  <!-- 4. Top Word Frequency -->
+  <h6 class="mt-5">4. Top Word Frequency</h6>
+  <img src="{{ url_for('static', filename='images/ex_bar.png') }}" width="500" height="400" style="margin-bottom: 1.25rem; max-width: 100%;"></img>
+  <p class="small text-muted">
+    <strong>High bars = frequent words in your corpus.</strong> Use this to inspect lexical dominance and identify potential noise.
+  </p>
+  <p class="small text-muted"><strong>Axes:</strong> The horizontal axis shows word tokens, and the vertical axis shows their frequency in the corpus after preprocessing.</p>
+
+  <!-- 5. Topic-Word Network Graph -->
+  <h6 class="mt-5">5. Topic–Word Network Graph</h6>
+  <img src="{{ url_for('static', filename='images/ex_network.png') }}" width="500" height="400" style="margin-bottom: 1.25rem; max-width: 100%;"></img>
+  <p class="small text-muted">
+    <strong>Each topic node links to its top words.</strong> Blue circles are topics, grey ones are words. Helps visualise word overlap and outliers.
+  </p>
+  <p class="small text-muted"><strong>Encoding:</strong> Spatial layout reflects relational structure rather than scale; proximity and connections indicate association, not distance or magnitude.</p>
+
+  <!-- 6. Topic Evolution Over Time -->
+  <h6 class="mt-5">6. Topic Evolution Over Time</h6>
+  <img src="{{ url_for('static', filename='images/ex_evo.png') }}" width="500" height="400" style="margin-bottom: 1.25rem; max-width: 100%;"></img>
+  <p class="small text-muted">
+    <strong>Each line shows a topic's weight across time.</strong> Use this to detect historical shifts or evolving discourse patterns.
+  </p>
+  <p class="small text-muted"><strong>Axes:</strong> The horizontal axis represents document order (or a derived sequence such as time bins), and the vertical axis shows topic weight, tracing how topic presence changes across the corpus.</p>
+  <em class="small text-muted"><strong>Use case:</strong> For example, if a novel is divided into chapters and each chapter is uploaded as a separate file with filenames reflecting chapter order, this visualisation can be used to examine how thematic emphasis shifts across the course of the narrative.</em>
+
+  <!-- 7. Topic Distribution Across Documents -->
+  <h6 class="mt-5">7. Topic Distribution Across Documents</h6>
+  <img src="{{ url_for('static', filename='images/ex_dist.png') }}" width="500" height="400" style="margin-bottom: 1.25rem; max-width: 100%;"></img>
+  <p class="small text-muted">
+    <strong>Each dot shows a topic's weight in one document.</strong> Useful for detecting niche vs. broad topics and skewed presence.
+  </p>
+  <p class="small text-muted"><strong>Axes:</strong> The horizontal axis lists documents in the uploaded corpus, and the vertical axis shows topic weight, indicating how strongly each topic is represented in individual documents.</p>
+
+  <!-- 8. Topic Distance Dendrogram -->
+  <h6 class="mt-5">8. Topic Distance (Clustering Dendrogram)</h6>
+  <img src="{{ url_for('static', filename='images/ex_dendogram.png') }}" width="500" height="400" style="margin-bottom: 1.25rem; max-width: 100%;"></img>
+  <p class="small text-muted">
+    <strong>Shorter branches = more similar topics.</strong> This dendrogram clusters topics by semantic similarity. Helps spot overlap or hierarchy.
+  </p>
+  <p class="small text-muted"><strong>Axes:</strong> The vertical axis shows inter-topic distance, while the horizontal arrangement reflects hierarchical grouping rather than a quantitative scale.</p>
+</div>
+
+
+<!-- 5. Report -->
+<div class="usage-pane" id="usage-report">
+  <h5 class="doc-section-title">Report</h5>
+  <p>
+    The <em>Report</em> tab gives you a structured breakdown of the model's results — from high-level training stats to granular, paragraph-level illustrations. It's designed to support interpretive work, especially when working with complex or literary texts.
+  </p>
+
+  <div class="info-box mb-4">
+    <h6 class="fw-semibold mb-2">Table of Contents</h6>
     <ul class="list-unstyled mb-0">
       <li><a href="#report-training" class="text-decoration-none">1. Training Overview</a></li>
       <li><a href="#report-topwords" class="text-decoration-none">2. Top Words per Topic</a></li>
       <li><a href="#report-topicweights" class="text-decoration-none">3. Topic Weights per Document</a></li>
-      <li><a href="#report-topterms" class="text-decoration-none">4. Top terms in the Corpus</a></li>
+      <li><a href="#report-topterms" class="text-decoration-none">4. Top Terms in the Corpus</a></li>
       <li><a href="#report-prevalence" class="text-decoration-none">5. Topic Prevalence</a></li>
       <li><a href="#report-sentences" class="text-decoration-none">6. Representative Sentences</a></li>
-
     </ul>
   </div>
 
-<!-- 1. Training Overview -->
-<h6 class="mt-4 fw-semibold" id = "report-training">1. Training Overview</h6>
+<h6 class="mt-4 fw-semibold" id="report-training">1. Training Overview</h6>
 <p>
   This section is designed to help you tune your topic model by reflecting on how the input data and training parameters shaped the model. It provides a snapshot of your corpus and the internal diagnostics logged during training. Used carefully, this is where interpretability begins.
 </p>
 
 <h6 class="mt-4">Corpus Statistics</h6>
 <p>
-  These values reflect the input that the model actually received, *after* all filtering and preprocessing. They help you assess whether your model is working with enough — and the right kind of — data.
+  These values reflect the input that the model actually received, after all filtering and preprocessing. They help you assess whether your model is working with enough — and the right kind of — data.
 </p>
 <ul>
   <li><strong>Total Documents:</strong> Each file uploaded is treated as one document. Fewer than 30 documents usually leads to unstable, overgeneralised topics. Over 100 allows more granularity.</li>
-
-  <li><strong>Average Document Length:</strong> If this is under <code>300 tokens</code>, topics may feel thin or generic. In such cases, consider:
-    <ul>
-      <li>Reducing stopword or rare word removal</li>
-      <li>Disabling stemming</li>
-      <li>Merging short documents</li>
-    </ul>
-  </li>
-
-  <li><strong>Vocabulary Size:</strong> The number of unique tokens remaining after filtering. A range between <code>1,000–10,000</code> is often ideal for LDA. 
-    <ul>
-      <li>Too low: try lowering <code>no_below</code> or disabling <code>remove common words</code></li>
-      <li>Too high: consider adding custom stopwords or raising <code>no_above</code></li>
-    </ul>
-  </li>
+  <li><strong>Average Document Length:</strong> If this is under <code>300 tokens</code>, topics may feel thin or generic. In such cases, consider reducing stopword or rare word removal, disabling stemming, or merging short documents.</li>
+  <li><strong>Vocabulary Size:</strong> The number of unique tokens remaining after filtering. A range between <code>1,000–10,000</code> is often ideal for LDA.</li>
 </ul>
 
 <h6 class="mt-4">Training Log</h6>
 <p>
-  These logs come directly from the LDA engine (gensim), grouped into stages. They’re not just for debugging — they help you interpret model behaviour and stability.
+  These logs come directly from the LDA engine (gensim), grouped into stages. They help you interpret model behaviour and stability.
 </p>
 <ul>
-  <li><strong>Token Filtering:</strong> Shows how many terms were discarded by your frequency thresholds. If too many tokens are discarded, your topics may become incoherent.</li>
-
-  <li><strong>Training Configuration:</strong> Confirms what values were used for parameters like <code>alpha</code>, <code>eta</code>, and <code>chunksize</code>. These affect sparsity and learning rate.</li>
-
-  <li><strong>Perplexity Estimates:</strong> This is an internal measure of how surprised the model is by the data. Lower perplexity is usually better — but not always. Watch for:
-    <ul>
-      <li><strong>Steady decline and flattening:</strong> good sign — model has stabilised</li>
-      <li><strong>Sharp drops late in training:</strong> may suggest overfitting</li>
-      <li><strong>Rising after flattening:</strong> potential overtraining — try fewer <code>passes</code></li>
-    </ul>
-  </li>
-
-  <li><strong>Final Model Info:</strong> Marks the lifecycle stages of the model. Mostly useful for confirming that training completed without interruption.</li>
+  <li><strong>Token Filtering:</strong> Shows how many terms were discarded by your frequency thresholds.</li>
+  <li><strong>Training Configuration:</strong> Confirms what values were used for parameters like <code>alpha</code>, <code>eta</code>, and <code>chunksize</code>.</li>
+  <li><strong>Perplexity Estimates:</strong> Lower perplexity is usually better. Steady decline and flattening = good; rising after flattening = potential overtraining.</li>
+  <li><strong>Final Model Info:</strong> Marks the lifecycle stages of the model.</li>
 </ul>
 
 <h6 class="mt-4 fw-semibold">What to Do With This</h6>
 <ul>
-  <li>
-    If your topics seem repetitive, generic, or incoherent, start by checking your <strong>average document length</strong> and <strong>vocabulary size</strong>.
-  </li>
-  <li>
-    If training logs show <strong>rapid convergence but poor topics</strong>, try increasing <code>passes</code> or adjusting <code>alpha</code> for more topic sparsity.
-  </li>
-  <li>
-    If <strong>perplexity never settles</strong>, it may indicate noisy input or a mismatch between the number of topics and the size of the corpus.
-  </li>
-  <li>
-    If you see <strong>“keeping N of M words”</strong> in token filtering, and N is very low, revisit your stopwords and frequency thresholds.
-  </li>
+  <li>If your topics seem repetitive, generic, or incoherent, start by checking your <strong>average document length</strong> and <strong>vocabulary size</strong>.</li>
+  <li>If training logs show <strong>rapid convergence but poor topics</strong>, try increasing <code>passes</code> or adjusting <code>alpha</code>.</li>
+  <li>If <strong>perplexity never settles</strong>, it may indicate noisy input or a mismatch between the number of topics and corpus size.</li>
 </ul>
 
-<div class="bg-light p-3 small rounded">
-  <strong>Reminder:</strong> You don’t need to understand every log line. But if your output looks wrong, this is the first place to look — and the best place to learn.
+<div class="info-box">
+  <strong>Reminder:</strong> You don't need to understand every log line. But if your output looks wrong, this is the first place to look — and the best place to learn.
 </div>
 
 <p class="small text-muted mt-4"><a href="#usage-report" class="text-decoration-none">↑ Back to top</a></p>
 
-
- <!-- 2. Top Words per Topic -->
-<h6 class="mt-5 fw-semibold" id = "report-topwords">2. Top Words per Topic</h6>
+<h6 class="mt-5 fw-semibold" id="report-topwords">2. Top Words per Topic</h6>
 <p>
   This section shows the top 10 words in each topic, ranked by their probability of occurring within that topic. These are taken directly from the model — no filtering, smoothing, or interpretation has been applied.
 </p>
-
 <p>
   In technical terms, this is based on <strong>p(w | t)</strong> — the probability of a word given a topic. The higher the value, the more representative that word is for that topic. However, this measure does not account for whether the word is <em>distinctive</em> across topics.
 </p>
 
 <h6 class="mt-4">How to Interpret</h6>
 <ul>
-  <li><strong>Repetition across topics:</strong> If the same word appears in many topics, it may be common across the corpus — not distinctive. You may want to add it to your custom stopwords.</li>
-  <li><strong>Unusual terms:</strong> Some topics may include broken suffixes, particles, or OCR noise. These are signs of preprocessing issues, not model failure.</li>
+  <li><strong>Repetition across topics:</strong> If the same word appears in many topics, it may be common across the corpus — not distinctive. Consider adding it to your custom stopwords.</li>
+  <li><strong>Unusual terms:</strong> Some topics may include broken suffixes, particles, or OCR noise — signs of preprocessing issues, not model failure.</li>
   <li><strong>Use your judgement:</strong> These word lists are prompts. Try to label each topic yourself — what theme or discourse might these words suggest?</li>
-  <li><strong>Check against documents:</strong> Return to the representative sentences and paragraphs. Do the top words actually appear in those contexts?</li>
+  <li><strong>Check against documents:</strong> Return to the representative sentences. Do the top words actually appear in those contexts?</li>
 </ul>
 
-<h6 class="mt-4">Download and Use</h6>
-<p>
-  The top word lists are available in <code>CSV</code> and <code>TXT</code> format for export. Many users annotate these manually with topic names or notes, then revisit the corpus with a clearer interpretive frame.
-</p>
-
-<div class="bg-light p-3 small rounded">
-  <strong>Tip:</strong> These are the words the model “believes” belong to each topic — but the model doesn’t understand meaning. That part is yours.
-</div>
-
-<h6 class="mt-4">How to Read This Table</h6>
-<p>
-  Each row shows a document, and each column shows the strength of a particular topic in that document. The values are probabilities — and they reflect how much that topic contributes to the document overall.
-</p>
-
-<p><strong>Example:</strong> Suppose a document has the following topic weights:
-</p>
-<pre class="bg-light p-2 small border rounded">Topic 2: 0.61, Topic 4: 0.24, Topic 7: 0.11</pre>
-<p class="mb-3">This means:
-</p>
-<ul>
-  <li><strong>Topic 2</strong> is strongly dominant in this document — likely the main theme</li>
-  <li><strong>Topic 4</strong> plays a secondary role</li>
-  <li><strong>Topic 7</strong> is minor but present — perhaps just a passing motif or shared vocabulary</li>
-</ul>
-
-
-<h6 class="mt-4">What to Watch For</h6>
-<ul>
-  <li><strong>Flat profiles:</strong> If all weights are between 0.05 and 0.15, the document may not have a clear thematic identity — or the model may be overfitting.</li>
-  <li><strong>Dominant patterns:</strong> If one topic dominates many documents, the number of topics may be too low.</li>
-  <li><strong>Missing topics:</strong> If a topic is missing from many documents, it may be too narrow or poorly formed.</li>
-</ul>
-
-<h6 class="mt-4">Why Some Values Are Blank or Zero</h6>
-<p>
-  <em>anvay</em> uses a probability threshold (<code>minimum_probability = 0.1</code>) when querying the model. This means:
-</p>
-<ul>
-  <li>Any topic that contributes less than 10% to a document will not appear in its weight vector.</li>
-  <li>This helps reduce noise and focus attention on more meaningful associations.</li>
-</ul>
-
-<h6 class="mt-4">Next Steps</h6>
-<p>
-  Use this table to identify which documents best represent each topic — then refer to the paragraph view to see what those documents actually say. This two-step reading (weight + text) is key to interpretability.
-</p>
-
-<div class="bg-light p-3 small rounded">
-  <strong>Tip:</strong> These values are not definitive labels. They’re signals. Use them to ask: where is this topic showing up — and what form does it take?
+<div class="info-box">
+  <strong>Tip:</strong> These are the words the model "believes" belong to each topic — but the model doesn't understand meaning. That part is yours.
 </div>
 
 <p class="small text-muted mt-4"><a href="#usage-report" class="text-decoration-none">↑ Back to top</a></p>
 
-
-<!-- 3. Topic Weights per Document -->
-<h6 class="mt-5 fw-semibold" id = "report-topicweights">3. Topic Weights per Document</h6>
+<h6 class="mt-5 fw-semibold" id="report-topicweights">3. Topic Weights per Document</h6>
 <p>
-  This section shows how each topic contributes to each document, based on the topic model’s output. The weights are probabilistic, not categorical — every document is a mixture of topics, and every topic appears in multiple documents to varying degrees.
+  This section shows how each topic contributes to each document, based on the topic model's output. The weights are probabilistic, not categorical — every document is a mixture of topics, and every topic appears in multiple documents to varying degrees.
 </p>
-
 <p>
-  Each value represents <strong>p(t | d)</strong> — the model’s estimate of how likely topic <code>t</code> is to occur in document <code>d</code>. The sum of all topic weights for a single document is 1.0.
+  Each value represents <strong>p(t | d)</strong> — the model's estimate of how likely topic <code>t</code> is to occur in document <code>d</code>. The sum of all topic weights for a single document is 1.0.
 </p>
 
 <h6 class="mt-4">How to Read This Table</h6>
 <ul>
-  <li>
-    <strong>High values (e.g. ≥ 0.6):</strong> indicate a document where that topic is dominant. These are often good candidates for interpretation or representative examples.
-  </li>
-  <li>
-    <strong>Flat distributions:</strong> If a document has many topics with small weights (e.g. 0.05–0.15), it may not fit cleanly into any one theme — or the model may be overfitting.
-  </li>
-  <li>
-    <strong>Repeated patterns:</strong> If the same topic dominates across many documents, your model may be too coarse (try increasing the number of topics).
-  </li>
-  <li>
-    <strong>Missing weights:</strong> A topic with <code>0.0</code> in a document does not appear there, or appears below the model’s threshold.
-  </li>
+  <li><strong>High values (e.g. ≥ 0.6):</strong> indicate a document where that topic is dominant.</li>
+  <li><strong>Flat distributions:</strong> If a document has many topics with small weights (e.g. 0.05–0.15), it may not fit cleanly into any one theme.</li>
+  <li><strong>Repeated patterns:</strong> If the same topic dominates across many documents, your model may be too coarse.</li>
+  <li><strong>Missing weights:</strong> A topic with <code>0.0</code> in a document does not appear there, or appears below the model's threshold.</li>
 </ul>
 
-<h6 class="mt-4">Download Options</h6>
-<p>
-  This matrix is available for download in <code>CSV</code> and <code>TXT</code> formats. These files are useful for:
-</p>
-<ul>
-  <li>Filtering documents by topic strength</li>
-  <li>Building document-topic visualisations outside <em>anvay</em></li>
-  <li>Comparing topic prevalence across authors, genres, or time periods</li>
-</ul>
+<p><strong>Example:</strong> Suppose a document has the following topic weights:</p>
+<pre class="code-example">Topic 2: 0.61, Topic 4: 0.24, Topic 7: 0.11</pre>
+<p>Topic 2 is strongly dominant; Topic 4 plays a secondary role; Topic 7 is minor but present.</p>
 
-<div class="bg-light p-3 small rounded">
-  <strong>Interpretation Tip:</strong> There is no single “main topic” per document. These weights are gradients, not labels. Think in terms of blends, not buckets.
+<div class="info-box">
+  <strong>Interpretation Tip:</strong> There is no single "main topic" per document. These weights are gradients, not labels. Think in terms of blends, not buckets.
 </div>
 
 <p class="small text-muted mt-4"><a href="#usage-report" class="text-decoration-none">↑ Back to top</a></p>
 
-
-<!-- 4. Top Terms -->
 <h6 class="mt-5 fw-semibold" id="report-topterms">4. Top Terms</h6>
 <p>
   These are the most frequently occurring words in the corpus after preprocessing. They are not tied to any specific topic but reflect recurring motifs and dominant vocabulary. If you see generic verbs, numbers, or formatting tokens here, consider adding them to your stopword list.
@@ -1098,7 +908,6 @@ contrast across topics.
 
 <p class="small text-muted mt-4"><a href="#usage-report" class="text-decoration-none">↑ Back to top</a></p>
 
-  <!-- 5. Topic Prevalence -->
 <h6 class="mt-5 fw-semibold" id="report-prevalence">5. Topic Prevalence</h6>
 <p>
   Topic prevalence indicates how strongly each topic appears across the entire corpus. It is calculated by summing the topic's weight across all documents. Although topic weights do not have a fixed scale, a higher value generally means that the topic appears more consistently and with greater intensity in the dataset.
@@ -1109,31 +918,32 @@ contrast across topics.
 
 <p class="small text-muted mt-4"><a href="#usage-report" class="text-decoration-none">↑ Back to top</a></p>
 
+<h6 class="mt-5 fw-semibold" id="report-sentences">6. Representative Sentences</h6>
+<p>
+  For each topic, <em>anvay</em> displays one real sentence from the dataset where that topic is most strongly represented. These are not summaries — they are actual sentences taken from the original files.
+</p>
+<p>
+  Each sentence is accompanied by the filename and the topic's weight in that document. If no sentence strongly overlaps with the top words for that topic, it is marked as <span class="text-warning fw-semibold">⚠ Low Confidence</span>.
+</p>
 
-   <!-- 5. Representative Sentences -->
-   <h6 class="mt-5 fw-semibold" id="report-sentences">6. Representative Sentences</h6>
-   <p>
-     For each topic, <em>anvay</em> displays one real sentence from the dataset where that topic is most strongly represented. These are not summaries — they are actual sentences taken from the original files.
-   </p>
-   <p>
-     Each sentence is accompanied by the filename and the topic’s weight in that document. If no sentence strongly overlaps with the top words for that topic, it is marked as <span class="text-warning fw-semibold">⚠ Low Confidence</span>.
-   </p>
- 
-   <blockquote class="blockquote small text-muted">
-     “Topic 7: শ্রমিক, মজুরি, কারখানা → appears most clearly in a sentence describing a workers’ protest speech. The texture is emotional, not abstract.”
-   </blockquote>
- 
-   <p class="small text-muted mt-4"><a href="#usage-report" class="text-decoration-none">↑ Back to top</a></p>
+<blockquote class="blockquote small text-muted">
+  "Topic 7: শ্রমিক, মজুরি, কারখানা → appears most clearly in a sentence describing a workers' protest speech. The texture is emotional, not abstract."
+</blockquote>
+
+<p class="small text-muted mt-4"><a href="#usage-report" class="text-decoration-none">↑ Back to top</a></p>
 
 </div>
 
 
-<!-- WALKTHROUGH-->
-
+<!-- WALKTHROUGH -->
 <div class="usage-pane" id="usage-walk">
   <h5 class="doc-section-title">Walkthrough: Bengali News Corpus (288 Files)</h5>
 
   <p>This walkthrough explores how different filtering strategies shape the topics generated from a corpus of 288 Bengali news articles. Rather than presenting final outputs, it highlights how topic visibility is shaped by preprocessing decisions — and how different assumptions produce different readings.</p>
+
+  <div class="experimental-banner mb-4">
+    <strong>Language note:</strong> This walkthrough uses Bengali, <em>anvay</em>'s primary supported language. The methodological principles — how filtering shapes topics, how to compare two runs, how to interpret outputs — apply equally to English, Hindi, and Tamil. However, for those experimental languages, results may differ more substantially between runs, and interpretation requires additional caution.
+  </div>
 
   <div class="border rounded p-3 mb-4 bg-light">
     <div class="row text-center">
@@ -1165,11 +975,11 @@ contrast across topics.
     </div>
   </div>
 
-  <p><strong>Note:</strong> Because <em>anvay</em> uses a probabilistic model (<code>LDA</code>), your results may vary slightly even with the same corpus and parameters. This is expected behaviour and reflects the model’s sensitivity to small variations in sampling.</p>
+  <p><strong>Note:</strong> Because <em>anvay</em> uses a probabilistic model (<code>LDA</code>), your results may vary slightly even with the same corpus and parameters. This is expected behaviour and reflects the model's sensitivity to small variations in sampling.</p>
 
   <div class="mb-4">
     <h6 style="color: #0D85D8; font-weight: 600; letter-spacing: 0.5px;">STEP 1: Download the Corpus</h6>
-    <p>We’ve provided a sample dataset of 288 news articles. These are stored in <code>.txt</code> format inside a <code>.zip</code> archive.</p>
+    <p>We've provided a sample dataset of 288 news articles. These are stored in <code>.txt</code> format inside a <code>.zip</code> archive.</p>
     <div class="download-link mb-3">
       <a href="/static/sample_corpus/news_corpus.zip" class="btn btn-sm btn-outline-primary">Download Sample Corpus (news_corpus.zip)</a>
     </div>
@@ -1180,7 +990,6 @@ contrast across topics.
     <p>To ensure stable and interpretable topics, use the following parameters in your analysis:</p>
     <p class="small text-muted">These settings were selected after extensive testing across multiple runs. They balance clarity, separation between topics, and interpretability — without forcing deterministic output or removing named entities.</p>
   </div>
-
 
   <h6 class="fw-semibold mt-5">Run A: Minimal Filtering (Latent Topics)</h6>
 
@@ -1205,29 +1014,25 @@ contrast across topics.
   </table>
 
   <p>This configuration removes only the top 10% most frequent words and retains even the rarest tokens. The resulting topics are noisy but revealing — they surface underrepresented narrative fragments, scattered names, and infrastructural traces that typically disappear under stricter filtering.</p>
- 
-  
 
   <div class="mb-4">
     <h6 style="color: #0D85D8; font-weight: 600; letter-spacing: 0.5px;">STEP 3: Interpreting the Topics</h6>
-    <p>Here are the ten topics <em>anvay</em> discovered in this run. We don’t assign rigid names. Instead, we invite you to explore each topic through a question — to encourage discovery, not closure.</p>
+    <p>Here are the ten topics <em>anvay</em> discovered in this run. We don't assign rigid names. Instead, we invite you to explore each topic through a question — to encourage discovery, not closure.</p>
   </div>
 
   <table class="table table-bordered table-sm small">
     <thead class="table-light"><tr><th>Topic</th><th>Top Words</th><th>Interpretive Question</th></tr></thead>
     <tbody>
-      
-      <tr><td>0</td><td>নারায়ণ, খাদ্য, চাল, কেজি, প্রসঙ্গ, হনিপ্রীত, শস্য, চাষীদের, ঘড়ির, অ্যালার্ম</td><td>How does the corpus link agriculture and food regulation with public messaging or alerts?</td></tr>
-      <tr><td>1</td><td>অটো, নেদারল্যান্ডস, ক্যামেরায়, বাবলুর, আইল, ডিআরএস, ইউনিয়নের, যন্ত্র, পদ্ধতি, দি</td><td>What fragments of surveillance, technology, and international reference co-occur in transport reporting?</td></tr>
-      <tr><td>2</td><td>বিরিয়ানি, রোজভ্যালি, জিজ্ঞাসাবাদ, চিঠিতে, মন্ত্রীর, ক্যামেরার, মাইকেল, ইকবাল, ক্যামেরা, কাক</td><td>How are food, scandal, and legal interrogation narrated within the same discursive frame?</td></tr>
+      <tr><td>0</td><td>নারায়ণ, খাদ্য, চাল, কেজি, প্রসঙ্গ, হনিপ্রীত, শস্য, চাষীদের, ঘড়ির, অ্যালার্ম</td><td>How does the corpus link agriculture and food regulation with public messaging or alerts?</td></tr>
+      <tr><td>1</td><td>অটো, নেদারল্যান্ডস, ক্যামেরায়, বাবলুর, আইল, ডিআরএস, ইউনিয়নের, যন্ত্র, পদ্ধতি, দি</td><td>What fragments of surveillance, technology, and international reference co-occur in transport reporting?</td></tr>
+      <tr><td>2</td><td>বিরিয়ানি, রোজভ্যালি, জিজ্ঞাসাবাদ, চিঠিতে, মন্ত্রীর, ক্যামেরার, মাইকেল, ইকবাল, ক্যামেরা, কাক</td><td>How are food, scandal, and legal interrogation narrated within the same discursive frame?</td></tr>
       <tr><td>3</td><td>হাড়, বাগান, বাবর, অজিতার, মালদহ, চা, সিন্ডিকেট, শ্রেণির, দোকানের, সর্বত্র</td><td>What do local economies and syndicate politics reveal about the everyday in this corpus?</td></tr>
       <tr><td>4</td><td>ইরফান, সারদার, শাহরুখ, শিবাঙ্গী, শতাব্দী, মন্নত, করণ, নন্দন, নন্দনের, পাপন</td><td>What kinds of cultural memory are constructed around names in celebrity and political discourse?</td></tr>
-      <tr><td>5</td><td>সানিয়া, নার্সিংহোমের, হিন্দিতে, বেহালার, বড়দির, সহবাগ, দমকল, হিন্দি, রমরমা, দমকলের</td><td>How do language, locality, and public service intersect in these narrative fragments?</td></tr>
-      <tr><td>6</td><td>কপিলের, মনোতোষ, রিচার্জ, ঝাড়খণ্ড, কল্পনা, স্মার্ট, জিয়ারুল, রিচার্ড, মানচিত্র, একশো</td><td>Which tokens suggest infrastructural, bureaucratic, or digital contexts — and how do names intervene?</td></tr>
+      <tr><td>5</td><td>সানিয়া, নার্সিংহোমের, হিন্দিতে, বেহালার, বড়দির, সহবাগ, দমকল, হিন্দি, রমরমা, দমকলের</td><td>How do language, locality, and public service intersect in these narrative fragments?</td></tr>
+      <tr><td>6</td><td>কপিলের, মনোতোষ, রিচার্জ, ঝাড়খণ্ড, কল্পনা, স্মার্ট, জিয়ারুল, রিচার্ড, মানচিত্র, একশো</td><td>Which tokens suggest infrastructural, bureaucratic, or digital contexts — and how do names intervene?</td></tr>
       <tr><td>7</td><td>দের, ষড়যন্ত্রের, জেসপ, প্রচারের, সিআইডি, অভিযোগের, গোর্কি, অস্বস্তিতে, মাকো, অনির্বাণ</td><td>What themes of conspiracy, discomfort, and institutional inquiry recur across unrelated topics?</td></tr>
-      <tr><td>8</td><td>শ্রীলঙ্কার, ওয়ালেট, সার, ভোটার, গীতশ্রী, সিরিজ, ফেরত, বোন, সায়, পরিচয়পত্র</td><td>How are identity, return, and voter registration framed across borders and documentation?</td></tr>
-      <tr><td>9</td><td>বেপরোয়া, শ্লীলতাহানির, ঝড়ে, গতিতে, গতিবেগ, তাজমহল, চোর, স্টেশনের, তিনজন, জোড়া</td><td>How does the corpus balance crime reporting with suddenness, sensation, and scale?</td></tr>
-      
+      <tr><td>8</td><td>শ্রীলঙ্কার, ওয়ালেট, সার, ভোটার, গীতশ্রী, সিরিজ, ফেরত, বোন, সায়, পরিচয়পত্র</td><td>How are identity, return, and voter registration framed across borders and documentation?</td></tr>
+      <tr><td>9</td><td>বেপরোয়া, শ্লীলতাহানির, ঝড়ে, গতিতে, গতিবেগ, তাজমহল, চোর, স্টেশনের, তিনজন, জোড়া</td><td>How does the corpus balance crime reporting with suddenness, sensation, and scale?</td></tr>
     </tbody>
   </table>
   <div class="border rounded p-3 mb-4 bg-light">
@@ -1269,22 +1074,21 @@ contrast across topics.
   <table class="table table-bordered table-sm small">
     <thead class="table-light"><tr><th>Topic</th><th>Top Words</th><th>Interpretive Question</th></tr></thead>
     <tbody>
-      
-      <tr><td>0</td><td>চিকিৎসা, এপ্রিল, ভাসা, কিশোর, পাঁচজন, পর্যায়ের, রায়কে, পশ্চিম, দেখবেন, সমস্যার</td><td>How is healthcare framed as a general or seasonal concern, and what groups are foregrounded?</td></tr>
-      <tr><td>1</td><td>অল্প, পরিষদের, সিংহের, ছায়া, তখন, টুইটারে, দলই, ক্ষমতার, চ্যানেলে, দেখেছেন</td><td>What kind of political presence is constructed through social media and visual cues?</td></tr>
-      <tr><td>2</td><td>ভাড়া, টের, খেলোয়াড়দের, কাটেনি, শেষপর্যন্ত, ব্যস্ত, খালি, বিদেশি, সমর্থকরা, এনে</td><td>What logistical and emotional elements shape reporting on sports and crowd movement?</td></tr>
-      <tr><td>3</td><td>কুড়ি, খানের, রেখেছেন, বিকেলের, জোগাড়, রঙ, তাড়াতাড়ি, পালিয়ে, বলিউড, বালি</td><td>How do entertainment and lifestyle fragments produce a sense of pace or escape?</td></tr>
-      <tr><td>4</td><td>হাজিরা, পাঠিয়েছে, শক্ত, বিনিময়ে, চালাচ্ছেন, রায়কে, মহলের, সঙ্গী, মাঝ, ধারায়</td><td>What power dynamics emerge from judicial or institutional scheduling and alliances?</td></tr>
+      <tr><td>0</td><td>চিকিৎসা, এপ্রিল, ভাসা, কিশোর, পাঁচজন, পর্যায়ের, রায়কে, পশ্চিম, দেখবেন, সমস্যার</td><td>How is healthcare framed as a general or seasonal concern, and what groups are foregrounded?</td></tr>
+      <tr><td>1</td><td>অল্প, পরিষদের, সিংহের, ছায়া, তখন, টুইটারে, দলই, ক্ষমতার, চ্যানেলে, দেখেছেন</td><td>What kind of political presence is constructed through social media and visual cues?</td></tr>
+      <tr><td>2</td><td>ভাড়া, টের, খেলোয়াড়দের, কাটেনি, শেষপর্যন্ত, ব্যস্ত, খালি, বিদেশি, সমর্থকরা, এনে</td><td>What logistical and emotional elements shape reporting on sports and crowd movement?</td></tr>
+      <tr><td>3</td><td>কুড়ি, খানের, রেখেছেন, বিকেলের, জোগাড়, রঙ, তাড়াতাড়ি, পালিয়ে, বলিউড, বালি</td><td>How do entertainment and lifestyle fragments produce a sense of pace or escape?</td></tr>
+      <tr><td>4</td><td>হাজিরা, পাঠিয়েছে, শক্ত, বিনিময়ে, চালাচ্ছেন, রায়কে, মহলের, সঙ্গী, মাঝ, ধারায়</td><td>What power dynamics emerge from judicial or institutional scheduling and alliances?</td></tr>
       <tr><td>5</td><td>টিমের, সুন্দর, দারুণ, ব্যবধান, মোছা, বিরোধিতা, বলছি, মহলে, ক্ষতি, লুকানো</td><td>How does parliamentary or political speech perform opposition and damage control?</td></tr>
       <tr><td>6</td><td>আচরণ, এরই, বসানো, বিরুদ্ধেও, তরুণের, একসঙ্গ, উপলক্ষ, বক্তব্য, লাগাতে, অংশের</td><td>What moral expectations are placed on collective or youth behaviour in the corpus?</td></tr>
-      <tr><td>7</td><td>মমতাকে, কাণ্ডে, বিধায়কের, পৌছে, ছাপ, দেব, গিয়েছিলাম, ভবিষ্য, তুঙ্গ, মহল</td><td>How is leadership (especially Mamata Banerjee) situated in scenes of escalation or future-promise?</td></tr>
-      <tr><td>8</td><td>সামিল, চিন্তায়, দুদিন, আয়োজিত, ছিল, নিচ্ছেন, পরিচালন, চেনা, পেল, সবাই</td><td>What are the signals of event management, concern, and collective participation?</td></tr>
-      <tr><td>9</td><td>খায়, শেয়ার, টার, ক্ষুব্ধ, রুটে, সিইও, নিরিখে, বিপাকে, থাকছেন, গান</td><td>How do economics, public mood, and executive positioning intersect across routes and reactions?</td></tr>
-      
+      <tr><td>7</td><td>মমতাকে, কাণ্ডে, বিধায়কের, পৌছে, ছাপ, দেব, গিয়েছিলাম, ভবিষ্য, তুঙ্গ, মহল</td><td>How is leadership (especially Mamata Banerjee) situated in scenes of escalation or future-promise?</td></tr>
+      <tr><td>8</td><td>সামিল, চিন্তায়, দুদিন, আয়োজিত, ছিল, নিচ্ছেন, পরিচালন, চেনা, পেল, সবাই</td><td>What are the signals of event management, concern, and collective participation?</td></tr>
+      <tr><td>9</td><td>খায়, শেয়ার, টার, ক্ষুব্ধ, রুটে, সিইও, নিরিখে, বিপাকে, থাকছেন, গান</td><td>How do economics, public mood, and executive positioning intersect across routes and reactions?</td></tr>
+    </tbody>
   </table>
   <div class="border rounded p-3 mb-4 bg-light">
     <h6 class="mb-3 text-primary">STEP 5: Learnings</h6>
-  <p>Bengali is:</p>
+  <p>Bengali (and this applies broadly to all supported languages) is:</p>
   <ul>
     <li>Morphologically rich</li>
     <li>Rhetorically compressed</li>
@@ -1294,7 +1098,7 @@ contrast across topics.
   <p>Named entities, places, and idiosyncratic phrasing are not incidental — they are structural elements of meaning. Standard filtering often erases these, making latent themes disappear.</p>
 
   <p><strong>What this walkthrough shows is that:</strong><br>
-  Legibility is a function of filtering. A topic doesn’t appear because it’s important — it appears because your filtering method allows it to survive.</p>
+  Legibility is a function of filtering. A topic doesn't appear because it's important — it appears because your filtering method allows it to survive.</p>
 
   <h6 class="fw-semibold mt-4">What You Should Try</h6>
   <p><em>anvay</em> defaults to a gentler filtering method (removing only the top 10% of words) so you can surface latent structure. But you can also enable frequency filtering if your goal is topical readability.</p>
@@ -1310,22 +1114,24 @@ contrast across topics.
   <p>Topic modelling is not neutral. The same corpus can yield very different "themes" depending on how you treat frequency. <em>anvay</em> is designed not to automate interpretation, but to reveal its conditions.</p>
 </div>
 
-
-
 </div>
 </div>
 </div>
 </div>
 
+
+<!-- ═══════════════════════════════════════════════════════════
+     HELP & ERRORS TAB
+═══════════════════════════════════════════════════════════ -->
 <div class="tab-content" id="help">
-  <h5 class="doc-section-title">Help & Errors</h5>
+  <h5 class="doc-section-title">Help &amp; Errors</h5>
   <p>
     This section answers common questions and explains issues that may arise when using <em>anvay</em>. Topic modelling is sensitive to your corpus and settings — so if things seem off, you're not alone.
   </p>
 
   <hr class="my-4" />
 
-  <h6 class="fw-semibold text-primary">Why does it say “Dictionary is empty after filtering”?</h6>
+  <h6 class="fw-semibold text-primary">Why does it say "Dictionary is empty after filtering"?</h6>
   <p>
     This means no words survived preprocessing. It usually happens when:
     <ul>
@@ -1341,7 +1147,7 @@ contrast across topics.
     If multiple topics use similar words or feel indistinguishable, it might be because:
     <ul>
       <li>Your number of topics is too high for the dataset</li>
-      <li>Common words haven’t been filtered out properly</li>
+      <li>Common words haven't been filtered out properly</li>
       <li>Your documents follow a formula (like news intros or transcripts)</li>
     </ul>
     <strong>What to do:</strong> Reduce the number of topics, filter common words more aggressively, or use a custom stopword list.
@@ -1358,13 +1164,13 @@ contrast across topics.
     <strong>What to do:</strong> Use longer texts, check your token counts, and clean noisy documents before uploading.
   </p>
 
-  <h6 class="fw-semibold text-primary">Why isn’t anything happening when I click 'Anayse Topics?</h6>
+  <h6 class="fw-semibold text-primary">Why isn't anything happening when I click 'Analyse Topics'?</h6>
   <p>
     If the interface seems unresponsive, check whether:
     <ul>
       <li>You uploaded more than 800 files</li>
-      <li>Your total upload exceeds 10MB</li>
-      <li>You've accidentally included a non-<code>.txt</code> file or a file that isn’t UTF-8 encoded</li>
+      <li>Your total upload exceeds 100 MB</li>
+      <li>You've accidentally included a non-<code>.txt</code> file or a file that isn't UTF-8 encoded</li>
     </ul>
     <strong>What to do:</strong> Remove problematic files, stay under the file and size limits, and ensure encoding is correct.
   </p>
@@ -1379,10 +1185,25 @@ contrast across topics.
     </ul>
     <strong>What to do:</strong> Iterate. Change one setting at a time, rerun, and compare. Interpretation improves with each pass.
   </p>
+
+  <h6 class="fw-semibold text-primary">I'm using Hindi or Tamil and getting very poor results. Why?</h6>
+  <p>
+    Hindi and Tamil support is experimental. The most common cause of poor results is missing stopwords — neither language has a built-in NLTK stopword list, so you <strong>must</strong> upload a custom stopword file. Without it, the model will be dominated by function words and particles that carry no thematic value.
+  </p>
+  <p>
+    Additionally, the normalisation pipelines (simplemma for Hindi, dictionary stemming for Tamil) are less mature than the Bengali pipeline. If results remain poor after adding stopwords, try disabling normalisation and running with a cleaner corpus.
+  </p>
+
+  <h6 class="fw-semibold text-primary">My filenames show only consonants — Bengali vowels are missing in the graphs.</h6>
+  <p>
+    This was a bug in earlier versions of <em>anvay</em> where a filename sanitiser inadvertently stripped Unicode combining marks (matras and vowel signs). It has been fixed. If you are still seeing this, make sure you are running the latest version of <code>app.py</code>.
+  </p>
 </div>
 
 
-
+<!-- ═══════════════════════════════════════════════════════════
+     GLOSSARY TAB
+═══════════════════════════════════════════════════════════ -->
 <div class="tab-content" id="glossary">
   <h4 class="doc-section-title">Glossary</h4>
 
@@ -1398,28 +1219,43 @@ contrast across topics.
     <dt data-term="lda"><code>LDA (Latent Dirichlet Allocation)</code></dt>
     <dd>A probabilistic model that treats each document as a mixture of topics, and each topic as a distribution over words.</dd>
     <dt data-term="topic"><code>Topic</code></dt>
-    <dd>A statistical cluster of words that frequently occur together. Interpreted as a “theme.”</dd>
+    <dd>A statistical cluster of words that frequently occur together. Interpreted as a "theme."</dd>
     <dt data-term="document"><code>Document</code></dt>
     <dd>A single text file uploaded to <em>anvay</em>. Each document is treated as a unit of analysis.</dd>
     <dt data-term="token"><code>Token</code></dt>
     <dd>An individual word or term, usually after preprocessing (normalisation, stemming, etc.).</dd>
   </dl>
 
+  <!-- Language Support -->
+  <h6 class="fw-semibold">Language Support</h6>
+  <dl class="mb-4 glossary-section">
+    <dt data-term="bengali bn"><code>Bengali (BN)</code></dt>
+    <dd>The primary supported language. Uses a custom zero-width-aware tokeniser, dictionary-based stemming, and NLTK stopwords.</dd>
+    <dt data-term="english en experimental"><code>English (EN) — Experimental</code></dt>
+    <dd>Supported with NLTK word tokenisation, WordNet lemmatisation, and NLTK English stopwords. Experimental status reflects limited testing on diverse corpora.</dd>
+    <dt data-term="hindi hi experimental"><code>Hindi (HI) — Experimental</code></dt>
+    <dd>Uses a custom Devanagari tokeniser and simplemma lemmatisation. No built-in NLTK stopwords — a custom stopword file is required for meaningful results.</dd>
+    <dt data-term="tamil ta experimental"><code>Tamil (TA) — Experimental</code></dt>
+    <dd>Uses a custom Tamil script tokeniser and dictionary-based stemming. No built-in NLTK stopwords — a custom stopword file is required.</dd>
+    <dt data-term="experimental"><code>Experimental</code></dt>
+    <dd>A label applied to English, Hindi, and Tamil support in anvay. Preprocessing pipelines are functional but have not been extensively validated. Use results with additional caution.</dd>
+  </dl>
+
   <!-- Parameters & Preprocessing -->
-  <h6 class="fw-semibold">Parameters & Preprocessing</h6>
+  <h6 class="fw-semibold">Parameters &amp; Preprocessing</h6>
   <dl class="mb-4 glossary-section">
     <dt data-term="stemming"><code>Stemming</code></dt>
-    <dd>Reduces inflected words to their root forms (e.g., <code>খাই</code> → <code>খা</code>).</dd>
+    <dd>Reduces inflected words to their root forms. Available for Bengali (dictionary-based) and Tamil (dictionary-based). E.g. Bengali: <code>খাচ্ছে</code> → <code>খা</code>.</dd>
+    <dt data-term="lemmatisation lemmatization"><code>Lemmatisation</code></dt>
+    <dd>Reduces words to their dictionary base form. Available for English (WordNet) and Hindi (simplemma, experimental).</dd>
     <dt data-term="stopwords"><code>Stopwords</code></dt>
-    <dd>Frequently used words (e.g., <code>এই</code>, <code>ছিল</code>) that are filtered out before modelling to reduce noise.</dd>
-    <dt data-term="use nltk stopwords"><code>Use NLTK Stopwords</code></dt>
-    <dd>Enables filtering based on the built-in Bengali stopword list from the NLTK library.</dd>
+    <dd>Frequently used words filtered out before modelling to reduce noise. NLTK provides lists for Bengali and English only. Hindi and Tamil require a custom file.</dd>
     <dt data-term="custom stopwords"><code>Custom Stopwords</code></dt>
-    <dd>A user-uploaded list of words to remove from the corpus. Must be a plain-text file, one word per line.</dd>
+    <dd>A user-uploaded list of words to remove from the corpus. Must be a plain-text UTF-8 file, one word per line. Essential for Hindi and Tamil.</dd>
     <dt data-term="number of topics"><code>Number of Topics</code></dt>
     <dd>The number of thematic clusters the model will generate. More topics = finer granularity.</dd>
     <dt data-term="remove common words"><code>Remove Common Words</code></dt>
-    <dd>An option to remove the top <em>N</em> most frequent words in the corpus.</dd>
+    <dd>An option to remove the top <em>N</em>% most frequent words in the corpus.</dd>
     <dt data-term="remove rare words"><code>Remove Rare Words</code></dt>
     <dd>An option to exclude words that appear in very few documents.</dd>
     <dt data-term="no_below"><code>no_below</code></dt>
@@ -1436,18 +1272,18 @@ contrast across topics.
     <dd>Enables parallel processing across CPU cores. Recommended for large corpora.</dd>
     <dt data-term="per-word topics"><code>Per-word Topics</code></dt>
     <dd>Stores topic assignments at the word level. Enables token-level highlighting and diagnostics.</dd>
-    <dt data-term="advanced options"><code>Advanced Options</code></dt>
-    <dd>Hidden interface elements that allow manual configuration of model behaviour.</dd>
     <dt data-term="utf-8"><code>UTF-8</code></dt>
-    <dd>The required text encoding for all uploaded files. Ensures Bengali characters are preserved.</dd>
+    <dd>The required text encoding for all uploaded files. Ensures characters from all supported scripts — Bengali, Devanagari, Tamil — are preserved correctly.</dd>
     <dt data-term="ocr noise"><code>OCR Noise</code></dt>
-    <dd>Unintended characters from scanning errors (e.g., <code>***</code>, <code>@#$%</code>).</dd>
+    <dd>Unintended characters from scanning errors (e.g., <code>***</code>, <code>@#$%</code>). Common in digitised texts in any language.</dd>
     <dt data-term="malformed token"><code>Malformed Token</code></dt>
-    <dd>Broken or partial words resulting from segmentation issues (e.g., <code>ন্</code>).</dd>
+    <dd>Broken or partial words resulting from segmentation issues. Can occur in Bengali, Hindi, or Tamil when zero-width characters or virama markers are mishandled.</dd>
+    <dt data-term="matra vowel sign"><code>Matra / Vowel Sign</code></dt>
+    <dd>A combining character in Indic scripts (e.g. Bengali া ি ী, Hindi ा ि ी, Tamil ா ி ீ) that attaches to consonants to form syllables. These are Unicode category Mn (non-spacing marks) and must be preserved in filenames and processing.</dd>
   </dl>
 
   <!-- Model Output -->
-  <h6 class="fw-semibold">Model Output & Interpretation</h6>
+  <h6 class="fw-semibold">Model Output &amp; Interpretation</h6>
   <dl class="mb-4 glossary-section">
     <dt data-term="topic prevalence"><code>Topic Prevalence</code></dt>
     <dd>How much a topic contributes to the corpus overall. Measured by total topic weight.</dd>
@@ -1460,7 +1296,7 @@ contrast across topics.
     <dt data-term="low-confidence topic"><code>Low-Confidence Topic</code></dt>
     <dd>A topic that appears noisy or incoherent. Not flagged — left to user interpretation.</dd>
     <dt data-term="low-confidence sentence"><code>Low-Confidence Sentence</code></dt>
-    <dd>A representative sentence that has little or no overlap with the top words of its topic. It is still shown to maintain coverage, but flagged as <span class="text-warning">⚠ Low Confidence</span> in the Report.</dd>
+    <dd>A representative sentence that has little or no overlap with the top words of its topic. Flagged as <span class="text-warning">⚠ Low Confidence</span> in the Report.</dd>
     <dt data-term="document-topic distribution"><code>Document–Topic Distribution</code></dt>
     <dd>A matrix showing how strongly each topic appears in each document.</dd>
     <dt data-term="topic coherence"><code>Topic Coherence</code></dt>
@@ -1505,121 +1341,181 @@ contrast across topics.
 
 </div>
 
-
-<script>
-      // Section toggler
-      document.querySelectorAll('#usageNav .nav-link').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('#usageNav .nav-link').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          document.querySelectorAll('.usage-pane').forEach(p => p.classList.remove('active'));
-          const target = document.querySelector(btn.dataset.target);
-          if (target) target.classList.add('active');
-        });
-      });
-  
-      // Language toggle
-      function toggleCorpusExample() {
-        const en = document.getElementById("corpus-example-en");
-        const bn = document.getElementById("corpus-example-bn");
-        const btn = document.getElementById("corpusToggle");
-        en.classList.toggle("d-none");
-        bn.classList.toggle("d-none");
-        const isBengaliShown = !bn.classList.contains("d-none");
-        btn.textContent = isBengaliShown ? "Switch to English" : "Switch to Bengali";
-      }
-    </script>
-
-<!-- Toggle Script -->
-<script>
-      document.querySelectorAll('#usageNav .nav-link').forEach(btn => {
-        btn.addEventListener('click', () => {
-          // Remove active class from all buttons
-          document.querySelectorAll('#usageNav .nav-link').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-  
-          // Hide all panes
-          document.querySelectorAll('.usage-pane').forEach(p => p.classList.remove('active'));
-          const target = document.querySelector(btn.dataset.target);
-          if (target) target.classList.add('active');
-        });
-      });
-    </script>
-
+</div><!-- /form-section -->
 
 
 {% include '_footer.html' %}
-  <!-- JS to Enable Tab Switching -->
-<script>
-    function toggleTab(tabId) {
-      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-      document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
-      document.getElementById(tabId).classList.add("active");
-      document.getElementById(tabId + "-btn").classList.add("active");
-    }
-  
-    // Set default tab on load
-    window.onload = () => {
-      toggleTab('intro');
-    };
-  </script>
-<script>
 
-    const sunIcon = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <circle cx="12" cy="12" r="5" stroke-width="1.5"/>
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 1v2m0 18v2m11-11h-2M3 12H1m17.07 4.93l-1.42-1.42M6.34 6.34L4.93 4.93m12.14 0l-1.41 1.41M6.34 17.66l-1.41 1.41"/>
-    </svg>
-    `;
-    
-    const moonIcon = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-    </svg>
-    `;
-    
-    function toggleTheme() {
-      const html = document.documentElement;
-      const next = html.getAttribute("data-theme") === "light" ? "dark" : "light";
-      html.setAttribute("data-theme", next);
-      localStorage.setItem("theme", next);
-      document.getElementById("themeToggleIconWrapper").innerHTML = next === "dark" ? sunIcon : moonIcon;
-    }
-    
-    window.addEventListener('DOMContentLoaded', () => {
-      const current = localStorage.getItem('theme') || 'light';
-      document.getElementById("themeToggleIconWrapper").innerHTML = current === 'dark' ? sunIcon : moonIcon;
-    });
-    
-        </script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+  /* ── Theme ── */
+  const SUN  = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="5" stroke-width="1.5"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 1v2m0 18v2m11-11h-2M3 12H1m17.07 4.93l-1.42-1.42M6.34 6.34L4.93 4.93m12.14 0l-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg>`;
+  const MOON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`;
+
+  function toggleTheme() {
+    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    document.getElementById('themeIcon').innerHTML = next === 'dark' ? SUN : MOON;
+  }
+
+  /* ── Tab switching ── */
+  function toggleTab(id) {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.getElementById(id + '-btn').classList.add('active');
+  }
+
+  /* ── Glossary search ── */
   function filterGlossary() {
-    const query = document.getElementById("glossarySearch").value.toLowerCase();
-    const sections = document.querySelectorAll(".glossary-section");
-  
-    sections.forEach(section => {
-      let hasVisible = false;
-      const entries = section.querySelectorAll("dt");
-  
-      entries.forEach(dt => {
+    const q = document.getElementById('glossarySearch').value.toLowerCase();
+    document.querySelectorAll('.glossary-section').forEach(sec => {
+      let visible = false;
+      sec.querySelectorAll('dt').forEach(dt => {
         const dd = dt.nextElementSibling;
-        const term = dt.getAttribute("data-term");
-  
-        if (!query || term.includes(query)) {
-          dt.style.display = "";
-          dd.style.display = "";
-          hasVisible = true;
-        } else {
-          dt.style.display = "none";
-          dd.style.display = "none";
-        }
+        const match = !q || dt.getAttribute('data-term').includes(q);
+        dt.style.display  = match ? '' : 'none';
+        if (dd) dd.style.display = match ? '' : 'none';
+        if (match) visible = true;
       });
-  
-      section.style.display = hasVisible ? "" : "none";
+      sec.style.display = visible ? '' : 'none';
     });
   }
-  </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  /* ── LDA Interactive Game ── */
+  let language = 'en';
+
+  const topicWords = {
+    Food:     { en: ['rice','fish','curry','spice','eat','cooking'],        bn: ['ভাত','মাছ','রান্না','খাই','খায়','রান্না করে'] },
+    Travel:   { en: ['train','station','ticket','journey','travel','goes'], bn: ['ট্রেন','স্টেশন','টিকিট','যাত্রা','যায়','যাত্রা করি'] },
+    Politics: { en: ['vote','law','minister','election','debate','says'],   bn: ['ভোট','আইন','মন্ত্রী','নির্বাচন','বিতর্ক','বলেন'] }
+  };
+  const stopwordsLDA = {
+    en: ['the','and','in','on','with','a','of','is','was','are','am','to','from','that','by'],
+    bn: ['এবং','ভিতরে','ওপর','সহ','একটি','এর','হয়','ছিল','আছে','থেকে','যে','কে','এই']
+  };
+  const pronounsLDA = { en: ['I','you','he','she','they','we'],  bn: ['আমি','তুমি','সে','তারা','আমরা'] };
+  const neutralLDA  = { en: ['walk','read','blue','chair','light'], bn: ['হাঁটি','পড়ি','নীল','চেয়ার','আলো'] };
+  const randomSents = {
+    en: [['I','eat','fish','with','rice'],['they','travel','by','train'],['the','minister','was','in','the','election']],
+    bn: [['আমি','ভাত','খাই'],['সে','মাছ','রান্না','করে'],['তারা','স্টেশন','থেকে','আসে']]
+  };
+
+  function getWordType(w) {
+    if (stopwordsLDA[language].includes(w)) return 'stopword';
+    for (const t in topicWords) if (topicWords[t][language].includes(w)) return 'topic';
+    return 'neutral';
+  }
+  function getWordTopic(w) {
+    for (const t in topicWords) if (topicWords[t][language].includes(w)) return t;
+    return null;
+  }
+  function renderWordPool() {
+    const pool = document.getElementById('word-pool');
+    if (!pool) return;
+    pool.innerHTML = '';
+    const all = [
+      ...stopwordsLDA[language], ...pronounsLDA[language],
+      ...Object.values(topicWords).flatMap(t => t[language]),
+      ...neutralLDA[language]
+    ];
+    all.forEach(w => {
+      const btn = document.createElement('button');
+      btn.textContent = w;
+      btn.className = 'lda-word-btn';
+      btn.onclick = () => addWord(w, btn);
+      pool.appendChild(btn);
+    });
+  }
+  function addWord(w, btn) {
+    const span = document.createElement('span');
+    const type = getWordType(w);
+    const topic = getWordTopic(w);
+    span.textContent = w + ' ';
+    if (type === 'stopword') {
+      span.className = 'mx-1 stopword';
+      span.title = 'Stopword – ignored by the model';
+    } else if (topic) {
+      span.className = 'mx-1 topic-word';
+      span.title = 'Contributes to the ' + topic + ' topic';
+    }
+    document.getElementById('sentence').appendChild(span);
+    if (btn) btn.disabled = true;
+  }
+  function resetSentence() {
+    document.getElementById('sentence').innerHTML = '';
+    document.getElementById('topic-output').innerHTML = '';
+    document.getElementById('word-output').innerHTML = '';
+    document.getElementById('lda-output').style.display = 'none';
+    document.querySelectorAll('.lda-word-btn').forEach(b => b.disabled = false);
+  }
+  function insertRandomSentence() {
+    resetSentence();
+    const s = randomSents[language][Math.floor(Math.random() * randomSents[language].length)];
+    s.forEach(w => {
+      const btn = Array.from(document.querySelectorAll('#word-pool .lda-word-btn')).find(b => b.textContent === w);
+      addWord(w, btn);
+    });
+    analyseSentence();
+  }
+  function analyseSentence() {
+    const words = Array.from(document.getElementById('sentence').children).map(el => el.textContent.trim());
+    const counts = { Food: 0, Travel: 0, Politics: 0 };
+    document.getElementById('topic-output').innerHTML = '';
+    document.getElementById('word-output').innerHTML = '';
+    words.forEach(w => {
+      const type = getWordType(w);
+      const topic = getWordTopic(w);
+      const li = document.createElement('li');
+      li.className = 'list-group-item';
+      if (type === 'stopword') {
+        li.innerHTML = '<strong>' + w + '</strong>: Stopword – ignored';
+      } else if (topic) {
+        counts[topic]++;
+        li.innerHTML = '<strong>' + w + '</strong>: contributes to <span class="text-accent">' + topic + '</span>';
+      } else {
+        li.innerHTML = '<strong>' + w + '</strong>: not linked to any topic';
+      }
+      document.getElementById('word-output').appendChild(li);
+    });
+    const total = Object.values(counts).reduce((a, b) => a + b, 0);
+    for (const t in counts) {
+      const li = document.createElement('li');
+      li.className = 'list-group-item';
+      const pct = total ? ((counts[t] / total) * 100).toFixed(1) : 0;
+      li.textContent = t + ': ' + pct + '% (' + counts[t] + ' word' + (counts[t] !== 1 ? 's' : '') + ')';
+      document.getElementById('topic-output').appendChild(li);
+    }
+    document.getElementById('lda-output').style.display = 'block';
+  }
+  function toggleLanguage() {
+    language = language === 'en' ? 'bn' : 'en';
+    document.getElementById('languageToggle').textContent = language === 'en' ? 'Switch to Bengali' : 'Switch to English';
+    resetSentence();
+    renderWordPool();
+  }
+
+  /* ── Init ── */
+  window.addEventListener('DOMContentLoaded', () => {
+    const t = localStorage.getItem('theme') || 'light';
+    document.getElementById('themeIcon').innerHTML = t === 'dark' ? SUN : MOON;
+
+    toggleTab('intro');
+
+    /* Usage sidebar */
+    document.querySelectorAll('#usageNav .nav-link').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#usageNav .nav-link').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.usage-pane').forEach(p => p.classList.remove('active'));
+        const target = document.querySelector(btn.dataset.target);
+        if (target) target.classList.add('active');
+      });
+    });
+
+    renderWordPool();
+  });
+</script>
 </body>
 </html>

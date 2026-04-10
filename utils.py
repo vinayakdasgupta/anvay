@@ -110,38 +110,12 @@ def generate_topic_labels(relevance_topics):
 def split_sentences_bengali(text):
     return [s.strip() for s in re.split(r"[।॥!?\.]", text) if s.strip()]
 
-def initialize_roots_and_suffixes(folder):
-    noun_roots = set(load_list_from_file(os.path.join(folder, 'noun_roots.txt')))
-    verb_roots = set(load_list_from_file(os.path.join(folder, 'verb_roots.txt')))
-    noun_suffixes = load_list_from_file(os.path.join(folder, 'noun_suffixes.txt'))
-    verb_suffixes = load_list_from_file(os.path.join(folder, 'verb_suffixes.txt'))
-    return noun_roots, verb_roots, noun_suffixes, verb_suffixes
 
 # Load word files
 def load_list_from_file(file_path):
     if not os.path.exists(file_path): return []
     with open(file_path, 'r', encoding='utf-8') as f:
         return [line.strip() for line in f if line.strip()]
-
-def get_word_pos(word, verb_suffixes):
-    return "VERB" if word.endswith(tuple(verb_suffixes)) else "NOUN"
-
-def remove_suffix(word, suffix):
-    return word[:-len(suffix)] if word.endswith(suffix) else word
-
-
-#def bengali_stemmer(word, noun_roots, verb_roots, noun_suffixes, verb_suffixes):
-#    wpos = get_word_pos(word, verb_suffixes)
-#    roots = noun_roots if wpos == "NOUN" else verb_roots
-#    suffixes = noun_suffixes if wpos == "NOUN" else verb_suffixes
-#    if word in roots: return word
-#    for suffix in suffixes:
-#        root = remove_suffix(word, suffix)
-#        if root in roots: return root
-#    return word
-
-
-
 
 # ------------------------------------------------------------------------------
 # Bengali Dictionary-Based Stemmer
@@ -183,7 +157,7 @@ with open(DICT_PATH, encoding='utf-8') as f:
     lemma_dict = json.load(f)
 
 
-def bengali_stemmer(word, noun_roots=None, verb_roots=None, noun_suffixes=None, verb_suffixes=None):
+def bengali_stemmer(word):
     """
     Dictionary-based stemmer: returns lemma from precompiled mapping.
     Arguments are preserved for backward compatibility.
@@ -191,8 +165,8 @@ def bengali_stemmer(word, noun_roots=None, verb_roots=None, noun_suffixes=None, 
     return lemma_dict.get(word, word)
 
 
-def stem_tokens(tokens_list, noun_roots, verb_roots, noun_suffixes, verb_suffixes):
-    return [[bengali_stemmer(token, noun_roots, verb_roots, noun_suffixes, verb_suffixes) for token in tokens]
+def stem_tokens(tokens_list):
+    return [[bengali_stemmer(token) for token in tokens]
             for tokens in tokens_list]
 
 #TESTS
