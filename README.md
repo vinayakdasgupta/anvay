@@ -87,7 +87,7 @@ Each topic now shows its most representative sentence with two sentences of cont
 
 <details open>
   <summary>Upload interface</summary>
-  <img src="docs/img/anvay_upload2.PNG" alt="Upload interface" width="500"/>
+  <img src="docs/img/anvay_upload.PNG" alt="Upload interface" width="500"/>
 </details>
 
 <details open>
