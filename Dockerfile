@@ -21,6 +21,11 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Download NLTK stopwords 
+RUN python -m nltk.downloader stopwords
+
+# RUN python -m nltk.downloader stopwords wordnet punkt
+
 # Copy the rest of the application code
 COPY . .
 
