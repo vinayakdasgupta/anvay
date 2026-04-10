@@ -3,11 +3,11 @@ import logging
 import os
 import csv
 import traceback
+import re
 from collections import Counter
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import HTTPException
 from flask import Flask, request, render_template, send_file, send_from_directory, jsonify, flash, redirect, url_for
-from contextlib import redirect_stdout
 import nltk
 from nltk.data import find
 import io
@@ -48,7 +48,7 @@ logging.basicConfig(
 
 # Flask app setup
 app = Flask(__name__)
-app.secret_key = 'anvay-secret-key'
+app.secret_key = os.environ.get('ANVAY_SECRET_KEY', 'anvay-dev-secret-change-in-production')
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB
 
 # Directories
@@ -76,20 +76,59 @@ app.config['RESULT_FOLDER'] = RESULT_FOLDER
 app.config['STOPWORDS_FOLDER'] = STOPWORDS_FOLDER
 
 # Download NLTK resources if needed
-try:
-    find('corpora/stopwords')
-    find('tokenizers/punkt')
-except LookupError:
-    nltk.download('stopwords')
-    nltk.download('punkt')
+def _ensure_nltk_resource(resource_path, download_name):
+    """
+    Download an NLTK resource if it is not already present.
+    Catches both LookupError (resource missing) and OSError (path not found),
+    since older NLTK versions raise OSError instead of LookupError for missing
+    resources. The download itself is also wrapped so that unavailable packages
+    (e.g. punkt_tab on NLTK < 3.9) fail silently rather than crashing startup.
+    """
+    try:
+        find(resource_path)
+    except (LookupError, OSError):
+        try:
+            nltk.download(download_name, quiet=True)
+        except Exception:
+            pass  # Non-fatal: package may not exist in this NLTK version
+
+_ensure_nltk_resource('corpora/stopwords', 'stopwords')
+_ensure_nltk_resource('tokenizers/punkt', 'punkt')
+_ensure_nltk_resource('tokenizers/punkt_tab', 'punkt_tab')  # NLTK 3.9+ only; silently skipped on older versions
+_ensure_nltk_resource('corpora/wordnet', 'wordnet')
 
 
-def process_txt_files(
-    file_paths, num_topics, iterations, passes, minimum_probability,
-    chunk_size, ngram, alpha, eta, per_word_topics,
-    no_below, no_above, normalisation, use_multicore,
-    percent, remove_stopwords, normalisation_order, custom_stopwords=None, language="bn"
-):
+def sanitize_filename(filename):
+    """
+    Unicode-safe filename sanitiser. Preserves Bengali (and all Unicode) filenames.
+
+    The original re.sub(r'[^\\w...]') approach strips Unicode combining marks
+    (category Mn) such as Bengali vowel signs/matras (া ি ী ু ূ ে ো etc.),
+    hasanta (্), and anusvara (ং). This causes Bengali filenames to appear as bare
+    consonant skeletons in graphs and reports. Fix: use a denylist of genuinely
+    dangerous filename characters instead of an allowlist.
+    """
+    # Take basename only — prevents path traversal
+    name = os.path.basename(filename)
+    # Strip only characters that are genuinely dangerous in filenames:
+    # null bytes, path separators, and shell metacharacters.
+    # All Unicode letters, combining marks (vowel signs, matras), digits are kept.
+    name = re.sub(r'[\x00/\\:*?"<>|]', '_', name)
+    # Collapse runs of underscores/spaces
+    name = re.sub(r'[\s_]+', '_', name).strip('_')
+    return name or 'upload'
+
+
+def process_txt_files(file_paths, config, custom_stopwords=None):
+    """
+    Run preprocessing → LDA training → postprocessing.
+
+    Parameters
+    ----------
+    file_paths : list[str]
+    config     : AnalysisConfig
+    custom_stopwords : set | None
+    """
     
     # Capture gensim training logs for display
 
@@ -101,43 +140,42 @@ def process_txt_files(
 
     all_tokens, raw_texts, doc_names = preprocess_documents(
         file_paths=file_paths,
-        remove_stopwords=remove_stopwords,
+        remove_stopwords=config.remove_stopwords,
         custom_stopwords=custom_stopwords,
-        normalisation=normalisation,
-        normalisation_order=normalisation_order,
-        percent=percent,
-        ngram=ngram,
-        language=language
+        normalisation=config.normalisation,
+        normalisation_order=config.normalisation_order,
+        percent=config.percent_most_common,
+        ngram=config.ngram,
+        language=config.language
     )
 
 
-    # Create dictionary and corpus
     id2word = corpora.Dictionary(all_tokens)
-    id2word.filter_extremes(no_below=no_below, no_above=no_above, keep_n=None)
+    id2word.filter_extremes(no_below=config.no_below, no_above=config.no_above, keep_n=None)
     if len(id2word) == 0:
         raise ValueError("Dictionary is empty after filtering. Adjust no_below/no_above.")
     corpus = [id2word.doc2bow(tok) for tok in all_tokens]
-   
+
     lda_model = train_lda_model(
-    corpus=corpus,
-    id2word=id2word,
-    num_topics=num_topics,
-    iterations=iterations,
-    passes=passes,
-    chunk_size=chunk_size,
-    alpha=alpha,
-    eta=eta,
-    per_word_topics=per_word_topics,
-    minimum_probability=minimum_probability,
-    use_multicore=use_multicore,
-    log_stream=log_stream
+        corpus=corpus,
+        id2word=id2word,
+        num_topics=config.num_topics,
+        iterations=config.iterations,
+        passes=config.passes,
+        chunk_size=config.chunk_size,
+        alpha=config.alpha,
+        eta=config.eta,
+        per_word_topics=config.per_word_topics,
+        minimum_probability=config.minimum_probability,
+        use_multicore=config.use_multicore,
+        log_stream=log_stream
     )
 
 
     overview_stats, top_tokens, top_token_text = compute_corpus_stats(
         all_tokens,
-        normalisation_order
-)
+        config.normalisation_order
+    )
 
 
     # Semantic postprocessing
@@ -147,13 +185,13 @@ def process_txt_files(
         id2word=id2word,
         raw_texts=raw_texts,
         doc_names=doc_names,
-        language=language
+        language=config.language
     )
 
     # Export topics
     txt_path, csv_path = export_topics(
         lda_model=lda_model,
-        num_topics=num_topics,
+        num_topics=config.num_topics,
         result_folder=RESULT_FOLDER
     )
 
@@ -215,16 +253,10 @@ def process_files():
     file_paths = []
     
     for f in files:
-        try:
-        # sanitize the original filename (keeping Unicode characters)
-            safe_name = secure_filename(f.filename, allow_unicode=True)
-        except TypeError:
-            safe_name = os.path.basename(f.filename).replace(os.sep, "_")
-        # build the absolute path
+        safe_name = sanitize_filename(f.filename)
         path = os.path.join(app.config['UPLOAD_FOLDER'], safe_name)
-        # save to disk
         f.save(path)
-        file_paths.append(path) 
+        file_paths.append(path)
 
     # Hyperparameters
     from config.analysis_config import build_analysis_config
@@ -263,27 +295,7 @@ def process_files():
             topic_labels,
             representative_sents,
             training_log
-        ) = process_txt_files(
-            file_paths,
-            config.num_topics,
-            config.iterations,
-            config.passes,
-            config.minimum_probability,
-            config.chunk_size,
-            config.ngram,
-            config.alpha,
-            config.eta,
-            config.per_word_topics,
-            config.no_below,
-            config.no_above,
-            config.normalisation,
-            config.use_multicore,
-            config.percent_most_common,
-            config.remove_stopwords,
-            config.normalisation_order,
-            custom_stopwords_set,
-            config.language
-        )
+        ) = process_txt_files(file_paths, config, custom_stopwords_set)
 
     except ValueError as ve:
         app.logger.warning(f"User-level processing error: {ve}")
@@ -318,15 +330,15 @@ def process_files():
     topic_highlights = None  # or call generate_topic_highlights if you prefer
 
     topic_words = {
-    i: [word for word, _ in lda_model.show_topic(i, topn=10)]
-    for i in range(config.num_topics)
+        i: [word for word, _ in lda_model.show_topic(i, topn=10)]
+        for i in range(config.num_topics)
     }
     doc_topic_matrix = {
-    doc_names[i]: [
-        dict(lda_model.get_document_topics(corpus[i])).get(tid, 0.0)
-        for tid in range(config.num_topics)
-    ]
-    for i in range(min(25, len(corpus)))  # Limit for display
+        doc_names[i]: [
+            dict(lda_model.get_document_topics(corpus[i])).get(tid, 0.0)
+            for tid in range(config.num_topics)
+        ]
+        for i in range(len(corpus))
     }
 
     # Save topic_words to CSV and TXT
@@ -398,18 +410,6 @@ def process_files():
         logging.error("Template rendering failed:\n" + traceback.format_exc())
         return f"Template rendering error: {e}", 500
 
-def capture_lda_training_log():
-    buffer = io.StringIO()
-    handler = logging.StreamHandler(buffer)
-    handler.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(message)s')
-    handler.setFormatter(formatter)
-
-    lda_logger = logging.getLogger('gensim')
-    lda_logger.setLevel(logging.INFO)
-    lda_logger.addHandler(handler)
-
-    return buffer, handler, lda_logger
 
 @app.route('/results/<folder>/<filename>')
 def view_result_file(folder, filename):

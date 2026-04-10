@@ -6,42 +6,28 @@
   <title>Upload – anvay</title>
   <link rel="icon" type="image/png" href="/static/logo.png">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/anvay.css') }}">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Anton+SC&display=swap" rel="stylesheet">
-
-
-
-  
   <script>
-    function toggleTheme() {
-      const html = document.documentElement;
-      const next = html.getAttribute("data-theme") === "light" ? "dark" : "light";
-      html.setAttribute("data-theme", next);
-      localStorage.setItem("theme", next);
-    }
-
-    window.onload = () => {
-      const saved = localStorage.getItem("theme") || "light";
-      document.documentElement.setAttribute("data-theme", saved);
-    };
+    (function() {
+      const t = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
   </script>
 </head>
 <body>
 
   <nav>
     <div class="nav-logo">
-      <a href="/"><span></span> anvay</a>
+      <a href="/"><span class="dot"></span> anvay</a>
     </div>
     <div class="nav-links">
       <a href="/">Upload</a>
       <a href="/about">About</a>
       <a href="/docs">Documentation</a>
       <a href="/contact">Contact</a>
-      <button class="toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
-        <span id="themeToggleIconWrapper"></span>
+      <button class="toggle-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+        <span id="themeIcon"></span>
       </button>
     </div>
   </nav>
@@ -49,7 +35,7 @@
   <div class="form-section">
     <h2 class="upload-heading">Explore Topics in Your Texts</h2>
     <p class="upload-subheading">Begin by uploading your text files. Each will be treated as a separate document.</p>
-    <!-- Flash messages -->
+
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="mb-3">
@@ -62,35 +48,33 @@
         </div>
       {% endif %}
     {% endwith %}
-    <form action="/process" method="post" enctype="multipart/form-data" class="g-3">
+
+    <form action="/process" method="post" enctype="multipart/form-data">
       <div class="row">
-  
+
         <div class="col-md-12">
           <label for="files" class="form-label d-flex justify-content-between align-items-center">
             Upload .txt Files
-            <i class="bi bi-info-circle ms-2 text-muted"
-              data-bs-toggle="tooltip"
-              title="Upload one or more plain text files. Max 800 files / 100MB. Each file is treated as a separate document. Only .txt format is supported."></i>
+            <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+               title="Upload one or more plain text files. Max 800 files / 100 MB. Only .txt format is supported."></i>
           </label>
           <input type="file" class="form-control" name="files[]" id="files" multiple required>
         </div>
-  
-        <div class="col-md-6">
+
+        <div class="col-md-4">
           <label for="num_topics" class="form-label d-flex justify-content-between align-items-center">
             Number of Topics
-            <i class="bi bi-info-circle ms-2 text-muted"
-              data-bs-toggle="tooltip"
-              title="Set the number of thematic topics to extract. Typical range is 5 to 50."></i>
+            <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+               title="Number of thematic topics to extract. Typical range: 5–50."></i>
           </label>
           <input type="number" class="form-control" name="num_topics" id="num_topics" value="10" min="1" max="100">
         </div>
 
-                <div class="col-md-6">
-          <label for="remove_stopwords" class="form-label d-flex justify-content-between align-items-center">
+        <div class="col-md-4">
+          <label for="remove_nltk_stopwords" class="form-label d-flex justify-content-between align-items-center">
             Remove NLTK Stopwords
-            <i class="bi bi-info-circle ms-2 text-muted"
-              data-bs-toggle="tooltip"
-              title="Removes common language-specific stopwords to improve topic clarity."></i>
+            <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+               title="Remove common language-specific stopwords to improve topic clarity."></i>
           </label>
           <select name="remove_nltk_stopwords" class="form-select" id="remove_nltk_stopwords">
             <option value="false">No</option>
@@ -98,96 +82,127 @@
           </select>
         </div>
 
+        <div class="col-md-4">
+          <label for="language" class="form-label d-flex justify-content-between align-items-center">
+            Language
+            <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+              title="Select the primary language of your documents."></i>
+          </label>
+          <select class="form-select" name="language" id="language">
+            <option value="bn" selected>Bengali</option>
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="ta">Tamil</option>
+          </select>
+          <div class="form-text">
+          Select the primary language of the uploaded documents.
+          </div>
+          </div>
 
-        <div class="col-md-6 mb-3">
-        <label for="language" class="form-label">Language</label>
-        <select class="form-select" name="language" id="language">
-        <option value="bn" selected>Bengali</option>
-        <option value="en">English</option>
-        <option value="hi">Hindi</option>
-        <option value="ta">Tamil</option>
-        </select>
-        <div class="form-text">
-        Select the primary language of the uploaded documents.
-        </div>
-        </div>
-  
-        <div class="col-12 text-center">
-          <a href="#" class="advanced-toggle text-accent fs-4 d-inline-block"
-            data-bs-toggle="collapse" data-bs-target="#advancedOptions"
-            aria-expanded="false" aria-controls="advancedOptions"
-            data-toggle-text="▴">
-            <span class="toggle-label accent-hover">▾</span>
+        <!-- Advanced Toggle -->
+        <div class="col-12 mt-1 mb-1">
+          <a href="#" class="advanced-toggle"
+             data-bs-toggle="collapse" data-bs-target="#advancedOptions"
+             aria-expanded="false" aria-controls="advancedOptions">
+            <span class="toggle-label" id="advArrow">▾</span>
+            Advanced Options
           </a>
         </div>
 
-        
-  
         <!-- Advanced Options -->
-        <div class="collapse mt-4" id="advancedOptions">
-          <div class="col-12 mb-3">
-            <small class="text-muted ps-1">Advanced Options</small>
-          </div>
-          <div class="row pt-3 pb-1 border-top border-1 border-light-subtle">
+        <div class="collapse col-12" id="advancedOptions">
+          <div class="row pt-3 border-top" style="border-color: var(--border) !important;">
 
-            
-  
+            <div class="col-12 mb-2">
+</div>
+
             <div class="col-md-6">
               <label for="alpha" class="form-label d-flex justify-content-between align-items-center">
                 Alpha (doc-topic prior)
-                <i class="bi bi-info-circle ms-2 text-muted"
-                  data-bs-toggle="tooltip"
-                  title="Controls how many topics are assigned to each document. Lower = fewer topics. Use ‘auto’ to let the model decide."></i>
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Controls how many topics per document. Lower = fewer topics. Use 'symmetric' to let the model decide."></i>
               </label>
               <input type="text" class="form-control" name="alpha" id="alpha" value="symmetric">
             </div>
-  
+
             <div class="col-md-6">
               <label for="eta" class="form-label d-flex justify-content-between align-items-center">
                 Eta (topic-word prior)
-                <i class="bi bi-info-circle ms-2 text-muted"
-                  data-bs-toggle="tooltip"
-                  title="Controls how many words are used per topic. Smaller values result in more focused topics."></i>
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Controls how many words per topic. Smaller = more focused topics."></i>
               </label>
               <input type="text" class="form-control" name="eta" id="eta" value="symmetric">
             </div>
-  
-            <div class="col-md-6">
+
+            <div class="col-md-4">
               <label for="passes" class="form-label d-flex justify-content-between align-items-center">
                 Passes
-                <i class="bi bi-info-circle ms-2 text-muted"
-                  data-bs-toggle="tooltip"
-                  title="Number of full passes over the dataset. Higher values improve quality, but increase time."></i>
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Full passes over the dataset. Higher = better quality, slower training."></i>
               </label>
               <input type="number" class="form-control" name="passes" id="passes" value="10" min="1" max="30">
             </div>
-  
-            <div class="col-md-6">
+
+            <div class="col-md-4">
               <label for="iterations" class="form-label d-flex justify-content-between align-items-center">
                 Iterations
-                <i class="bi bi-info-circle ms-2 text-muted"
-                  data-bs-toggle="tooltip"
-                  title="Number of optimization steps per pass. Higher values increase model stability."></i>
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Optimisation steps per pass. Higher = more stable model."></i>
               </label>
               <input type="number" class="form-control" name="iterations" id="iterations" value="40" min="1" max="100">
             </div>
-  
-            <div class="col-md-6">
+
+            <div class="col-md-4">
               <label for="chunk_size" class="form-label d-flex justify-content-between align-items-center">
                 Chunk Size
-                <i class="bi bi-info-circle ms-2 text-muted"
-                  data-bs-toggle="tooltip"
-                  title="Documents processed together per batch. Larger chunks are faster but use more memory."></i>
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Documents per batch. Larger = faster but more memory."></i>
               </label>
               <input type="number" class="form-control" name="chunk_size" id="chunk_size" value="200" min="10" max="1000">
             </div>
-  
-            <div class="col-md-6">
+
+            <div class="col-12 mt-2 mb-2">
+</div>
+
+            <div class="col-md-4">
+              <label for="no_below" class="form-label d-flex justify-content-between align-items-center">
+                Filter: No Below
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Remove words appearing in fewer than N documents."></i>
+              </label>
+              <input type="range" class="form-range" name="no_below" id="no_below" min="1" max="10" value="1"
+                     oninput="document.getElementById('noBelowValue').textContent = this.value">
+              <div class="form-text">Current: <span id="noBelowValue">1</span></div>
+            </div>
+
+            <div class="col-md-4">
+              <label for="no_above" class="form-label d-flex justify-content-between align-items-center">
+                Filter: No Above
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Remove words appearing in more than this fraction of documents."></i>
+              </label>
+              <input type="range" class="form-range" name="no_above" id="no_above" min="0.1" max="1.0" step="0.05" value="1"
+                     oninput="document.getElementById('noAboveValue').textContent = this.value">
+              <div class="form-text">Current: <span id="noAboveValue">1</span></div>
+            </div>
+
+            <div class="col-md-4">
+              <label for="percent_most_common" class="form-label d-flex justify-content-between align-items-center">
+                Top Words to Remove (%)
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Remove the top N% most frequent words across the corpus."></i>
+              </label>
+              <input type="number" class="form-control" id="percent_most_common" name="percent_most_common" value="0" min="0" max="100">
+            </div>
+
+            <div class="col-12 mt-2 mb-2">
+</div>
+
+            <div class="col-md-4">
               <label for="ngram" class="form-label d-flex justify-content-between align-items-center">
                 N-gram Model
-                <i class="bi bi-info-circle ms-2 text-muted"
-                  data-bs-toggle="tooltip"
-                  title="Choose how tokens are grouped: individual words, or two/three-word phrases."></i>
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Individual words, or two/three-word phrases."></i>
               </label>
               <select name="ngram" class="form-select" id="ngram">
                 <option value="unigram">Unigram</option>
@@ -195,363 +210,179 @@
                 <option value="trigram">Trigram</option>
               </select>
             </div>
-  
-            <div class="col-md-6">
+
+            <div class="col-md-4">
+              <label for="normalisation" class="form-label d-flex justify-content-between align-items-center">
+                Normalisation
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Language-specific lexical normalisation."></i>
+              </label>
+              <select name="normalisation" class="form-select" id="normalisation">
+                <option value="none">None</option>
+                <option value="stem">Stemming</option>
+                <option value="lemma">Lemmatization</option>
+              </select>
+            </div>
+
+            <div class="col-md-4 d-none" id="stemmingOrderWrapper">
+              <label class="form-label d-flex justify-content-between align-items-center">
+                Stemming Order
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Whether stemming is applied before or after stopword filtering."></i>
+              </label>
+              <select name="normalisation_order" class="form-select">
+                <option value="stem_first" selected>Stem → Filter</option>
+                <option value="filter_first">Filter → Stem</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
               <label for="per_word_topics" class="form-label d-flex justify-content-between align-items-center">
                 Per-Word Topics
-                <i class="bi bi-info-circle ms-2 text-muted"
-                  data-bs-toggle="tooltip"
-                  title="If enabled, assigns topic probabilities to each word in the corpus. Useful for debugging."></i>
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Assign topic probabilities to each word. Useful for debugging."></i>
               </label>
               <select name="per_word_topics" class="form-select" id="per_word_topics">
                 <option value="false" selected>No</option>
                 <option value="true">Yes</option>
               </select>
             </div>
-  
-            <div class="col-md-6">
-              <label for="no_below" class="form-label d-flex justify-content-between align-items-center">
-                Filter: No Below
-                <i class="bi bi-info-circle ms-2 text-muted"
-                  data-bs-toggle="tooltip"
-                  title="Removes words that appear in fewer than this many documents. Useful to exclude rare noise."></i>
-              </label>
-              <input type="range" class="form-range" name="no_below" id="no_below" min="1" max="10" value="1"
-                    oninput="document.getElementById('noBelowValue').innerText = this.value">
-              <div class="form-text">Current: <span id="noBelowValue">1</span></div>
-            </div>
-  
-            <div class="col-md-6">
-              <label for="no_above" class="form-label d-flex justify-content-between align-items-center">
-                Filter: No Above
-                <i class="bi bi-info-circle ms-2 text-muted"
-                  data-bs-toggle="tooltip"
-                  title="Removes words that appear in more than this fraction of documents. Helps filter generic words."></i>
-              </label>
-              <input type="range" class="form-range" name="no_above" id="no_above" min="0.1" max="1.0" step="0.05" value="1"
-                    oninput="document.getElementById('noAboveValue').innerText = this.value">
-              <div class="form-text">Current: <span id="noAboveValue">1</span></div>
-            </div>
-  
-            <div class="col-md-6">
-              <label for="percent_most_common" class="form-label d-flex justify-content-between align-items-center">
-                Top Words to Remove (%)
-                <i class="bi bi-info-circle ms-2 text-muted"
-                  data-bs-toggle="tooltip"
-                  title="Removes the top N% most frequent words across the corpus, regardless of context."></i>
-              </label>
-              <input type="number" class="form-control" id="percent_most_common" name="percent_most_common" value="0" min="0" max="100">
-            </div>
-  
-            <div class="col-md-6">
-              <label for="normalisation" class="form-label d-flex justify-content-between align-items-center">
-                Normalisation
-                <i class="bi bi-info-circle ms-2 text-muted"
-                  data-bs-toggle="tooltip"
-                  title="Applies language-specific lexical normalisation."></i>
-              </label>
-              <select name="normalisation" class="form-select" id="normalisation">
-              <option value="none">None</option>
 
-              <!-- Bengali -->
-              <option value="stem">Stemming</option>
-
-              <!-- English -->
-              <option value="lemma">Lemmatization</option>
-              </select>
-
-            </div>
-
-            <div class="col-md-6 d-none" id="stemmingOrderWrapper">
-              <label class="form-label d-flex justify-content-between align-items-center">Stemming Order<i class="bi bi-info-circle ms-2 text-muted" data-bs-toggle="tooltip" title="Choose whether stemming is applied before or after stopword filtering."></i>
-              </label>
-
-              <select name="normalisation_order" class="form-select">
-                <option value="stem_first" selected>Stem → Filter</option>
-                <option value="filter_first">Filter → Stem</option>
-              </select>
-            </div>
-  
-            <div class="col-md-6">
+            <div class="col-md-4">
               <label for="use_multicore" class="form-label d-flex justify-content-between align-items-center">
                 Multicore Processing
-                <i class="bi bi-info-circle ms-2 text-muted"
-                  data-bs-toggle="tooltip"
-                  title="Enables use of multiple CPU cores for training. Improves speed for large corpora."></i>
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Use multiple CPU cores. Recommended for large corpora."></i>
               </label>
               <select name="use_multicore" class="form-select" id="use_multicore">
                 <option value="false" selected>No</option>
                 <option value="true">Yes</option>
               </select>
             </div>
-  
-            <div class="col-md-12">
+
+            <div class="col-md-4">
               <label for="custom_stopwords" class="form-label d-flex justify-content-between align-items-center">
                 Upload Custom Stopwords
-                <i class="bi bi-info-circle ms-2 text-muted"
-                  data-bs-toggle="tooltip"
-                  title="Optional. Upload a .txt file with one stopword per line to customize filtering."></i>
+                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
+                   title="Optional .txt file with one stopword per line."></i>
               </label>
               <input type="file" class="form-control" name="custom_stopwords" id="custom_stopwords">
             </div>
-  
+
           </div>
         </div>
-  
-        <!-- Submit Button -->
+
+        <!-- Submit -->
         <div class="col-12 text-center mt-4">
-          <button type="submit" class="btn btn-accent btn-lg px-5">Analyze Topics</button>
+          <button type="submit" class="btn-accent btn-lg px-5">
+            Analyze Topics
+          </button>
         </div>
-  
+
       </div>
     </form>
   </div>
-  
+
+  <!-- Loading Overlay -->
   <div id="loading-overlay">
-    <div class="spinner" aria-label="Loading…"></div>
+    <div class="spinner"></div>
+    <span class="loading-label">Processing…</span>
   </div>
 
   {% include '_footer.html' %}
 
-  
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    document.querySelectorAll('.advanced-toggle').forEach(toggle => {
-      const label = toggle.querySelector('.toggle-label');
-      const alt = toggle.getAttribute('data-toggle-text');
-      const original = label.textContent;
-      const target = document.querySelector(toggle.getAttribute('data-bs-target'));
-  
-      target.addEventListener('shown.bs.collapse', () => {
-        label.textContent = alt;
-      });
-  
-      target.addEventListener('hidden.bs.collapse', () => {
-        label.textContent = original;
-      });
+    /* ── Theme ── */
+    const SUN = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="5" stroke-width="1.5"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 1v2m0 18v2m11-11h-2M3 12H1m17.07 4.93l-1.42-1.42M6.34 6.34L4.93 4.93m12.14 0l-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg>`;
+    const MOON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`;
+    function toggleTheme() {
+      const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      document.getElementById('themeIcon').innerHTML = next === 'dark' ? SUN : MOON;
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      const t = localStorage.getItem('theme') || 'light';
+      document.getElementById('themeIcon').innerHTML = t === 'dark' ? SUN : MOON;
     });
-  </script>
-  
-  
-  <script>
-    document.querySelectorAll('input[type="range"]').forEach(slider => {
-      const updateFill = el => {
-        const percent = 100 * (el.value - el.min) / (el.max - el.min);
-        const baseColor = getComputedStyle(el).getPropertyValue('--bg-color') || '#ddd';
-        const accent = getComputedStyle(el).getPropertyValue('--accent') || '#0D85D8';
-        el.style.backgroundImage = `linear-gradient(to right, ${accent} 0%, ${accent} ${percent}%, ${baseColor} ${percent}%, ${baseColor} 100%)`;
+
+    /* ── Advanced toggle arrow ── */
+    const adv = document.getElementById('advancedOptions');
+    const arrow = document.getElementById('advArrow');
+    adv.addEventListener('shown.bs.collapse', () => arrow.textContent = '▴');
+    adv.addEventListener('hidden.bs.collapse', () => arrow.textContent = '▾');
+
+    /* ── Tooltips ── */
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
+
+    /* ── Range fill ── */
+    document.querySelectorAll('input[type="range"]').forEach(el => {
+      const fill = () => {
+        const pct = 100 * (el.value - el.min) / (el.max - el.min);
+        el.style.background = `linear-gradient(to right, var(--accent) ${pct}%, var(--border-strong) ${pct}%)`;
       };
-      updateFill(slider); // on load
-      slider.addEventListener('input', e => updateFill(e.target));
+      fill(); el.addEventListener('input', fill);
     });
-  </script>
-  <script>
-    const enforceLimits = [
-      { id: 'num_topics', max: 100, msg: 'Topic count capped at 100 for performance.' },
-      { id: 'iterations', max: 100, msg: 'Iterations capped at 100 to prevent overfitting.' },
-      { id: 'chunk_size', max: 1000, msg: 'Chunk size capped at 1000 to avoid memory issues.' },
-    ];
-  
-    enforceLimits.forEach(({ id, max, msg }) => {
-      const input = document.getElementById(id);
-      const feedback = document.createElement('div');
-      feedback.className = 'form-text text-danger';
-      feedback.style.display = 'none';
-      input.parentNode.appendChild(feedback);
-  
-      input.addEventListener('input', () => {
-        const val = parseInt(input.value, 10);
-        if (val > max) {
-          input.value = max;
-          feedback.innerText = msg;
-          feedback.style.display = 'block';
-          setTimeout(() => feedback.style.display = 'none', 3000);
+
+    /* ── Caps ── */
+    [{ id:'num_topics',max:100 },{ id:'iterations',max:100 },{ id:'chunk_size',max:1000 }].forEach(({id,max}) => {
+      document.getElementById(id)?.addEventListener('input', function() {
+        if (parseInt(this.value) > max) this.value = max;
+      });
+    });
+
+    /* ── File validation ── */
+    document.getElementById('files').addEventListener('change', function() {
+      let total = 0;
+      for (const f of this.files) total += f.size;
+      if (this.files.length > 800) { alert('Max 800 files.'); this.value = ''; return; }
+      if (total > 100*1024*1024) { alert('Total upload exceeds 100 MB.'); this.value = ''; }
+    });
+
+    /* ── Loading overlay ── */
+    document.querySelector("form[action='/process']").addEventListener('submit', () => {
+      document.getElementById('loading-overlay').classList.add('active');
+      document.getElementById('loading-overlay').style.display = 'flex';
+    });
+
+    /* ── Language-aware normalisation UI ── */
+    document.addEventListener('DOMContentLoaded', () => {
+      const lang = document.getElementById('language');
+      const norm = document.getElementById('normalisation');
+      const orderWrap = document.getElementById('stemmingOrderWrapper');
+      const orderSel = orderWrap.querySelector('select');
+      const stopSel = document.getElementById('remove_nltk_stopwords');
+      const stemOpt = norm.querySelector('[value="stem"]');
+      const lemmaOpt = norm.querySelector('[value="lemma"]');
+
+      function update() {
+        const l = lang.value, n = norm.value;
+        if (l === 'bn') {
+          stemOpt.disabled = false; lemmaOpt.disabled = true; stopSel.disabled = false;
+          if (n === 'lemma') norm.value = 'stem';
+          if (norm.value === 'stem') { orderWrap.classList.remove('d-none'); orderSel.disabled = false; }
+          else { orderWrap.classList.add('d-none'); orderSel.disabled = true; }
+        } else if (l === 'en') {
+          stemOpt.disabled = true; lemmaOpt.disabled = false; stopSel.disabled = false;
+          if (n === 'stem') norm.value = 'lemma';
+          orderWrap.classList.add('d-none'); orderSel.disabled = true;
+        } else if (l === 'hi') {
+          stemOpt.disabled = true; lemmaOpt.disabled = false;
+          if (n === 'stem') norm.value = 'lemma';
+          stopSel.value = 'false'; stopSel.disabled = true;
+          orderWrap.classList.add('d-none'); orderSel.disabled = true;
+        } else if (l === 'ta') {
+          stemOpt.disabled = false; lemmaOpt.disabled = true;
+          if (n === 'lemma') norm.value = 'stem';
+          stopSel.value = 'false'; stopSel.disabled = true;
+          orderWrap.classList.remove('d-none'); orderSel.disabled = false;
         }
-      });
+      }
+      update();
+      lang.addEventListener('change', update);
+      norm.addEventListener('change', update);
     });
   </script>
-  <script>
-    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
-      new bootstrap.Tooltip(el);
-    });
-  </script>
-  
-  
-  
-  <script>
-
-const sunIcon = `
-<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-<circle cx="12" cy="12" r="5" stroke-width="1.5"/>
-<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 1v2m0 18v2m11-11h-2M3 12H1m17.07 4.93l-1.42-1.42M6.34 6.34L4.93 4.93m12.14 0l-1.41 1.41M6.34 17.66l-1.41 1.41"/>
-</svg>
-`;
-
-const moonIcon = `
-<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-</svg>
-`;
-
-function toggleTheme() {
-const html = document.documentElement;
-const next = html.getAttribute("data-theme") === "light" ? "dark" : "light";
-html.setAttribute("data-theme", next);
-localStorage.setItem("theme", next);
-document.getElementById("themeToggleIconWrapper").innerHTML = next === "dark" ? sunIcon : moonIcon;
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-const current = localStorage.getItem('theme') || 'light';
-document.getElementById("themeToggleIconWrapper").innerHTML = current === 'dark' ? sunIcon : moonIcon;
-});
-
-  </script>
-
-<script>
-document.getElementById('files').addEventListener('change', function () {
-  const maxFiles = 800;
-  const maxBytes = 100 * 1024 * 1024; // 100 MB
-
-  let totalSize = 0;
-  for (const file of this.files) {
-    totalSize += file.size;
-  }
-
-  if (this.files.length > maxFiles) {
-    alert(
-      `You selected ${this.files.length} files.\n` +
-      `The maximum allowed is ${maxFiles}.`
-    );
-    this.value = "";
-    return;
-  }
-
-  if (totalSize > maxBytes) {
-    const mb = (totalSize / (1024 * 1024)).toFixed(1);
-    alert(
-      `Total upload size is ${mb} MB.\n` +
-      `The maximum allowed is 100 MB.`
-    );
-    this.value = "";
-    return;
-  }
-});
-</script>
-
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.querySelector("form[action='/process']");
-    const overlay = document.getElementById("loading-overlay");
-
-    if (form) {
-      form.addEventListener("submit", () => {
-        overlay.style.display = "flex";
-      });
-    }
-  });
-</script>
-
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const languageSelect = document.getElementById("language");
-  const normSelect = document.getElementById("normalisation");
-  const orderWrapper = document.getElementById("stemmingOrderWrapper");
-  const orderSelect = orderWrapper.querySelector("select");
-  const stopwordSelect = document.getElementById("remove_nltk_stopwords");
-
-  const stemOption = normSelect.querySelector('option[value="stem"]');
-  const lemmaOption = normSelect.querySelector('option[value="lemma"]');
-
-function updateNormalisationUI() {
-  const language = languageSelect.value;
-  const norm = normSelect.value;
-
-  if (language === "bn") {
-    // Bengali: stemming only, NLTK stopwords allowed
-    stemOption.disabled = false;
-    lemmaOption.disabled = true;
-
-    stopwordSelect.disabled = false;
-
-    if (norm === "lemma") {
-      normSelect.value = "stem";
-    }
-
-    if (normSelect.value === "stem") {
-      orderWrapper.classList.remove("d-none");
-      orderSelect.disabled = false;
-    } else {
-      orderWrapper.classList.add("d-none");
-      orderSelect.disabled = true;
-    }
-
-  } else if (language === "en") {
-    // English: lemmatization only, NLTK stopwords allowed
-    stemOption.disabled = true;
-    lemmaOption.disabled = false;
-
-    stopwordSelect.disabled = false;
-
-    if (norm === "stem") {
-      normSelect.value = "lemma";
-    }
-
-    orderWrapper.classList.add("d-none");
-    orderSelect.disabled = true;
-
-  } else if (language === "hi") {
-    // Hindi: lemmatization only, NO NLTK stopwords
-    stemOption.disabled = true;
-    lemmaOption.disabled = false;
-
-    if (norm === "stem") {
-      normSelect.value = "lemma";
-    }
-
-    stopwordSelect.value = "false";
-    stopwordSelect.disabled = true;
-
-    orderWrapper.classList.add("d-none");
-    orderSelect.disabled = true;
-  }
-
- else if (language === "ta") {
-  // Tamil: stemming only, stemming order allowed, NO NLTK stopwords
-  stemOption.disabled = false;
-  lemmaOption.disabled = true;
-
-  if (norm === "lemma") {
-    normSelect.value = "stem";
-  }
-
-  stopwordSelect.value = "false";
-  stopwordSelect.disabled = true;
-
-  // Allow stemming order selection
-  orderWrapper.classList.remove("d-none");
-  orderSelect.disabled = false;
-}
-
-
-}
-
-
-
-
-  updateNormalisationUI();
-  languageSelect.addEventListener("change", updateNormalisationUI);
-  normSelect.addEventListener("change", updateNormalisationUI);
-});
-</script>
-
-
-  
-  
-  
-  
 </body>
 </html>

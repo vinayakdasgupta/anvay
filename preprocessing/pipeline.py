@@ -1,11 +1,24 @@
-from preprocessing.bn import preprocess_bn
-from preprocessing.en import preprocess_en
-from preprocessing.hi import preprocess_hi
-from preprocessing.ta import preprocess_ta
-from preprocessing.normalisation import (
-    resolve_normaliser,
-    resolve_default_normaliser,
-)
+# Import strategy: try package-style imports first (when running from project root
+# with preprocessing/ as a subpackage), then fall back to flat/sibling imports
+# (when files are in the same directory, e.g. during development or testing).
+try:
+    from preprocessing.bn import preprocess_bn
+    from preprocessing.en import preprocess_en
+    from preprocessing.hi import preprocess_hi
+    from preprocessing.ta import preprocess_ta
+    from preprocessing.normalisation import (
+        resolve_normaliser,
+        resolve_default_normaliser,
+    )
+except ImportError:
+    from bn import preprocess_bn
+    from en import preprocess_en
+    from hi import preprocess_hi
+    from ta import preprocess_ta
+    from normalisation import (
+        resolve_normaliser,
+        resolve_default_normaliser,
+    )
 
 
 def preprocess_documents(

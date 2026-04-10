@@ -134,7 +134,7 @@ def preprocess_hi(
 
     for path in file_paths:
         with open(path, "r", encoding="utf-8", errors="ignore") as f:
-            raw = f.read().lower()
+            raw = f.read()
 
         tokens = custom_hindi_tokenize(raw)
 

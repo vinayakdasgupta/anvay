@@ -33,7 +33,6 @@ FONT_SIZE = 11
 BRAND_COLOR = "#0D85D8"
 DEFAULT_PALETTE = px.colors.qualitative.Plotly  # reliable qualitative palette
 
-import colorsys
 
 def build_topic_color_map(num_topics):
     """
@@ -870,32 +869,31 @@ def get_representative_sentences_custom(
                 tokens = set(custom_bengali_tokenize(sent))
             else:
                 tokens = set(
-                t.lower()
-                for t in word_tokenize(sent)
-                if t.isalpha()
-            )
+                    t.lower()
+                    for t in word_tokenize(sent)
+                    if t.isalpha()
+                )
 
             overlap = len(tokens & topic_word_set)
             if overlap > best_overlap:
                 best_overlap = overlap
                 best_idx = i
 
-        # --- expand to context window (±2 sentences) ---
-            start = max(0, best_idx - window)
-            end = min(len(sentences), best_idx + window + 1)
-
-            snippet = "। ".join(sentences[start:end]).strip()
+        # --- expand to context window (±2 sentences) AFTER finding best_idx ---
+        start = max(0, best_idx - window)
+        end = min(len(sentences), best_idx + window + 1)
+        snippet = "। ".join(sentences[start:end]).strip()
 
         # safety cap
-            if len(snippet) > max_chars:
-                snippet = snippet[:max_chars].rsplit(" ", 1)[0] + "…"
+        if len(snippet) > max_chars:
+            snippet = snippet[:max_chars].rsplit(" ", 1)[0] + "…"
 
-            topic_sentences[topic_id] = {
-                "doc": doc_names[best_doc_index] if doc_names else f"Doc {best_doc_index}",
-                "weight": round(max_score, 4),
-                "text": snippet,
-                "low_confidence": best_overlap == 0
-            }
+        topic_sentences[topic_id] = {
+            "doc": doc_names[best_doc_index] if doc_names else f"Doc {best_doc_index}",
+            "weight": round(max_score, 4),
+            "text": snippet,
+            "low_confidence": best_overlap == 0
+        }
 
     return topic_sentences
 
