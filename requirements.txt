@@ -8,3 +8,4 @@ scikit-learn==1.3.2
 scipy==1.9.3
 plotly==5.17.0
 networkx==2.8.8
+simplemma==1.1.2
