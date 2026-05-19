@@ -74,7 +74,7 @@
             </div>
             <div class="lightbox-body">
               <div class="chart-frame w-100">
-                <iframe src="{{ url_for('view_result_file', folder=folder, filename=file) }}"
+                <iframe src="{{ url_for('view_result_file', job_id=job_id, folder=folder, filename=file) }}"
                         loading="lazy" frameborder="0"></iframe>
               </div>
             </div>
@@ -153,8 +153,8 @@
             <p class="small mb-0" style="color: var(--ink-muted);">The top 10 keywords associated with each topic, based on their weight in the model. These words help interpret the themes captured by the topic model.</p>
           </div>
           <div class="d-flex gap-2 flex-shrink-0">
-            <a class="btn-outline-secondary" href="{{ url_for('download_file', filename='topic_words.csv') }}">CSV</a>
-            <a class="btn-outline-secondary" href="{{ url_for('download_file', filename='topic_words.txt') }}">TXT</a>
+            <a class="btn-outline-secondary" href="{{ url_for('download_file', job_id=job_id, filename='topic_words.csv') }}">CSV</a>
+            <a class="btn-outline-secondary" href="{{ url_for('download_file', job_id=job_id, filename='topic_words.txt') }}">TXT</a>
           </div>
         </div>
         <div class="scroll-section table-responsive">
@@ -180,8 +180,8 @@
             <p class="small mb-0" style="color: var(--ink-muted);">Proportion of each topic present in each document. Shown for the first N documents. Scroll horizontally if the number of topics is large.</p>
           </div>
           <div class="d-flex gap-2 flex-shrink-0">
-            <a class="btn-outline-secondary" href="{{ url_for('download_file', filename='doc_topic_weights.csv') }}">CSV</a>
-            <a class="btn-outline-secondary" href="{{ url_for('download_file', filename='doc_topic_weights.txt') }}">TXT</a>
+            <a class="btn-outline-secondary" href="{{ url_for('download_file', job_id=job_id, filename='doc_topic_weights.csv') }}">CSV</a>
+            <a class="btn-outline-secondary" href="{{ url_for('download_file', job_id=job_id, filename='doc_topic_weights.txt') }}">TXT</a>
           </div>
         </div>
         <div class="scroll-section scrollable-table">
@@ -301,6 +301,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    const JOB_ID = "{{ job_id }}";
     /* ── Theme ── */
     const SUN = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="5" stroke-width="1.5"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 1v2m0 18v2m11-11h-2M3 12H1m17.07 4.93l-1.42-1.42M6.34 6.34L4.93 4.93m12.14 0l-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg>`;
     const MOON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`;
@@ -325,7 +326,7 @@
       const content = document.getElementById('lightboxContent');
       content.innerHTML = '';
       const iframe = document.createElement('iframe');
-      iframe.src = `/results/${btn.dataset.folder}/${btn.dataset.file}`;
+      iframe.src = `/results/${JOB_ID}/${btn.dataset.folder}/${btn.dataset.file}`;
       iframe.className = 'w-100 h-100';
       iframe.frameBorder = '0';
       content.appendChild(iframe);
