@@ -107,7 +107,7 @@ app.secret_key = _secret
 app.config['DEBUG'] = False
 
 # Total request body limit (all files combined).
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100 MB
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5 MB
 
 # ---------------------------------------------------------------------------
 # Rate limiting

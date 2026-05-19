@@ -33,8 +33,8 @@ ALLOWED_DOWNLOAD_FILES = frozenset({
     'topics.txt',
 })
 
-# Per-file upload limit (bytes). 10 MB is generous for plain text.
-MAX_FILE_BYTES = 10 * 1024 * 1024
+# Per-file upload limit (bytes). 1 MB is generous for plain text.
+MAX_FILE_BYTES = 1 * 1024 * 1024
 
 # Maximum number of corpus files per submission.
 MAX_FILES = 200
