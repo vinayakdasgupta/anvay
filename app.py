@@ -129,7 +129,7 @@ limiter = Limiter(
 BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER    = os.path.join(BASE_DIR, 'uploads')
 RESULT_FOLDER    = os.path.join(BASE_DIR, 'results')
-STOPWORDS_FOLDER = os.path.join(BASE_DIR, 'stopwords')
+STOPWORDS_FOLDER = os.path.join(BASE_DIR, 'static', 'stopwords')
 LOG_DIR          = os.path.join(BASE_DIR, 'logs')
 
 for d in (UPLOAD_FOLDER, RESULT_FOLDER, STOPWORDS_FOLDER, LOG_DIR):
@@ -244,7 +244,6 @@ def process_txt_files(file_paths, config, job_result_dir, custom_stopwords=None)
         eta                = config.eta,
         per_word_topics    = config.per_word_topics,
         minimum_probability= config.minimum_probability,
-        use_multicore      = config.use_multicore,
         log_stream         = log_stream,
     )
 
@@ -379,10 +378,19 @@ def process_files():
             file_paths.append(path)
 
         # Load custom stopwords (optional)
+        
         custom_stopwords_set = set()
         if 'custom_stopwords' in request.files:
             custom = request.files['custom_stopwords']
             if custom and custom.filename.strip():
+                ok, err = validate_upload(custom, custom.filename)
+                if not ok:
+                    sec_log.warning(
+                        f"INVALID_UPLOAD ip={ip} filename={custom.filename!r} "
+                        f"reason={err} source=custom_stopwords"
+                    )
+                    flash(err, "danger")
+                    return redirect(url_for('upload_file'))
                 sw_name = secure_filename(custom.filename)
                 sw_path = os.path.join(job_upload_dir, sw_name)
                 custom.save(sw_path)

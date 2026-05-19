@@ -101,14 +101,16 @@ def validate_upload(file_obj, filename: str) -> tuple[bool, str | None]:
 
     if b'\x00' in header:
         return False, f"'{filename}' contains null bytes and appears to be binary."
-
+    
     try:
         header.decode('utf-8')
-    except UnicodeDecodeError:
-        return False, f"'{filename}' does not appear to be valid UTF-8 text."
-
+    except UnicodeDecodeError as e:
+        # If the bad bytes start within the last 3 bytes, it's a buffer
+        # boundary cut on a multibyte character, not actually corrupt data.
+        # Bengali (and most Unicode scripts) use at most 3-byte sequences.
+        if e.start < len(header) - 3:
+            return False, f"'{filename}' does not appear to be valid UTF-8 text."
     return True, None
-
 
 def validate_file_count(files: list) -> tuple[bool, str | None]:
     """Check that the submission does not exceed MAX_FILES."""
