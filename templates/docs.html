@@ -421,6 +421,7 @@
 <li class="nav-item"><button class="nav-link" data-target="#usage-viz">Visualisations</button></li>
 <li class="nav-item"><button class="nav-link" data-target="#usage-report">Report</button></li>
 <li class="nav-item"><button class="nav-link" data-target="#usage-walk">Walkthrough</button></li>
+<li class="nav-item"><button class="nav-link" data-target="#usage-limits">Limits &amp; Sessions</button></li>
 </ul>
 </div>
 
@@ -514,8 +515,9 @@ No slogans were shouted.</pre>
 
   <div class="alert alert-secondary corpus-note mt-4">
     <ul class="mb-0">
-      <li><strong>Maximum files:</strong> 800</li>
-      <li><strong>Total upload size:</strong> 100 MB</li>
+      <li><strong>Maximum files:</strong> 200 per submission</li>
+      <li><strong>Maximum file size:</strong> 1 MB per file</li>
+      <li><strong>Total upload size:</strong> 5 MB per submission</li>
       <li><strong>File format:</strong> Plain text (<code>.txt</code>) only</li>
       <li><strong>Encoding:</strong> UTF-8 (mandatory for all languages)</li>
     </ul>
@@ -937,9 +939,9 @@ word3</pre>
 
 <!-- WALKTHROUGH -->
 <div class="usage-pane" id="usage-walk">
-  <h5 class="doc-section-title">Walkthrough: Bengali News Corpus (288 Files)</h5>
+  <h5 class="doc-section-title">Walkthrough: Bengali News Corpus (150 Files)</h5>
 
-  <p>This walkthrough explores how different filtering strategies shape the topics generated from a corpus of 288 Bengali news articles. Rather than presenting final outputs, it highlights how topic visibility is shaped by preprocessing decisions — and how different assumptions produce different readings.</p>
+  <p>This walkthrough explores how different filtering strategies shape the topics generated from a corpus of 150 Bengali news articles. Rather than presenting final outputs, it highlights how topic visibility is shaped by preprocessing decisions — and how different assumptions produce different readings.</p>
 
   <div class="experimental-banner mb-4">
     <strong>Language note:</strong> This walkthrough uses Bengali, <em>anvay</em>'s primary supported language. The methodological principles — how filtering shapes topics, how to compare two runs, how to interpret outputs — apply equally to English, Hindi, and Tamil. However, for those experimental languages, results may differ more substantially between runs, and interpretation requires additional caution.
@@ -950,7 +952,7 @@ word3</pre>
       <div class="col-6 col-md">
         <div class="mb-2"><i class="bi bi-file-zip" style="font-size: 1.5rem;"></i></div>
         <div class="fw-semibold">Download</div>
-        <small class="text-muted">Get the sample corpus (288 news articles)</small>
+        <small class="text-muted">Get the sample corpus (150 news articles)</small>
       </div>
       <div class="col-6 col-md">
         <div class="mb-2"><i class="bi bi-sliders" style="font-size: 1.5rem;"></i></div>
@@ -979,7 +981,7 @@ word3</pre>
 
   <div class="mb-4">
     <h6 style="color: #0D85D8; font-weight: 600; letter-spacing: 0.5px;">STEP 1: Download the Corpus</h6>
-    <p>We've provided a sample dataset of 288 news articles. These are stored in <code>.txt</code> format inside a <code>.zip</code> archive.</p>
+    <p>We've provided a sample dataset of 150 news articles. These are stored in <code>.txt</code> format inside a <code>.zip</code> archive.</p>
     <div class="download-link mb-3">
       <a href="/static/sample_corpus/news_corpus.zip" class="btn btn-sm btn-outline-primary">Download Sample Corpus (news_corpus.zip)</a>
     </div>
@@ -995,7 +997,7 @@ word3</pre>
 
   <table class="table table-sm w-auto mb-3">
     <tbody>
-      <tr><td><code>files</code></td><td>288</td></tr>
+      <tr><td><code>files</code></td><td>150</td></tr>
       <tr><td><code>num_topics</code></td><td>10</td></tr>
       <tr><td><code>nltk_stopwords</code></td><td>yes</td></tr>
       <tr><td><code>alpha</code></td><td>asymmetric</td></tr>
@@ -1051,7 +1053,7 @@ word3</pre>
 
   <table class="table table-sm w-auto mb-3">
     <tbody>
-      <tr><td><code>files</code></td><td>288</td></tr>
+      <tr><td><code>files</code></td><td>150</td></tr>
       <tr><td><code>num_topics</code></td><td>10</td></tr>
       <tr><td><code>nltk_stopwords</code></td><td>yes</td></tr>
       <tr><td><code>alpha</code></td><td>asymmetric</td></tr>
@@ -1114,10 +1116,81 @@ word3</pre>
   <p>Topic modelling is not neutral. The same corpus can yield very different "themes" depending on how you treat frequency. <em>anvay</em> is designed not to automate interpretation, but to reveal its conditions.</p>
 </div>
 
+<!-- Limits & Sessions -->
+<div class="usage-pane" id="usage-limits">
+  <h5 class="doc-section-title">Limits &amp; Sessions</h5>
+
+  <p>
+    <em>anvay</em> is a shared research tool hosted on a university server. To ensure fair and stable access for all users, it enforces limits on upload size, submission rate, and result availability. This page explains what those limits are and what to expect from each session.
+  </p>
+
+  <h6 class="mt-4 fw-semibold">Upload Limits</h6>
+
+  <div class="alert alert-secondary corpus-note mt-2">
+    <ul class="mb-0">
+      <li><strong>File format:</strong> Plain text (<code>.txt</code>) only. PDFs, Word documents, and other formats are not accepted.</li>
+      <li><strong>File encoding:</strong> UTF-8 mandatory.</li>
+      <li><strong>Maximum file size:</strong> 1 MB per file.</li>
+      <li><strong>Maximum total upload:</strong> 5 MB per submission.</li>
+      <li><strong>Maximum files per submission:</strong> 200.</li>
+    </ul>
+  </div>
+
+  <p class="small text-muted mt-2">
+    These limits are enforced before processing begins. If any file fails validation — wrong format, wrong encoding, too large — the entire submission is rejected and you will see a specific error message. No partial processing occurs.
+  </p>
+
+  <h6 class="mt-5 fw-semibold">Rate Limits</h6>
+
+  <p>
+    To prevent overload, <em>anvay</em> limits the number of submissions from a single IP address:
+  </p>
+
+  <div class="info-box mt-2">
+    <ul class="mb-0">
+      <li><strong>6 submissions per minute</strong></li>
+      <li><strong>30 submissions per hour</strong></li>
+    </ul>
+  </div>
+
+  <p class="mt-3">
+    If you exceed these limits, you will see a <strong>429 Too Many Requests</strong> error. Wait a moment and try again — the limit resets automatically. For research workflows that require many rapid iterations, we recommend preparing your corpus and parameters carefully before submitting, rather than making exploratory runs in quick succession.
+  </p>
+
+  <h6 class="mt-5 fw-semibold">Sessions and Result Availability</h6>
+
+  <p>
+    Every submission to <em>anvay</em> is independent. Each run generates a private, uniquely identified session — your results are not linked to any user account and are not visible to anyone else.
+  </p>
+
+  <div class="warn-box mt-3">
+    <strong>Results are available for 2 hours after processing.</strong> After that, all result files — visualisations, CSVs, and topic exports — are automatically deleted from the server. If you need to keep your results, download them before the session expires.
+  </div>
+
+  <p class="mt-3">
+    There is no login, no persistent storage, and no way to recover a session once it has expired. Plan accordingly — especially for large corpora where training may take several minutes.
+  </p>
+
+  <h6 class="mt-5 fw-semibold">Data and Privacy</h6>
+
+  <p>
+    <em>anvay</em> does not retain your files. Uploaded documents are stored only for the duration of processing, then deleted immediately — before the results page even loads. Result files are deleted after 2 hours. No content from your corpus is logged, stored, or shared.
+  </p>
+
+  <p>
+    <em>anvay</em> does not use cookies, tracking scripts, or third-party analytics. It does not display advertisements.
+  </p>
+
+  <div class="info-box mt-4">
+    <strong>In brief:</strong> upload → process → download within 2 hours. Nothing is kept beyond that window, and nothing is shared.
+  </div>
+
 </div>
-</div>
-</div>
-</div>
+
+</div><!-- /col-md-9 -->
+</div><!-- /row -->
+</div><!-- /container-fluid -->
+</div><!-- /usage tab-content -->
 
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -1168,11 +1241,12 @@ word3</pre>
   <p>
     If the interface seems unresponsive, check whether:
     <ul>
-      <li>You uploaded more than 800 files</li>
-      <li>Your total upload exceeds 100 MB</li>
+      <li>You uploaded more than 200 files</li>
+      <li>A single file exceeds 1 MB, or your total upload exceeds 5 MB</li>
       <li>You've accidentally included a non-<code>.txt</code> file or a file that isn't UTF-8 encoded</li>
+      <li>You have submitted too many requests recently — <em>anvay</em> applies rate limits to ensure fair access for all users</li>
     </ul>
-    <strong>What to do:</strong> Remove problematic files, stay under the file and size limits, and ensure encoding is correct.
+    <strong>What to do:</strong> Remove problematic files, stay under the file and size limits, and ensure encoding is correct. If you have hit the rate limit, wait a minute and try again.
   </p>
 
   <h6 class="fw-semibold text-primary">Why are the results messy or unclear?</h6>
