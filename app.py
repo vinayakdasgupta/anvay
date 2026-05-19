@@ -69,6 +69,7 @@ from security import (
 # ---------------------------------------------------------------------------
 # Logging
 # ---------------------------------------------------------------------------
+os.makedirs('logs', exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,                          # INFO in production, not DEBUG
@@ -657,3 +658,6 @@ def handle_503(e):
         'name': 'Server Busy',
         'description': 'The server is temporarily unavailable. Please try again shortly.',
     }), 503
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=5000, debug=False)

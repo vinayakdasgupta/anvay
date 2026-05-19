@@ -5,7 +5,7 @@ security.py — anvay production security helpers
 Validation, input checking, job cleanup, and security logging.
 Nothing in this file is application logic; it is purely defensive.
 """
-
+from __future__ import annotations
 import os
 import re
 import time
