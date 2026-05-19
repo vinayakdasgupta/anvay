@@ -249,24 +249,15 @@
             </div>
 
             <div class="col-md-4">
-              <label for="use_multicore" class="form-label d-flex justify-content-between align-items-center">
-                Multicore Processing
-                <i class="bi bi-info-circle" data-bs-toggle="tooltip"
-                   title="Use multiple CPU cores. Recommended for large corpora."></i>
-              </label>
-              <select name="use_multicore" class="form-select" id="use_multicore">
-                <option value="false" selected>No</option>
-                <option value="true">Yes</option>
-              </select>
-            </div>
-
-            <div class="col-md-4">
               <label for="custom_stopwords" class="form-label d-flex justify-content-between align-items-center">
-                Upload Custom Stopwords
+                Custom Stopwords
                 <i class="bi bi-info-circle" data-bs-toggle="tooltip"
-                   title="Optional .txt file with one stopword per line."></i>
+                   title="Optional .txt file with one stopword per line. Download our list as a starting point."></i>
               </label>
               <input type="file" class="form-control" name="custom_stopwords" id="custom_stopwords">
+              <div class="form-text" id="stopwords-download-wrap">
+                <a id="stopwords-download-link" href="#" download>Download built-in stopwords list</a>
+              </div>
             </div>
 
           </div>
@@ -355,9 +346,26 @@
       const stopSel = document.getElementById('remove_nltk_stopwords');
       const stemOpt = norm.querySelector('[value="stem"]');
       const lemmaOpt = norm.querySelector('[value="lemma"]');
+      const swLink = document.getElementById('stopwords-download-link');
+      const swWrap = document.getElementById('stopwords-download-wrap');
+
+      const stopwordsFiles = {
+        bn: '/static/stopwords/bengali_stopwords.txt',
+        hi: '/static/stopwords/hindi_stopwords.txt',
+        ta: '/static/stopwords/tamil_stopwords.txt',
+      };
 
       function update() {
         const l = lang.value, n = norm.value;
+
+        // Update stopwords download link
+        if (stopwordsFiles[l]) {
+          swLink.href = stopwordsFiles[l];
+          swWrap.classList.remove('d-none');
+        } else {
+          swWrap.classList.add('d-none');
+        }
+
         if (l === 'bn') {
           stemOpt.disabled = false; lemmaOpt.disabled = true; stopSel.disabled = false;
           if (n === 'lemma') norm.value = 'stem';

@@ -46,6 +46,8 @@ def custom_bengali_tokenize(text):
 
 def load_stopwords(file_path):
     if not os.path.exists(file_path): return set()
+    if os.path.getsize(file_path) > 1 * 1024 * 1024:   # same 1 MB ceiling
+        return set()
     with open(file_path, 'r', encoding='utf-8') as f:
         return set(line.strip() for line in f)
 
@@ -62,7 +64,7 @@ def parse_hyperparam(val):
         return None
     try:
         return float(val)
-    except:
+    except (ValueError, AttributeError):
         return None
     
 def convert_numpy_types(obj):

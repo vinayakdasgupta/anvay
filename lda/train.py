@@ -1,4 +1,3 @@
-import os
 import gensim
 
 
@@ -13,7 +12,6 @@ def train_lda_model(
     eta,
     per_word_topics,
     minimum_probability,
-    use_multicore,
     log_stream
 ):
     """
@@ -23,7 +21,7 @@ def train_lda_model(
     Actual log capture is handled in the caller via a logging.StreamHandler
     attached to the 'gensim' logger — Gensim emits via logging, not stdout.
     """
-    lda_model = gensim.models.LdaMulticore(
+    lda_model = gensim.models.LdaModel(
         corpus=corpus,
         id2word=id2word,
         num_topics=num_topics,
@@ -34,7 +32,6 @@ def train_lda_model(
         eta=eta,
         per_word_topics=per_word_topics,
         minimum_probability=minimum_probability,
-        workers=os.cpu_count() - 1 if use_multicore else 1
     )
 
     return lda_model

@@ -197,7 +197,7 @@
   <li>Language-specific preprocessing for Bengali, English, Hindi, and Tamil</li>
   <li>Multiple interactive visualisations: scatterplots, heatmaps, pie charts, word networks</li>
   <li>Structured report with topic summaries, top terms, document drilldowns, and quality flags</li>
-  <li>Support for uploading user-defined stopword lists</li>
+  <li>Built-in stopword lists for Bengali, Hindi, and Tamil — downloadable and customisable</li>
   <li>Lightweight, browser-based interface with no data retention or third-party processing</li>
 </ul>
 
@@ -485,7 +485,7 @@ No slogans were shouted.</pre>
   <div class="lang-name"><span class="lang-badge lang-hi">HI</span> Hindi <span class="lang-badge" style="background: rgba(200,151,42,0.12); color: #c8972a;">Experimental</span></div>
   <div class="lang-detail">
     <span>Hindi uses Devanagari script, which <em>anvay</em> handles with a custom tokeniser modelled on the Bengali approach. Vowel signs (मात्राएँ) and nukta characters are preserved.</span>
-    <span class="mt-2"><strong>Important:</strong> NLTK does not provide a Hindi stopword list. You <em>must</em> upload a custom stopword file for meaningful results. Common particles like <code>है</code>, <code>था</code>, <code>और</code>, <code>में</code> should be included.</span>
+    <span class="mt-2"><strong>Important:</strong> NLTK does not provide a Hindi stopword list. <em>anvay</em> includes a built-in Hindi stopword file — download it from the upload form and edit if needed before uploading. Common particles like <code>है</code>, <code>था</code>, <code>और</code>, <code>में</code> are already included.</span>
     <span class="mt-2"><strong>Lemmatisation</strong> uses simplemma, which is dictionary-based and experimental for Hindi.</span>
   </div>
 </div>
@@ -494,7 +494,7 @@ No slogans were shouted.</pre>
   <div class="lang-name"><span class="lang-badge lang-ta">TA</span> Tamil <span class="lang-badge" style="background: rgba(200,151,42,0.12); color: #c8972a;">Experimental</span></div>
   <div class="lang-detail">
     <span>Tamil has an agglutinative morphology — words are formed by chaining suffixes to roots, which makes stemming important. <em>anvay</em> uses a dictionary-based stemmer for Tamil.</span>
-    <span class="mt-2"><strong>Important:</strong> Like Hindi, no NLTK Tamil stopword list is available. Upload a custom stopword file with common function words (e.g. <code>அது</code>, <code>இது</code>, <code>மற்றும்</code>, <code>என்று</code>).</span>
+    <span class="mt-2"><strong>Important:</strong> Like Hindi, no NLTK Tamil stopword list is available. <em>anvay</em> includes a built-in Tamil stopword file — download it from the upload form and edit if needed before uploading.</span>
     <span class="mt-2"><strong>Typical noise:</strong> Tamil pulli (virama) and aaytham (ஃ) characters are handled, but some OCR tools produce fragmented Tamil glyphs.</span>
   </div>
 </div>
@@ -568,12 +568,13 @@ No slogans were shouted.</pre>
       Enable this by selecting <code>Yes</code> on the <em>Remove Stopwords</em> field. NLTK provides stopword lists for <span class="lang-badge lang-bn">BN</span> Bengali and <span class="lang-badge lang-en">EN</span> English. For <span class="lang-badge lang-hi">HI</span> Hindi and <span class="lang-badge lang-ta">TA</span> Tamil, this option has no effect — NLTK does not include these languages.
     </li>
     <li class="mt-3">
-      <strong>Upload your own stopword file</strong><br>
-      In <code>Advanced Options</code>, upload a plain-text <code>.txt</code> file with <strong>one word per line</strong>. This is <strong>essential</strong> for Hindi and Tamil, and strongly recommended for all languages when working with domain-specific corpora.
+      <strong>Upload a custom stopword file</strong><br>
+      In <code>Advanced Options</code>, upload a plain-text <code>.txt</code> file with <strong>one word per line</strong>. This replaces the built-in list entirely for that run.<br><br>
+      <em>anvay</em> provides ready-made stopword lists for Bengali, Hindi, and Tamil. Use the <strong>Download built-in stopwords list</strong> link next to the file input to get the list for your selected language — then edit it to suit your corpus before uploading. This is the recommended workflow for Hindi and Tamil, and for any domain-specific Bengali or English corpus.
     </li>
   </ol>
 
-  <p class="mt-3">If both options are selected, the lists are automatically merged before modelling begins.</p>
+  <p class="mt-3">If both the NLTK option and a custom file are active, the lists are automatically merged before modelling begins.</p>
 
   <h6 class="mt-5 fw-semibold">Language-Specific Guidance</h6>
 
@@ -598,7 +599,7 @@ No slogans were shouted.</pre>
   <div class="lang-card mt-2">
     <div class="lang-name"><span class="lang-badge lang-hi">HI</span> Hindi <span class="lang-badge" style="background: rgba(200,151,42,0.12); color: #c8972a;">Experimental</span></div>
     <div class="lang-detail">
-      <p class="small mt-1">No built-in NLTK Hindi stopwords are available. You <strong>must</strong> provide a custom list. Include at minimum:</p>
+      <p class="small mt-1">No built-in NLTK Hindi stopwords are available. Download <em>anvay</em>'s Hindi stopword list from the upload form — it already includes common particles and function words. Edit it to suit your corpus before uploading.</p>
       <div class="code-example mt-1" style="font-size:0.78rem;">है  था  हैं  थे  और  में  को  से  पर  के  की  का  यह  वह  इस  उस  एक  भी  तो  ने</div>
     </div>
   </div>
@@ -606,7 +607,7 @@ No slogans were shouted.</pre>
   <div class="lang-card mt-2">
     <div class="lang-name"><span class="lang-badge lang-ta">TA</span> Tamil <span class="lang-badge" style="background: rgba(200,151,42,0.12); color: #c8972a;">Experimental</span></div>
     <div class="lang-detail">
-      <p class="small mt-1">No built-in NLTK Tamil stopwords are available. You <strong>must</strong> provide a custom list. Include at minimum:</p>
+      <p class="small mt-1">No built-in NLTK Tamil stopwords are available. Download <em>anvay</em>'s Tamil stopword list from the upload form — it already includes common function words. Edit it to suit your corpus before uploading.</p>
       <div class="code-example mt-1" style="font-size:0.78rem;">அது  இது  அந்த  இந்த  மற்றும்  என்று  ஆனால்  அல்லது  ஒரு  இல்லை  என்ன</div>
     </div>
   </div>
@@ -702,9 +703,6 @@ word3</pre>
     Controls how many documents are processed at once during training. This affects speed and memory use — not model quality. Default: <code>100–200</code>.
   </p>
 
-  <p><strong><code>Multicore Training</code></strong><br>
-    If enabled, <em>anvay</em> will use multiple CPU cores (if available) to speed up model training.
-  </p>
 
   <dt data-term="per-word topics"><strong><code>Per-word Topics</code></strong></dt>
   <dd class="ms-0">
@@ -1010,7 +1008,6 @@ word3</pre>
       <tr><td><code>no_above</code></td><td>1</td></tr>
       <tr><td><code>no_below</code></td><td>1</td></tr>
       <tr><td><code>stemming</code></td><td>dict based</td></tr>
-      <tr><td><code>multicore</code></td><td>no</td></tr>
       <tr><td><code>custom_stopwords</code></td><td>bengali_stopwords.txt</td></tr>
     </tbody>
   </table>
@@ -1066,7 +1063,6 @@ word3</pre>
       <tr><td><code>no_above</code></td><td>0.5</td></tr>
       <tr><td><code>no_below</code></td><td>5</td></tr>
       <tr><td><code>stemming</code></td><td>dict based</td></tr>
-      <tr><td><code>multicore</code></td><td>no</td></tr>
       <tr><td><code>custom_stopwords</code></td><td>bengali_stopwords.txt</td></tr>
     </tbody>
   </table>
@@ -1262,7 +1258,7 @@ word3</pre>
 
   <h6 class="fw-semibold text-primary">I'm using Hindi or Tamil and getting very poor results. Why?</h6>
   <p>
-    Hindi and Tamil support is experimental. The most common cause of poor results is missing stopwords — neither language has a built-in NLTK stopword list, so you <strong>must</strong> upload a custom stopword file. Without it, the model will be dominated by function words and particles that carry no thematic value.
+    Hindi and Tamil support is experimental. The most common cause of poor results is missing stopwords — neither language has a built-in NLTK stopword list. Use the <strong>Download built-in stopwords list</strong> link on the upload form to get <em>anvay</em>'s curated list for your language, edit it to suit your corpus if needed, then upload it. Without a stopword file, the model will be dominated by function words and particles that carry no thematic value.
   </p>
   <p>
     Additionally, the normalisation pipelines (simplemma for Hindi, dictionary stemming for Tamil) are less mature than the Bengali pipeline. If results remain poor after adding stopwords, try disabling normalisation and running with a cleaner corpus.
@@ -1342,8 +1338,6 @@ word3</pre>
     <dd>Controls word sparsity per topic. Lower values = sharper themes; higher = more diffuse.</dd>
     <dt data-term="chunk size"><code>Chunk Size</code></dt>
     <dd>The number of documents processed in each training batch. Impacts speed and stability.</dd>
-    <dt data-term="multicore training"><code>Multicore Training</code></dt>
-    <dd>Enables parallel processing across CPU cores. Recommended for large corpora.</dd>
     <dt data-term="per-word topics"><code>Per-word Topics</code></dt>
     <dd>Stores topic assignments at the word level. Enables token-level highlighting and diagnostics.</dd>
     <dt data-term="utf-8"><code>UTF-8</code></dt>

@@ -34,11 +34,6 @@ class AnalysisConfig:
     remove_stopwords: bool
 
     # -----------------------------
-    # Execution
-    # -----------------------------
-    use_multicore: bool
-
-    # -----------------------------
     # Language selection
     # -----------------------------
     language: str
@@ -74,9 +69,6 @@ def build_analysis_config(form) -> AnalysisConfig:
         normalisation=form.get("normalisation", "auto"),
         normalisation_order=form.get("normalisation_order", "stem_first"),
         remove_stopwords=form.get("remove_nltk_stopwords", "true").lower() == "true",
-
-        # Execution
-        use_multicore=form.get("use_multicore", "false").lower() == "true",
 
         # Language
         language=form.get("language", "bn"),
