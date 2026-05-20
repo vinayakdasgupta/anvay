@@ -23,6 +23,7 @@ import uuid
 from collections import Counter
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import HTTPException
+from werkzeug.middleware.proxy_fix import ProxyFix
 from flask import Flask, request, render_template, send_file, send_from_directory, jsonify, flash, redirect, url_for, abort
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -92,6 +93,7 @@ sec_log.setLevel(logging.INFO)
 # ---------------------------------------------------------------------------
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 # Secret key MUST come from the environment in production.
 # If the variable is missing the app refuses to start — this is intentional.
@@ -108,6 +110,10 @@ app.config['DEBUG'] = False
 
 # Total request body limit (all files combined).
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5 MB
+
+# Subpath deployment — anvay runs at /anvay behind Nginx.
+app.config['APPLICATION_ROOT'] = '/anvay'
+app.config['PREFERRED_URL_SCHEME'] = 'https'
 
 # ---------------------------------------------------------------------------
 # Rate limiting
