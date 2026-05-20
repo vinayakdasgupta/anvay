@@ -640,6 +640,18 @@ def terms():   return render_template('terms.html')
 # Error handlers
 # ---------------------------------------------------------------------------
 
+@app.errorhandler(413)
+def handle_413(e):
+    sec_log.warning(f"REQUEST_TOO_LARGE ip={request.remote_addr}")
+    return render_template("error.html", error={
+        'code': 413,
+        'name': 'Upload Too Large',
+        'description': (
+            'Your submission exceeds the 5 MB total upload limit. '
+            'Each individual file must also be under 1 MB.'
+        ),
+    }), 413
+
 @app.errorhandler(404)
 def handle_404(e):
     return render_template("error.html", error={

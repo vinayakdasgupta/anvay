@@ -56,7 +56,7 @@
           <label for="files" class="form-label d-flex justify-content-between align-items-center">
             Upload .txt Files
             <i class="bi bi-info-circle" data-bs-toggle="tooltip"
-               title="Upload one or more plain text files. Max 800 files / 100 MB. Only .txt format is supported."></i>
+               title="Upload one or more plain text files. Max 200 files per submission, 1 MB per file, 5 MB total. Only .txt format is supported."></i>
           </label>
           <input type="file" class="form-control" name="files[]" id="files" multiple required>
         </div>
@@ -65,9 +65,9 @@
           <label for="num_topics" class="form-label d-flex justify-content-between align-items-center">
             Number of Topics
             <i class="bi bi-info-circle" data-bs-toggle="tooltip"
-               title="Number of thematic topics to extract. Typical range: 5–50."></i>
+               title="Number of thematic topics to extract. Valid range: 2–50."></i>
           </label>
-          <input type="number" class="form-control" name="num_topics" id="num_topics" value="10" min="1" max="100">
+          <input type="number" class="form-control" name="num_topics" id="num_topics" value="10" min="2" max="50">
         </div>
 
         <div class="col-md-4">
@@ -138,27 +138,27 @@
               <label for="passes" class="form-label d-flex justify-content-between align-items-center">
                 Passes
                 <i class="bi bi-info-circle" data-bs-toggle="tooltip"
-                   title="Full passes over the dataset. Higher = better quality, slower training."></i>
+                   title="Full passes over the dataset. Higher = better quality, slower training. Valid range: 1–50."></i>
               </label>
-              <input type="number" class="form-control" name="passes" id="passes" value="10" min="1" max="30">
+              <input type="number" class="form-control" name="passes" id="passes" value="10" min="1" max="50">
             </div>
 
             <div class="col-md-4">
               <label for="iterations" class="form-label d-flex justify-content-between align-items-center">
                 Iterations
                 <i class="bi bi-info-circle" data-bs-toggle="tooltip"
-                   title="Optimisation steps per pass. Higher = more stable model."></i>
+                   title="Optimisation steps per pass. Higher = more stable model. Valid range: 10–500."></i>
               </label>
-              <input type="number" class="form-control" name="iterations" id="iterations" value="40" min="1" max="100">
+              <input type="number" class="form-control" name="iterations" id="iterations" value="40" min="10" max="500">
             </div>
 
             <div class="col-md-4">
               <label for="chunk_size" class="form-label d-flex justify-content-between align-items-center">
                 Chunk Size
                 <i class="bi bi-info-circle" data-bs-toggle="tooltip"
-                   title="Documents per batch. Larger = faster but more memory."></i>
+                   title="Documents per training batch. Larger = faster but uses more memory. Valid range: 50–2000."></i>
               </label>
-              <input type="number" class="form-control" name="chunk_size" id="chunk_size" value="200" min="10" max="1000">
+              <input type="number" class="form-control" name="chunk_size" id="chunk_size" value="200" min="50" max="2000">
             </div>
 
             <div class="col-12 mt-2 mb-2">
@@ -168,9 +168,9 @@
               <label for="no_below" class="form-label d-flex justify-content-between align-items-center">
                 Filter: No Below
                 <i class="bi bi-info-circle" data-bs-toggle="tooltip"
-                   title="Remove words appearing in fewer than N documents."></i>
+                   title="Remove words appearing in fewer than N documents. Valid range: 1–100."></i>
               </label>
-              <input type="range" class="form-range" name="no_below" id="no_below" min="1" max="10" value="1"
+              <input type="range" class="form-range" name="no_below" id="no_below" min="1" max="100" value="1"
                      oninput="document.getElementById('noBelowValue').textContent = this.value">
               <div class="form-text">Current: <span id="noBelowValue">1</span></div>
             </div>
@@ -317,7 +317,7 @@
     });
 
     /* ── Caps ── */
-    [{ id:'num_topics',max:100 },{ id:'iterations',max:100 },{ id:'chunk_size',max:1000 }].forEach(({id,max}) => {
+    [{ id:'num_topics',max:50 },{ id:'iterations',max:500 },{ id:'chunk_size',max:2000 }].forEach(({id,max}) => {
       document.getElementById(id)?.addEventListener('input', function() {
         if (parseInt(this.value) > max) this.value = max;
       });
@@ -327,8 +327,8 @@
     document.getElementById('files').addEventListener('change', function() {
       let total = 0;
       for (const f of this.files) total += f.size;
-      if (this.files.length > 800) { alert('Max 800 files.'); this.value = ''; return; }
-      if (total > 100*1024*1024) { alert('Total upload exceeds 100 MB.'); this.value = ''; }
+      if (this.files.length > 200) { alert('Too many files. Maximum is 200 per submission.'); this.value = ''; return; }
+      if (total > 5*1024*1024) { alert('Total upload exceeds 5 MB. Maximum is 5 MB per submission (1 MB per file).'); this.value = ''; }
     });
 
     /* ── Loading overlay ── */
